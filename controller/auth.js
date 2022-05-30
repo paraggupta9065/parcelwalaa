@@ -5,7 +5,6 @@ const user = require("../model/user");
 
 exports.sendOtp = async (req, res) => {
     const { number } = req.body;
-    console.log(req.body)
     if (!number) {
         return res.status(404).send("number not found");
     }

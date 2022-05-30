@@ -3,6 +3,12 @@ const jwt = require('jsonwebtoken');
 
 
 const shopSchema = mongoose.Schema({
+
+    user_id: {
+        type: String,
+        required: [true, "Please send user_id"],
+
+    },
     image: {
         type: String,
         required: [true, "Please send image"],
@@ -18,6 +24,7 @@ const shopSchema = mongoose.Schema({
         required: [true, "Please enter number"],
         unique: true,
     },
+
     fssai: {
         type: String,
         required: [true, "Please enter fssai"],
