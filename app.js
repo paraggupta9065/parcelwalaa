@@ -20,6 +20,6 @@ app.get("/", (req, res) => res.send("hi"));
 
 app.use('/auth', authRoute);
 app.use('/shop', shopRoute);
-// app.use("/driver", driverRoute);
+app.use("/driver", driverRoute);
 
 module.exports = app;

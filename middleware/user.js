@@ -1,7 +1,7 @@
 const user = require("../model/user");
 const jwt = require("jsonwebtoken");
 
-exports.isloggedin = async (req, res) => {
+exports.isloggedin = async (req, res, next) => {
     const userToken = req.headers.authorization;
     if (!userToken) {
         return res.status(401).send({ "msg": "Unauthorized" });
@@ -20,4 +20,5 @@ exports.isloggedin = async (req, res) => {
     const id = decoded.id;
     const foundUser = await user.findById({ _id: id });
     req.user = foundUser;
+    next();
 }
