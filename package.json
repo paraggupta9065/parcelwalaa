@@ -4,8 +4,8 @@
   "description": "this api is for parcelwalaa food delivery",
   "main": "index.js",
   "scripts": {
-    "test": "start",
-    "start": "nodemon index.js"
+    "test": "nodemon index.js",
+    "start": "node index.js"
   },
   "keywords": [
     "parcelwalaa"
