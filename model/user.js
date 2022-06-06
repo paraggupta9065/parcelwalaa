@@ -4,7 +4,6 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-
 const userSchema = mongoose.Schema({
     name: {
         type: String,
@@ -14,22 +13,17 @@ const userSchema = mongoose.Schema({
     number: {
         type: Number,
         required: [true, "Please enter number"],
-
         unique: true,
     },
-
     role: {
         type: String,
         default: 'user',
-
     },
     createdAt: {
         type: Date,
         default: Date.now,
     }
-
 });
-
 
 userSchema.methods.getJwtToken = function () {
     return jwt.sign(
@@ -38,7 +32,5 @@ userSchema.methods.getJwtToken = function () {
         { expiresIn: process.env.JWT_EXPIRY }
     );
 }
-
-
 
 module.exports = mongoose.model('User', userSchema);
