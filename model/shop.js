@@ -3,9 +3,9 @@ const jwt = require('jsonwebtoken');
 
 
 const shopSchema = mongoose.Schema({
-
     user_id: {
-        type: String,
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: [true, "Please send user_id"],
 
     },
@@ -52,8 +52,6 @@ const shopSchema = mongoose.Schema({
         type: Date,
         default: Date.now,
     }
-
 });
 
-
-module.exports = mongoose.model('shop', shopSchema);
+module.exports = mongoose.model('Shop', shopSchema);
