@@ -23,7 +23,7 @@ exports.sendOtp = async (req, res) => {
 exports.verifyOtp = async (req, res) => {
     const { number, otpCode } = req.body;
     if (!number) {
-        return res.status(404).send({ 'status': "fail", "msg": "Number not found" });
+        return res.status(200).send({ 'status': "fail", "msg": "Number not found" });
     }
     const otpFound = await otp.findOne({ 'number': number });
 
@@ -49,6 +49,6 @@ exports.verifyOtp = async (req, res) => {
     }
     const token = await userFound.getJwtToken();
     await otp.findOneAndDelete({ 'number': number });
-    return res.status(200).send({ "msg": "Login succesfuly", "token": token });
+    return res.status(200).send({ 'status': "sucess", "msg": "Login succesfuly", "token": token });
 }
 
