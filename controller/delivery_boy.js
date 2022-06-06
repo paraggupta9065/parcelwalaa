@@ -1,3 +1,4 @@
+
 const delivery_boyModel = require("../model/delivery_boy");
 const mongoose = require("mongoose");
 
@@ -58,3 +59,4 @@ exports.deletedelivery_boy = async (req, res) => {
 
   res.status(200).send({ msg: "delivery_boy deleted successfully" });
 };
+

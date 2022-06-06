@@ -1,8 +1,10 @@
 const user = require("../model/user");
 const jwt = require("jsonwebtoken");
 
+
 exports.isloggedin = async (req, res) => {
     const token = req.headers.authorization;
+
     if (!token) {
         return res.status(404).send({ "msg": "Token not found." });
     }
@@ -16,4 +18,5 @@ exports.isloggedin = async (req, res) => {
     const id = decoded.id;
     const foundUser = await user.findById({ _id: id });
     req.user = foundUser;
+    next();
 }

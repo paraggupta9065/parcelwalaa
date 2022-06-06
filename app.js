@@ -4,8 +4,10 @@ const connectToDb = require('./utils/connectToDb');
 const app = express();
 const authRoute = require('./routes/auth');
 const shopRoute = require('./routes/shop');
+
 const delivery_boyRoute = require("./routes/delivery_boy")
 const productRoute = require("./routes/product")
+
 const { addShops } = require('./controller/shop');
 
 require('dotenv').config();
