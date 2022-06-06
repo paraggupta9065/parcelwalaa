@@ -60,3 +60,13 @@ exports.getProducts = async (req, res) => {
         console.log(error);
     }
 }
+
+// search using product name
+exports.searchProducts = async (req, res) => {
+    try {
+        const products = await Products.find({ "name": {$regex: new RegExp(req.body.name), $options: 'i'}})
+        res.status(200).send(products)
+    } catch (error) {
+        console.log(error);   
+    }
+}

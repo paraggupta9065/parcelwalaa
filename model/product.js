@@ -64,7 +64,7 @@ const ProductSchema = mongoose.Schema({
                 type: String,
                 required: [true, "Provide the image of category"]
             },
-            subCategories: [mongoose.Schema.Types.ObjectId],
+            subCategories: [""],
         }
     ],
     tags: [String],
@@ -76,9 +76,9 @@ const ProductSchema = mongoose.Schema({
         type: String,
     },
     shop_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Shop",
-        required: true,
+        type: String,
+        // ref: "Shop",
+        // required: true,
     }
 })
 
