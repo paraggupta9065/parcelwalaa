@@ -4,7 +4,10 @@ const connectToDb = require('./utils/connectToDb');
 const app = express();
 const authRoute = require('./routes/auth');
 const shopRoute = require('./routes/shop');
-const driverRoute = require("./routes/delivery_boy")
+
+const delivery_boyRoute = require("./routes/delivery_boy")
+const productRoute = require("./routes/product")
+
 const { addShops } = require('./controller/shop');
 
 require('dotenv').config();
@@ -20,6 +23,7 @@ app.get("/", (req, res) => res.send("hi"));
 
 app.use('/auth', authRoute);
 app.use('/shop', shopRoute);
-app.use("/driver", driverRoute);
+app.use("/delivery_boy", delivery_boyRoute);
+app.use("/product", productRoute);
 
 module.exports = app;

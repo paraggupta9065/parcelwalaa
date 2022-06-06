@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
 
-const driverSchema = mongoose.Schema({
+const delivery_boySchema = mongoose.Schema({
     name: {
         type: String,
         required: [true, "Please send name"],
+        maxLength: [40, 'Name Should Be Less Than 40 Char'],
     },
     image: {
         type: String,
@@ -42,4 +43,4 @@ const driverSchema = mongoose.Schema({
     }
 })
 
-module.exports = mongoose.model("driver", driverSchema);
+module.exports = mongoose.model("delivery_boy", delivery_boySchema);
