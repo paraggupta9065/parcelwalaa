@@ -1,3 +1,6 @@
+// Not completed yet
+// Some task remaining
+
 exports.isAdmin = async (req, res, next) => {
   const user = req.user;
 

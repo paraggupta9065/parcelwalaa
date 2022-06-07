@@ -1,3 +1,6 @@
+// Not completed yet
+// Some task remaining
+
 exports.isDeliveryBoy = async (req, res, next) => {
   const user = req.user;
 
