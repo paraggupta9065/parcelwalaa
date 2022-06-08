@@ -5,6 +5,7 @@ const otp = require("../model/otp");
 const shopModel = require("../model/shop");
 const userModel = require("../model/user");
 
+
 exports.addShops = async (req, res) => {
     const image = "adf";
     const banner = "dfsdf";
@@ -24,6 +25,7 @@ exports.addShops = async (req, res) => {
     const shop = await shopModel.create(shopData);
     res.send({ "msg": "shop added successfully", shop: shop });
 }
+
 
 exports.updateShops = async (req, res) => {
     const shopData = req.body;

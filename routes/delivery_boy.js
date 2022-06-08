@@ -1,9 +1,10 @@
 const express = require("express");
 
 const { adddelivery_boy, updatedelivery_boy, deletedelivery_boy } = require("../controller/delivery_boy");
+const { isloggedin } = require("../middleware/user");
 const router = express.Router();
 
-router.route("/add_delivery_boy").post(adddelivery_boy);
+router.route("/add_delivery_boy").post(isloggedin, adddelivery_boy);
 router.route("/update_delivery_boy/:id").put(updatedelivery_boy);
 router.route("/delete_delivery_boy/:id").delete(deletedelivery_boy);
 

@@ -16,8 +16,6 @@ otpSchema.pre('save', async function (next) {
 });
 otpSchema.methods.isValidatedOtp = async function (userSendedOtp) {
     return await bcrypt.compare(userSendedOtp, this.otp);
-
-
 }
 
 

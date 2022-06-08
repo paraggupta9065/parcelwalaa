@@ -25,6 +25,7 @@ exports.adddelivery_boy = async (req, res) => {
   }
 
   const delivery_boy = await delivery_boyModel.create(delivery_boyData);
+  delivery_boy._id = undefined;
 
   res.status(201).send({
     msg: "delivery_boy created sucessfully",

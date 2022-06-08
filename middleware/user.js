@@ -2,7 +2,7 @@ const user = require("../model/user");
 const jwt = require("jsonwebtoken");
 
 
-exports.isloggedin = async (req, res) => {
+exports.isloggedin = async (req, res, next) => {
     const token = req.headers.authorization;
 
     if (!token) {
@@ -20,3 +20,4 @@ exports.isloggedin = async (req, res) => {
     req.user = foundUser;
     next();
 }
+//isShop , isAdmin, isDeboy

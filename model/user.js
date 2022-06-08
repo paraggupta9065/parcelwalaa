@@ -1,8 +1,5 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
 
 const userSchema = mongoose.Schema({
     name: {
@@ -18,6 +15,7 @@ const userSchema = mongoose.Schema({
     role: {
         type: String,
         default: 'user',
+
     },
     createdAt: {
         type: Date,

@@ -13,12 +13,12 @@ const ProductSchema = mongoose.Schema({
     type: {
         type: String,
         enum: ["food", "grocery"],
-        required: [true, "Please enter product type"],
+        required: [true, "Please enter product type (food/grocery)"],
     },
     status: {
         type: Number,
         enum: [0, 1],
-        required: [true, "Please enter product status"],
+        required: [true, "Please enter product status (0/1)"],
 
     },
     featured: {
@@ -32,7 +32,7 @@ const ProductSchema = mongoose.Schema({
     veg_type: {
         type: String,
         enum: ["veg", "non-veg", "eggs"],
-        required: [true, "Please enter product veg_type"],
+        required: [true, "Please enter product veg_type (veg/non-veg/eggs)"],
 
     },
     price: {
@@ -54,7 +54,7 @@ const ProductSchema = mongoose.Schema({
         default: 0,
     },
     reviews: [String],
-    categories:[
+    categories: [
         {
             name: {
                 type: String,

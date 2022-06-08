@@ -8,7 +8,7 @@ exports.sendOtp = async (req, res) => {
     const { number } = req.body;
     console.log(number)
     if (!number) {
-        return res.status(404).send("number not found");
+        return res.status(404).send({ 'status': "fail", "msg": "number not found" });
     }
     const otpCode = otpGenerator.generate(6, { digits: true, lowerCaseAlphabets: false, upperCaseAlphabets: false, specialChars: false });
     await otp.findOneAndDelete({ "number": number });
@@ -17,7 +17,7 @@ exports.sendOtp = async (req, res) => {
         "msg": "otp sended successfully",
         'status': "sucess",
         "number": number,
-        "code": otpCode,
+        "code": otpCode
     });
 }
 exports.verifyOtp = async (req, res) => {
