@@ -4,7 +4,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-const userSchema = mongoose.Schema({
+const UserSchema = mongoose.Schema({
     name: {
         type: String,
         required: [true, "Please enter name"],
@@ -17,6 +17,7 @@ const userSchema = mongoose.Schema({
     },
     role: {
         type: String,
+        enum: ["delivery boy", "user", "admin"],
         default: 'user',
     },
     createdAt: {
@@ -25,7 +26,7 @@ const userSchema = mongoose.Schema({
     }
 });
 
-userSchema.methods.getJwtToken = function () {
+UserSchema.methods.getJwtToken = function () {
     return jwt.sign(
         { id: this._id },
         process.env.JWT_SECRET,
@@ -33,4 +34,4 @@ userSchema.methods.getJwtToken = function () {
     );
 }
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', UserSchema);
