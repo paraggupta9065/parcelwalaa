@@ -1,5 +1,6 @@
 // some task remaining
 
+const cart = require("../model/cart");
 const Cart = require("../model/cart");
 
 exports.addToCart = async (req, res) => {
@@ -58,8 +59,10 @@ exports.getCart = async (req, res) => {
 
 exports.removeCart = async (req, res) => {
 
+
+
 };
 
 exports.updateCart = async (req, res) => {
-  const cart = req;
+
 };

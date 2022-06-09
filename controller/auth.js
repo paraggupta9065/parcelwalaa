@@ -70,3 +70,7 @@ exports.verifyOtp = async (req, res) => {
     .status(200)
     .send({ status: "sucess", msg: "Login succesfuly", token: token });
 };
+
+
+
+

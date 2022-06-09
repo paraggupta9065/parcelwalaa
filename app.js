@@ -18,7 +18,7 @@ app.use((err, req, res, next) => {
   });
 });
 app.get("/", (req, res) => res.send("hi"));
-
+app.use(express.urlencoded({ extended: true }));
 app.use("/auth", authRoute);
 app.use("/shop", shopRoute);
 app.use("/delivery_boy", deliveryBoyRoute);

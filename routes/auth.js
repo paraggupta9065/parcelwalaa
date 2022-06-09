@@ -1,6 +1,6 @@
 const express = require("express");
 const { sendOtp, verifyOtp } = require("../controller/auth");
-const { isloggedin } = require("../middleware/user");
+const { isUser } = require("../middleware/isUser");
 const router = express.Router();
 
 
