@@ -1,8 +1,5 @@
 const mongoose = require('mongoose');
-const validator = require('validator');
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const crypto = require('crypto');
 
 const UserSchema = mongoose.Schema({
     name: {
@@ -19,6 +16,7 @@ const UserSchema = mongoose.Schema({
         type: String,
         enum: ["delivery boy", "user", "admin"],
         default: 'user',
+
     },
     createdAt: {
         type: Date,

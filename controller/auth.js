@@ -8,7 +8,10 @@ exports.sendOtp = async (req, res) => {
   const { number } = req.body;
   console.log(number);
   if (!number) {
-    return res.status(404).send("number not found");
+    return res.status(404).send({
+      msg: "Number not found",
+      status: "fail",
+    });
   }
   const otpCode = otpGenerator.generate(6, {
     digits: true,
