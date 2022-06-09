@@ -1,11 +1,13 @@
 const user = require("../model/user");
 const jwt = require("jsonwebtoken");
 
-exports.isLoggedIn = async (req, res) => {
-  const token = req.headers.authorization;
+exports.isLoggedIn = async (req, res, next) => {
+  const token = req.body.token;
 
   if (!token) {
-    return res.status(404).send({ status: "fail", msg: "Token not found." });
+    return next(
+      res.status(404).send({ status: "fail", msg: "Token not found." })
+    );
   }
 
   var decoded = undefined;
