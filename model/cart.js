@@ -33,15 +33,8 @@ const CartModel = mongoose.Schema({
   },
   cartInventory: [
     {
-      quantity: {
-        type: Number,
-        default: 0,
-      },
-      product: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
-        required: true,
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "CartInventory",
     },
   ],
   totalGst: {
