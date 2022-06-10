@@ -14,7 +14,6 @@ exports.addShops = async (req, res) => {
     const jwtToken = shopData["token"];
 
     const token = await jsonwebtoken.verify(jwtToken, process.env.JWT_SECRET);
-    console.log(token);
     const user = await userModel.findById(token.id);
     if (!user) {
         res.send({ "msg": "No user found related to token" });

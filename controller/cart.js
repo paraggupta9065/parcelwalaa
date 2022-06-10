@@ -1,5 +1,6 @@
 // need to go through logic of removeCart and updateCart again
 
+const cart = require("../model/cart");
 const Cart = require("../model/cart");
 const CartInventory = require("../model/cartInventory");
 

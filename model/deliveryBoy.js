@@ -43,4 +43,4 @@ const DeliveryBoySchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("Delivery Boy", DeliveryBoySchema);
+module.exports = mongoose.model("DeliveryBoy", DeliveryBoySchema);
