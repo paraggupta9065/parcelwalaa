@@ -51,15 +51,8 @@ const ProductSchema = mongoose.Schema({
   reviews: [String],
   categories: [
     {
-      name: {
-        type: String,
-        required: [true, "Provide the name of category"],
-      },
-      image: {
-        type: String,
-        required: [true, "Provide the image of category"],
-      },
-      subCategories: [mongoose.Schema.Types.ObjectId],
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Categories",
     },
   ],
   tags: [String],
