@@ -24,6 +24,7 @@ exports.sendOtp = async (req, res) => {
   res.send({
     msg: "otp sended successfully",
     status: "sucess",
+
     number: number,
     code: otpCode,
   });
@@ -68,7 +69,7 @@ exports.verifyOtp = async (req, res) => {
   await otp.findOneAndDelete({ number: number });
   return res
     .status(200)
-    .send({ status: "sucess", msg: "Login succesfuly", token: token });
+    .send({ status: "sucess", role: userFound.role, msg: "Login succesfuly", token: token });
 };
 
 
