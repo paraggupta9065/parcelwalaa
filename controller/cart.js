@@ -60,7 +60,7 @@ exports.removeCart = async (req, res) => {
 
   await Cart.findOneAndDelete({ user: id });
 
-  res.status(200).send({
+  res.status(200).send({ 
     status: "sucess",
     msg: "Cart deleted.",
   });
