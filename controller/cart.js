@@ -1,32 +1,28 @@
-// need to go through logic of removeCart and updateCart again
-
-const cart = require("../model/cart");
 const Cart = require("../model/cart");
-const CartInventory = require("../model/cartInventory");
 
 exports.addToCart = async (req, res) => {
   const {
-    inventoryTotalAmt,
-    deliveryTotalAmt,
-    couponCodeId,
-    discountAmt,
-    netAmt,
-    pickupAddressId,
-    deliveryAddressId,
-    cartInventory,
-    totalGst,
+    inventory_total_amt,
+    delivery_total_amt,
+    coupon_code_id,
+    discount_amt,
+    net_amt,
+    pickup_address_id,
+    delivery_address_id,
+    cart_inventory,
+    total_gst,
   } = req.body;
 
   if (
-    !inventoryTotalAmt ||
-    !deliveryTotalAmt ||
-    !couponCodeId ||
-    !discountAmt ||
-    !netAmt ||
-    !pickupAddressId ||
-    !deliveryAddressId ||
-    !cartInventory ||
-    !totalGst
+    !inventory_total_amt ||
+    !delivery_total_amt ||
+    !coupon_code_id ||
+    !discount_amt ||
+    !net_amt ||
+    !pickup_address_id ||
+    !delivery_address_id ||
+    !cart_inventory ||
+    !total_gst
   ) {
     res.status(400).send({
       status: "fail",
@@ -43,8 +39,8 @@ exports.addToCart = async (req, res) => {
 };
 
 exports.getCart = async (req, res) => {
-  const user = req.user;
-  const cart = await Cart.findOne({ user: user._id });
+  const id = req.user._id;
+  const cart = await Cart.findOne({ user: id });
 
   if (!cart) {
     res.status(404).send({
@@ -60,50 +56,42 @@ exports.getCart = async (req, res) => {
 };
 
 exports.removeCart = async (req, res) => {
-  const cartInventoryId = req.body.cartInventoryId;
+  const id = req.user._id;
 
-  const cart = await Cart.findById(req.user._id);
-
-  if (!cart) {
-    res.status(404).send({
-      status: "fail",
-      msg: "You don't have a cart",
-    });
-  }
-
-  await Cart.updateOne(
-    { user: req.user._id },
-    { $pull: { cartInventory: { _id: cartInventoryId } } },
-    { safe: true, multi: true }
-  );
+  await Cart.findOneAndDelete({ user: id });
 
   res.status(200).send({
     status: "sucess",
-    msg: "Item deleted sucessfully.",
+    msg: "Cart deleted.",
   });
 };
 
 exports.updateCart = async (req, res) => {
-  const cartInventoryId = req.body.cartInventoryId;
+  const cartData = req.body;
+  const id = req.user._id;
 
-  let cart = await Cart.findById(req.user._id);
-
-  if (!cart) {
-    res.status(404).send({
+  if (
+    !cartData["inventory_total_amt"] ||
+    !cartData["delivery_total_amt"] ||
+    !cartData["discount_amt"] ||
+    !cartData["net_amt"] ||
+    !cartData["pickup_address_id"] ||
+    !cartData["delivery_address_id"] ||
+    !cartData["cart_inventory"] ||
+    !cartData["total_gst"]
+  ) {
+    return res.status(400).send({
       status: "fail",
-      msg: "You don't have a cart",
+      msg: "Please provide all the fields",
     });
   }
 
-  await Cart.findOneAndUpdate(
-    { user: req.user._id },
-    { $push: { cartInventory: cartInventoryId } }
-  );
+  await Cart.findOneAndUpdate(id, cartData);
+  const cart = await Cart.findById(id);
 
-  cart = await Cart.findById(req.user._id);
-
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
+    msg: "Cart Updated",
     cart,
   });
 };

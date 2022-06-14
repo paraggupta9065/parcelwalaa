@@ -1,43 +1,43 @@
 const mongoose = require("mongoose");
 
 const CartModel = mongoose.Schema({
-  inventoryTotalAmt: {
+  inventory_total_amt: {
     type: Number,
     default: 0,
     required: [true, "Please provide inventory total amount"],
   },
-  deliveryTotalAmt: {
+  delivery_total_amt: {
     type: Number,
     default: 0,
     required: [true, "Please provide delivery total amount"],
   },
-  couponCodeId: {
+  coupon_code_id: {
     type: String,
   },
-  discountAmt: {
+  discount_amt: {
     type: Number,
     default: 0,
   },
-  netAmt: {
+  net_amt: {
     type: Number,
     default: 0,
     required: [true, "Please provide the total amount to be paid."],
   },
-  pickupAddressId: {
+  pickup_address_id: {
     type: String,
     required: [true, "Please provide pickup address."],
   },
-  deliveryAddressId: {
+  delivery_address_id: {
     type: String,
     required: [true, "Please provide delivery address."],
   },
-  cartInventory: [
+  cart_inventory: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "CartInventory",
     },
   ],
-  totalGst: {
+  total_gst: {
     type: Number,
     required: [true, "Please provide total GST."],
   },
