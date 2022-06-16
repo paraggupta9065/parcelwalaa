@@ -46,6 +46,10 @@ const shopSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  deliveryCharges: {
+    type: Number,
+    required: [true, "Please enter delivery charges "],
+  },
 });
 
 module.exports = mongoose.model("Shop", shopSchema);

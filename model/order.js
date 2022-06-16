@@ -7,7 +7,9 @@ const OrderSchema = mongoose.Schema({
   order_note: {
     type: String,
   },
-  order_inventory: {},
+  order_inventory: {
+    
+  },
   pickup_address_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Address",

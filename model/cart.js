@@ -13,6 +13,7 @@ const CartModel = mongoose.Schema({
   },
   coupon_code_id: {
     type: String,
+    default: "na"
   },
   discount_amt: {
     type: Number,
@@ -23,7 +24,9 @@ const CartModel = mongoose.Schema({
     default: 0,
     required: [true, "Please provide the total amount to be paid."],
   },
-  pickup_address_id: {
+  shop_id: {
+    ref: "Shop",
+    type: mongoose.Schema.Types.ObjectId,
     type: String,
     required: [true, "Please provide pickup address."],
   },
@@ -32,9 +35,18 @@ const CartModel = mongoose.Schema({
     required: [true, "Please provide delivery address."],
   },
   cart_inventory: [
+
     {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "CartInventory",
+      quantity: {
+        type: Number,
+        default: 0,
+      },
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+        required: true,
+      },
+
     },
   ],
   total_gst: {

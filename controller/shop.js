@@ -9,7 +9,7 @@ const userModel = require("../model/user");
 exports.addShops = async (req, res) => {
     const image = "adf";
     const banner = "dfsdf";
-    // const { number, store_name, email, address_line1, city, state, fssai } = req.body;
+    // const { number, store_name, email, address_line1, city, state, fssai ,deliveryCharges} = req.body;
     const shopData = req.body;
     const jwtToken = shopData["token"];
 
@@ -39,3 +39,8 @@ exports.deleteShops = async (req, res) => {
     await userModel.findOneAndDelete({ 'number': number });
     res.send({ "msg": "shop deleted successfully" });
 }
+exports.getShops = async (req, res) => {
+    const shops = await shopModel.find();
+    res.send({ "msg": "shop successfully", status: "sucess", shops });
+}
+

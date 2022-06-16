@@ -1,51 +1,146 @@
-const Cart = require("../model/cart");
+const cartModel = require("../model/cart");
+const productModel = require("../model/product");
+const shopModel = require("../model/shop");
+const couponModel = require("../model/coupon");
+
+// exports.addTocartModel = async (req, res) => {
+//   const {
+//     inventory_total_amt,
+//     delivery_total_amt,
+//     coupon_code_id,
+//     discount_amt,
+//     net_amt,
+//     pickup_address_id,
+//     delivery_address_id,
+//     cart_inventory,
+//     total_gst,
+//   } = req.body;
+
+
+
+//   if (
+//     !inventory_total_amt ||
+//     !delivery_total_amt ||
+//     !coupon_code_id ||
+//     !discount_amt ||
+//     !net_amt ||
+//     !pickup_address_id ||
+//     !delivery_address_id ||
+//     !cart_inventory ||
+//     !total_gst
+//   ) {
+//     res.status(400).send({
+//       status: "fail",
+//       msg: "Please provide all the fields",
+//     });
+//   }
+
+//   const cart = await cartModel.create(cartData);
+
+//   res.status(201).send({
+//     status: "sucess",
+//     cart,
+//   });
+// };
+
+
 
 exports.addToCart = async (req, res) => {
-  const {
+  const { productId, delivery_address_id, coupon_code_id } = req.body;
+  let inventory_total_amt = 0;
+  let delivery_total_amt = 0;
+  let discount_amt = 0;
+  let net_amt = 0;
+  let cart_inventory = [];
+  let total_gst = 0;
+  let cart = await cartModel.findOne({ user: req.user._id });
+  const product = await productModel.findById(productId);
+  const shop_id = product.shop_id;
+
+  const shop = await shopModel.findOne({ user_id: shop_id });
+  if (!cart) {
+    inventory_total_amt = product.price;
+    delivery_total_amt = product.deliveryCharges;
+    if (coupon_code_id != "na") {
+      const coupon = await couponModel.findById(coupon_code_id);
+      discount_amt = (product.price / 100) * coupon.percentage_discount;
+    }
+    total_gst = (product.price - discount_amt) / 100 * 5;
+    net_amt = (inventory_total_amt + delivery_total_amt - discount_amt) + total_gst;
+    let newCart = {
+      inventory_total_amt,
+      delivery_total_amt,
+      coupon_code_id,
+
+      discount_amt,
+      net_amt,
+      shop_id,
+      delivery_address_id,
+
+      cart_inventory: [
+        {
+          quantity: 0,
+          product: productId,
+        }
+      ],
+      total_gst,
+      user: user._id
+
+    };
+    cart = await cartModel.create(newCart);
+    res.status(201).send({
+      status: "sucess",
+      cart,
+    });
+  }
+  inventory_total_amt = inventory_total_amt + product.price;
+  delivery_total_amt = delivery_total_amt + product.deliveryCharges;
+  if (coupon_code_id != "na") {
+    const coupon = await couponModel.findById(coupon_code_id);
+    discount_amt = (product.price / 100) * coupon.percentage_discount;
+  }
+  total_gst = total_gst + ((product.price - discount_amt) / 100 * 5);
+  net_amt = net_amt + ((inventory_total_amt + delivery_total_amt - discount_amt) + total_gst);
+  cart_inventory.push(
+    {
+      quantity: 0,
+      product: productId,
+    }
+  );
+
+  let updateCart = {
     inventory_total_amt,
     delivery_total_amt,
     coupon_code_id,
+
     discount_amt,
     net_amt,
-    pickup_address_id,
+    shop_id,
     delivery_address_id,
-    cart_inventory,
+    cart_inventory: cart_inventory,
     total_gst,
-  } = req.body;
+    user: user._id
 
-  if (
-    !inventory_total_amt ||
-    !delivery_total_amt ||
-    !coupon_code_id ||
-    !discount_amt ||
-    !net_amt ||
-    !pickup_address_id ||
-    !delivery_address_id ||
-    !cart_inventory ||
-    !total_gst
-  ) {
-    res.status(400).send({
-      status: "fail",
-      msg: "Please provide all the fields",
-    });
-  }
+  };
+  cart = await cartModel.findByIdAndUpdate(cart._id, newCart);
 
-  const cart = await Cart.create(cartData);
-
-  res.status(201).send({
+  res.status(200).send({
     status: "sucess",
+    msg: "Added To Cart ",
     cart,
   });
-};
+
+}
+
 
 exports.getCart = async (req, res) => {
   const id = req.user._id;
-  const cart = await Cart.findOne({ user: id });
+  const cart = await cartModel.findOne({ user: id });
 
   if (!cart) {
     res.status(404).send({
       status: "fail",
-      msg: "Cart not found",
+      msg: "cartModel not found",
     });
   }
 
@@ -53,16 +148,17 @@ exports.getCart = async (req, res) => {
     status: "sucess",
     cart,
   });
+
 };
 
 exports.removeCart = async (req, res) => {
   const id = req.user._id;
 
-  await Cart.findOneAndDelete({ user: id });
+  await cartModel.findOneAndDelete({ user: id });
 
-  res.status(200).send({ 
+  res.status(200).send({
     status: "sucess",
-    msg: "Cart deleted.",
+    msg: "cartModel deleted.",
   });
 };
 
@@ -86,12 +182,41 @@ exports.updateCart = async (req, res) => {
     });
   }
 
-  await Cart.findOneAndUpdate(id, cartData);
-  const cart = await Cart.findById(id);
+  await cartModel.findOneAndUpdate(id, cartData);
+  const cart = await cartModel.findById(id);
 
   return res.status(200).send({
     status: "sucess",
-    msg: "Cart Updated",
+    msg: "cartModel Updated",
     cart,
   });
+};
+exports.updateQty = async (req, res) => {
+  const { productId, quantity } = req.body;
+  const id = req.user._id;
+  const cart = await cartModel.findOne({ user: id });
+
+  if (!cart) {
+    res.status(404).send({
+      status: "fail",
+      msg: "Cart not found",
+    });
+  }
+
+  let inventoryUpdate = []
+  inventoryUpdate = cart.cart_inventory;
+  inventory_index = inventoryUpdate.findIndex((cart_inventory_item) => cart_inventory_item.product == productId);
+  inventoryUpdate[inventory_index] = {
+    quantity: quantity,
+    product: productId,
+  };
+
+  cartModel.findByIdAndUpdate(cart._id, { cart_inventory: inventoryUpdate });
+  res.status(201).send({
+    status: "sucess",
+    msg: "Product qty updated",
+  });
+
+
+
 };
