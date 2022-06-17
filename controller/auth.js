@@ -21,10 +21,9 @@ exports.sendOtp = async (req, res) => {
   });
   await otp.findOneAndDelete({ number: number });
   await otp.create({ otp: otpCode, number: number });
-  res.send({
+  res.status(200).send({
     msg: "otp sended successfully",
     status: "sucess",
-
     number: number,
     code: otpCode,
   });

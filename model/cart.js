@@ -51,6 +51,7 @@ const CartModel = mongoose.Schema({
   ],
   total_gst: {
     type: Number,
+    default: 0,
     required: [true, "Please provide total GST."],
   },
   user: {

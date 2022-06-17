@@ -16,8 +16,6 @@ const couponModel = require("../model/coupon");
 //     total_gst,
 //   } = req.body;
 
-
-
 //   if (
 //     !inventory_total_amt ||
 //     !delivery_total_amt ||
@@ -43,8 +41,6 @@ const couponModel = require("../model/coupon");
 //   });
 // };
 
-
-
 exports.addToCart = async (req, res) => {
   const { productId, delivery_address_id, coupon_code_id } = req.body;
   let inventory_total_amt = 0;
@@ -58,15 +54,20 @@ exports.addToCart = async (req, res) => {
   const shop_id = product.shop_id;
 
   const shop = await shopModel.findOne({ user_id: shop_id });
+
   if (!cart) {
     inventory_total_amt = product.price;
     delivery_total_amt = product.deliveryCharges;
+
     if (coupon_code_id != "na") {
       const coupon = await couponModel.findById(coupon_code_id);
       discount_amt = (product.price / 100) * coupon.percentage_discount;
     }
-    total_gst = (product.price - discount_amt) / 100 * 5;
-    net_amt = (inventory_total_amt + delivery_total_amt - discount_amt) + total_gst;
+
+    total_gst = ((product.price - discount_amt) / 100) * 5;
+    net_amt =
+      inventory_total_amt + delivery_total_amt - discount_amt + total_gst;
+
     let newCart = {
       inventory_total_amt,
       delivery_total_amt,
@@ -81,32 +82,36 @@ exports.addToCart = async (req, res) => {
         {
           quantity: 0,
           product: productId,
-        }
+        },
       ],
       total_gst,
-      user: user._id
-
+      user: user._id,
     };
+
     cart = await cartModel.create(newCart);
+
     res.status(201).send({
       status: "sucess",
       cart,
     });
   }
+
   inventory_total_amt = inventory_total_amt + product.price;
   delivery_total_amt = delivery_total_amt + product.deliveryCharges;
+
   if (coupon_code_id != "na") {
     const coupon = await couponModel.findById(coupon_code_id);
     discount_amt = (product.price / 100) * coupon.percentage_discount;
   }
-  total_gst = total_gst + ((product.price - discount_amt) / 100 * 5);
-  net_amt = net_amt + ((inventory_total_amt + delivery_total_amt - discount_amt) + total_gst);
-  cart_inventory.push(
-    {
-      quantity: 0,
-      product: productId,
-    }
-  );
+
+  total_gst = total_gst + ((product.price - discount_amt) / 100) * 5;
+  net_amt =
+    net_amt +
+    (inventory_total_amt + delivery_total_amt - discount_amt + total_gst);
+  cart_inventory.push({
+    quantity: 0,
+    product: productId,
+  });
 
   let updateCart = {
     inventory_total_amt,
@@ -119,19 +124,17 @@ exports.addToCart = async (req, res) => {
     delivery_address_id,
     cart_inventory: cart_inventory,
     total_gst,
-    user: user._id
-
+    user: user._id,
   };
-  cart = await cartModel.findByIdAndUpdate(cart._id, newCart);
+
+  cart = await cartModel.findByIdAndUpdate(cart._id, updateCart);
 
   res.status(200).send({
     status: "sucess",
-    msg: "Added To Cart ",
+    msg: "Added To Cart",
     cart,
   });
-
-}
-
+};
 
 exports.getCart = async (req, res) => {
   const id = req.user._id;
@@ -148,7 +151,6 @@ exports.getCart = async (req, res) => {
     status: "sucess",
     cart,
   });
-
 };
 
 exports.removeCart = async (req, res) => {
@@ -191,6 +193,7 @@ exports.updateCart = async (req, res) => {
     cart,
   });
 };
+
 exports.updateQty = async (req, res) => {
   const { productId, quantity } = req.body;
   const id = req.user._id;
@@ -203,20 +206,21 @@ exports.updateQty = async (req, res) => {
     });
   }
 
-  let inventoryUpdate = []
+  let inventoryUpdate = [];
   inventoryUpdate = cart.cart_inventory;
-  inventory_index = inventoryUpdate.findIndex((cart_inventory_item) => cart_inventory_item.product == productId);
+  inventory_index = inventoryUpdate.findIndex(
+    (cart_inventory_item) => cart_inventory_item.product == productId
+  );
+
   inventoryUpdate[inventory_index] = {
     quantity: quantity,
     product: productId,
   };
 
   cartModel.findByIdAndUpdate(cart._id, { cart_inventory: inventoryUpdate });
+
   res.status(201).send({
     status: "sucess",
     msg: "Product qty updated",
   });
-
-
-
 };
