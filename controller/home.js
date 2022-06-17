@@ -2,7 +2,6 @@
 
 const cart = require("../model/cart");
 const Cart = require("../model/cart");
-const CartInventory = require("../model/cartInventory");
 
 exports.homeLayout = async (req, res) => {
 

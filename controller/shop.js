@@ -9,9 +9,9 @@ const userModel = require("../model/user");
 exports.addShops = async (req, res) => {
     const image = "adf";
     const banner = "dfsdf";
-    // const { number, store_name, email, address_line1, city, state, fssai ,deliveryCharges} = req.body;
+    // const { number, store_name, email, address_line1, admin_commission_rate,city, state, fssai ,deliveryCharges} = req.body;
     const shopData = req.body;
-    const jwtToken = shopData["token"];
+    const jwtToken = req.headers.token;
 
     const token = await jsonwebtoken.verify(jwtToken, process.env.JWT_SECRET);
     const user = await userModel.findById(token.id);
@@ -42,5 +42,21 @@ exports.deleteShops = async (req, res) => {
 exports.getShops = async (req, res) => {
     const shops = await shopModel.find();
     res.send({ "msg": "shop successfully", status: "sucess", shops });
+}
+
+
+exports.storeStatusUpdate = async (req, res) => {
+    const { isOnline, number } = req.body;
+    await shopModel.findOneAndUpdate({ 'number': number }, { isOnline: isOnline });
+    const shop = await shopModel.findOne({ 'number': number });
+    res.send({ "msg": "shop updated successfully", shop: shop });
+}
+
+
+exports.storeAdminStatusUpdate = async (req, res) => {
+    const { isActive, number } = req.body;
+    await shopModel.findOneAndUpdate({ 'number': number }, { isActive: isActive });
+    const shop = await shopModel.findOne({ 'number': number });
+    res.send({ "msg": "shop updated successfully", shop: shop });
 }
 

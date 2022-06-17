@@ -50,6 +50,15 @@ const shopSchema = mongoose.Schema({
     type: Number,
     required: [true, "Please enter delivery charges "],
   },
+
+  isOnline: {
+    type: Boolean,
+    default: true,
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 module.exports = mongoose.model("Shop", shopSchema);
