@@ -19,7 +19,6 @@ const shopSchema = mongoose.Schema({
     required: [true, "Please enter number"],
     unique: true,
   },
-
   fssai: {
     type: String,
     required: [true, "Please enter fssai"],
@@ -46,7 +45,7 @@ const shopSchema = mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  deliveryCharges: {
+  delivery_charges: {
     type: Number,
     required: [true, "Please enter delivery charges "],
   },

@@ -25,22 +25,27 @@ const OrderSchema = mongoose.Schema({
   },
   total_gst: {
     type: Number,
+    default: 0,
     required: [true, "Please provide total gst"],
   },
   net_amt: {
     type: Number,
+    default: 0,
     required: [true, "Please provide net amount"],
   },
   discount_amt: {
     type: Number,
+    default: 0,
     required: [true, "Please provide discount amount"],
   },
   inventory_total_amt: {
     type: Number,
+    default: 0,
     required: [true, "Please provide inventory total amount"],
   },
   delivery_total_amt: {
     type: Number,
+    default: 0,
     required: [true, "Please provide delivery total amount"],
   },
   shop_id: {
