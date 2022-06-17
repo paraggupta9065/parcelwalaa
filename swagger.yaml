@@ -1,0 +1,48 @@
+openapi: "3.0.0"
+
+info:
+  title: ParcelWalaa API
+  description: This is the documentation for ParcelWalaa API
+  version: 1.0.0
+  servers:
+    - url: http://localhost:{port}/api_docs
+      variables:
+        port:
+          - '3000'
+        
+tags:
+  - name: Authentication
+    description: Signin to the application
+    
+paths:
+  /auth/send_otp:
+    post:
+      tags:
+        - Authentication
+      summary: Provides opt for signin
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  properties:
+                    msg:
+                      type: string
+                      example: "Otp sent sucessfully"
+                      
+                    status:
+                      type: string
+                      example: "sucess"
+                      
+                    number: 
+                      type: integer
+                      example: 1234567890
+                      
+                    code:
+                      type: integer
+                      example: 121324
+        404:
+          description: Fail

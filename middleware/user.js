@@ -3,7 +3,6 @@ const jwt = require("jsonwebtoken");
 
 exports.isLoggedIn = async (req, res, next) => {
   const { token } = req.headers;
-  console.log(token);
   if (!token) {
     return next(
       res.status(404).send({ status: "fail", msg: "Token not found." })
