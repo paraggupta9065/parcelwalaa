@@ -17,7 +17,6 @@ const shopSchema = mongoose.Schema({
   number: {
     type: Number,
     required: [true, "Please enter number"],
-    unique: true,
   },
   fssai: {
     type: String,

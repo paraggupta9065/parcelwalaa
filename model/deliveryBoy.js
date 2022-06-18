@@ -11,7 +11,7 @@ const DeliveryBoySchema = mongoose.Schema({
     required: [true, "Please send image"],
   },
   number: {
-    type: String,
+    type: Number,
     required: [true, "Please send number"],
     unique: true,
   },
@@ -40,6 +40,14 @@ const DeliveryBoySchema = mongoose.Schema({
   driving_license_image: {
     type: String,
     required: [true, "Please send driving license image"],
+  },
+  isOnline: {
+    type: Boolean,
+    default: true,
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
   },
 });
 

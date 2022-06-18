@@ -9,8 +9,9 @@ exports.isLoggedIn = async (req, res, next) => {
     );
   }
 
-  var decoded = undefined;
+  let decoded;
   try {
+
     decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch (error) {
     return res.status(401).send({ status: "fail", msg: "Unauthorized" });

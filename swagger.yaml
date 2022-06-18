@@ -33,6 +33,18 @@ components:
     Shop:
       type: object
       items:
+        required:
+          - image
+          - banner
+          - number
+          - fssai
+          - admin_commission_rate
+          - store_name
+          - email
+          - address_line1
+          - city
+          - state
+          - delivery_charges
         properties:
           image:
             type: string
@@ -169,14 +181,12 @@ paths:
                     code:
                       type: integer
                       example: 121324
-
         400:
           description: Bad request
           content:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-
         404:
           description: Fail
           content:
@@ -189,6 +199,12 @@ paths:
       tags:
         - Shop
       summary: Adds shop (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
       requestBody:
         required: true
         content:
@@ -197,49 +213,48 @@ paths:
               type: object
               items:
                 properties:
-                  number:
-                    type: integer
-                    example: 1234567890
-
-                  fssai:
-                    type: string
-                    example: "adcadc"
-
-                  admin_commission_rate:
-                    type: integer
-                    example: 4
-
-                  store_name:
-                    type: number
-                    example: macd
-
-                  email:
-                    type: string
-                    example: asxnakc@csd.com
-
-                  address_line1:
-                    type: string
-                    example: "acxacdadc"
-
-                  city:
-                    type: string
-                    example: "mumbai"
-
-                  state:
-                    type: string
-                    example: "maharashtra"
-                    
-                  delivery_charges:
-                    type: number
-                    example: 500
+                  $ref: '#/components/schemas/Shop'
       responses:
         200:
           description: Sucess
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Shop"
+                $ref: '#/components/schemas/Shop'
+        404:
+          description: Fail
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
 
+  /shop/update_shop:
+    post:
+      tags:
+        - Shop
+      summary: Updates the shop (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  $ref: '#/components/schemas/Shop'
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Shop'
         404:
           description: Fail
           content:

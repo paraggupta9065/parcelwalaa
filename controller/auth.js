@@ -6,7 +6,6 @@ const jwt = require("jsonwebtoken");
 
 exports.sendOtp = async (req, res) => {
   const { number } = req.body;
-  console.log(number);
   if (!number) {
     return res.status(404).send({
       msg: "Number not found",

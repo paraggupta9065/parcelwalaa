@@ -8,7 +8,7 @@ const OrderSchema = mongoose.Schema({
     type: String,
   },
   order_inventory: {
-    
+
   },
   pickup_address_id: {
     type: mongoose.Schema.Types.ObjectId,
