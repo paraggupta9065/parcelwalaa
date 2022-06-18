@@ -32,19 +32,19 @@ exports.sendOtp = async (req, res) => {
 exports.verifyOtp = async (req, res) => {
   const { number, otpCode } = req.body;
   if (!number) {
-    return res.status(200).send({ status: "fail", msg: "Number not found" });
+    return res.status(404).send({ status: "fail", msg: "Number not found" });
   }
   const otpFound = await otp.findOne({ number: number });
 
   if (!otpFound) {
-    return res.status(200).send({ status: "fail", msg: "Otp Not Sended Yet" });
+    return res.status(400).send({ status: "fail", msg: "Otp Not Sended Yet" });
   }
   if (otpFound.otpExpiry < Date.now) {
-    return res.status(200).send({ status: "fail", msg: "otp expired" });
+    return res.status(400).send({ status: "fail", msg: "otp expired" });
   }
   const isVerified = await otpFound.isValidatedOtp(otpCode);
   if (!isVerified) {
-    return res.status(200).send({ status: "fail", msg: "Incorrect Otp" });
+    return res.status(400).send({ status: "fail", msg: "Incorrect Otp" });
   }
   const userFound = await user.findOne({ number: number });
   if (!userFound) {
@@ -68,9 +68,10 @@ exports.verifyOtp = async (req, res) => {
   await otp.findOneAndDelete({ number: number });
   return res
     .status(200)
-    .send({ status: "sucess", role: userFound.role, msg: "Login succesfuly", token: token });
+    .send({
+      status: "sucess",
+      role: userFound.role,
+      msg: "Login succesfuly",
+      token: token,
+    });
 };
-
-
-
-
