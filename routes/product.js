@@ -6,6 +6,7 @@ const {
   getProducts,
   searchProducts,
   filterProducts,
+  getProductByLocation,
 } = require("../controller/product");
 const { isLoggedIn } = require("../middleware/user");
 const { isAdmin } = require("../middleware/isAdmin");
@@ -18,5 +19,6 @@ router.route("/delete_product").delete(isLoggedIn, isAdmin, deleteProduct);
 router.route("/get_products").get(isLoggedIn, getProducts);
 router.route("/search_products").get(isLoggedIn, searchProducts);
 router.route("/filter_products").get(isLoggedIn, filterProducts);
+router.route("/get_product_by_location").get(getProductByLocation);
 
 module.exports = router;

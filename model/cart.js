@@ -54,7 +54,7 @@ const CartModel = mongoose.Schema({
     default: 0,
     required: [true, "Please provide total GST."],
   },
-  user: {
+  user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true,

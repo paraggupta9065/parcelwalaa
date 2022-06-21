@@ -9,7 +9,7 @@ const userModel = require("../model/user");
 exports.addShops = async (req, res) => {
     const image = "adf";
     const banner = "dfsdf";
-    // const { number, store_name, email, address_line1, admin_commission_rate,city, state, fssai ,deliveryCharges} = req.body;
+    // const { number, store_name, email, address_line1, admin_commission_rate,city, state, fssai ,deliveryCharges,pincode} = req.body;
     const shopData = req.body;
     const jwtToken = req.headers.token;
 

@@ -8,8 +8,10 @@ const homeRoute = require("./routes/home");
 const bannerRoute = require("./routes/banner");
 const deliveryBoyRoute = require("./routes/deliveryBoy");
 const productRoute = require("./routes/product");
+const paymentRoute = require("./routes/payment");
 const swaggerUi = require("swagger-ui-express");
-const YAML = require("yamljs")
+const YAML = require("yamljs");
+const { initPayment } = require("./controller/payment");
 const swaggerJsDoc = YAML.load("./swagger.yaml");
 
 require("dotenv").config();
@@ -31,6 +33,7 @@ app.use("/shop", bannerRoute);
 app.use("/home", homeRoute);
 app.use("/delivery_boy", deliveryBoyRoute);
 app.use("/product", productRoute);
+app.use("/payment", paymentRoute);
 
 app.use("/api_docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc));
 module.exports = app;

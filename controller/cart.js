@@ -85,7 +85,7 @@ exports.addToCart = async (req, res) => {
         },
       ],
       total_gst,
-      user: user._id,
+      user_id: user._id,
     };
 
     cart = await cartModel.create(newCart);

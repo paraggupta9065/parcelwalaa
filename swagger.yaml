@@ -8,21 +8,27 @@ info:
     - url: http://localhost:{port}/api_docs
       variables:
         port:
-          - '3000'
-        
+          - "3000"
+
 tags:
   - name: Authentication
     description: Signin to the application
-    
+
 paths:
   /auth/send_otp:
     post:
       tags:
         - Authentication
       summary: Provides opt for signin
+      parameters:
+        - name: number
+          defualt: 9123456789
+          in: body
+
       responses:
         200:
           description: Sucess
+
           content:
             application/json:
               schema:
@@ -32,15 +38,15 @@ paths:
                     msg:
                       type: string
                       example: "Otp sent sucessfully"
-                      
+
                     status:
                       type: string
                       example: "sucess"
-                      
-                    number: 
+
+                    number:
                       type: integer
                       example: 1234567890
-                      
+
                     code:
                       type: integer
                       example: 121324

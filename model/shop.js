@@ -41,6 +41,10 @@ const shopSchema = mongoose.Schema({
   address_line1: String,
   city: String,
   state: String,
+  pincode: {
+    type: Number,
+    required: [true, "Please enter pincode "],
+  },
   createdAt: {
     type: Date,
     default: Date.now,
