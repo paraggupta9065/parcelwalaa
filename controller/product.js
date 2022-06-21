@@ -1,31 +1,93 @@
 const product = require("../model/product");
-const productModel = require("../model/product");
-const shopModel = require("../model/shop");
+const Product = require("../model/product");
+const Shop = require("../model/shop");
 
 // create the product
 exports.addProduct = async (req, res) => {
-  const productData = req.body;
+  const number = req.user.number;
 
-  const product = await productModel.create(productData);
+  const shop = await Shop.findOne({ number });
+
+  const {
+    name,
+    type,
+    status,
+    featured,
+    description,
+    veg_type,
+    price,
+    regular_price,
+    weight,
+    rating_count,
+    reviews,
+    categories,
+    tags,
+    images,
+    variations,
+  } = req.body;
+
+  if (
+    !name ||
+    !type ||
+    !status ||
+    !featured ||
+    !description ||
+    !veg_type ||
+    !price ||
+    !regular_price ||
+    !weight ||
+    !rating_count ||
+    !reviews ||
+    !categories ||
+    !tags ||
+    !images ||
+    !variations
+  ) {
+    res.status(400).send({
+      status: "fail",
+      msg: "Please provide all feilds",
+    });
+  }
+
+  const productData = {
+    name,
+    type,
+    status,
+    featured,
+    description,
+    veg_type,
+    price,
+    regular_price,
+    weight,
+    rating_count,
+    reviews,
+    categories,
+    tags,
+    images,
+    variations,
+    shop_id: shop._id,
+  };
+
+  const product = await Product.create(productData);
 
   res.status(201).send({ status: "sucess", product });
 };
 
-// update product using req.params.id
+// update product
 exports.updateProduct = async (req, res) => {
-  const product = await productModel.findById(req.params.id);
+  const product = await Product.findById(req.params.id);
 
   if (!product) {
     return res.status(404).send({ status: "fail", msg: "Product not found" });
   }
 
-  await productModel.findByIdAndUpdate(req.params.id, req.body, {
+  await Product.findByIdAndUpdate(req.params.id, req.body, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
   });
 
-  const updatedProduct = await productModel.findById(req.params.id);
+  const updatedProduct = await Product.findById(req.params.id);
 
   res.status(200).send({
     status: "sucess",
@@ -36,7 +98,7 @@ exports.updateProduct = async (req, res) => {
 
 // delete product using req.params.id
 exports.deleteProduct = async (req, res) => {
-  const product = await productModel.findByIdAndDelete(req.params.id);
+  const product = await Product.findByIdAndDelete(req.params.id);
 
   if (!product) {
     return res.status(404).send({ status: "fail", msg: "Product not found." });
@@ -48,7 +110,7 @@ exports.deleteProduct = async (req, res) => {
 };
 
 exports.getProducts = async (req, res) => {
-  const products = await productModel.find();
+  const products = await Product.find();
 
   res.status(200).send({ status: "sucess", products });
 };
@@ -68,7 +130,7 @@ exports.searchProducts = async (req, res) => {
     });
   }
 
-  const products = await productModel.find({
+  const products = await Product.find({
     name: { $regex: new RegExp(name), $options: "i" },
   });
 
@@ -83,7 +145,7 @@ exports.searchProducts = async (req, res) => {
 exports.filterProducts = async (req, res) => {
   const body = req.body;
 
-  const products = await productModel.find(body);
+  const products = await Product.find(body);
 
   if (!products) {
     res.status(404).send({ status: "fail", msg: "No products found." });
@@ -92,15 +154,13 @@ exports.filterProducts = async (req, res) => {
   res.status(200).send({ status: "sucess", products });
 };
 
-
 // filter products
 exports.getProductByLocation = async (req, res) => {
   const { pincode } = req.body;
-  // const products = await productModel.find(body);
-  const shops = await shopModel.find({ pincode });
+  // const products = await Product.find(body);
+  const shops = await Shop.find({ pincode });
   if (shops.length == 0) {
     res.status(404).send({ status: "fail", msg: "No shops found." });
-
   }
   res.status(200).send({ status: "sucess", msg: "shops fetched.", shops });
 };

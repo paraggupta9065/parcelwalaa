@@ -35,7 +35,6 @@ const CartModel = mongoose.Schema({
     required: [true, "Please provide delivery address."],
   },
   cart_inventory: [
-
     {
       quantity: {
         type: Number,
