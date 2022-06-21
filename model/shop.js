@@ -17,7 +17,6 @@ const shopSchema = mongoose.Schema({
   number: {
     type: Number,
     required: [true, "Please enter number"],
-    unique: true,
   },
   fssai: {
     type: String,
@@ -41,23 +40,14 @@ const shopSchema = mongoose.Schema({
   address_line1: String,
   city: String,
   state: String,
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
   delivery_charges: {
     type: Number,
     required: [true, "Please enter delivery charges "],
   },
-
-  isOnline: {
-    type: Boolean,
-    default: true,
-  },
-  isActive: {
-    type: Boolean,
-    default: true,
-  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  }
 });
 
 module.exports = mongoose.model("Shop", shopSchema);
