@@ -31,11 +31,17 @@ exports.addDeliveryBoy = async (req, res) => {
     deliveryBoy,
   });
 };
+
 //get delivery boy
 exports.getDeliveryBoy = async (req, res) => {
   const deliveryBoys = await DeliveryBoyModel.find();
-  res.send({ "msg": "delivery boy fetched successfully", status: "sucess", deliveryBoys });
+  res.status(200).send({
+    status: "sucess",
+    msg: "delivery boy fetched successfully",
+    deliveryBoys,
+  });
 };
+
 // update delivery boy details
 exports.updateDeliveryBoy = async (req, res) => {
   const number = req.body.number;
@@ -85,21 +91,32 @@ exports.deleteDeliveryBoy = async (req, res) => {
     .send({ status: "sucess", msg: "Delivery Boy deleted successfully" });
 };
 
-
 exports.deliveryBoyStatusUpdate = async (req, res) => {
   const { isOnline, number } = req.body;
 
-  await DeliveryBoyModel.findOneAndUpdate({ 'number': number }, { isOnline: isOnline });
-  const deliveryBoy = await DeliveryBoyModel.findOne({ 'number': number });
-  res.send({ "msg": "delivery boy updated successfully", deliveryBoy: deliveryBoy });
-}
-
+  await DeliveryBoyModel.findOneAndUpdate(
+    { number: number },
+    { isOnline: isOnline }
+  );
+  const deliveryBoy = await DeliveryBoyModel.findOne({ number: number });
+  res.status(200).send({
+    status: "sucess",
+    msg: "delivery boy updated successfully",
+    deliveryBoy: deliveryBoy,
+  });
+};
 
 exports.deliveryBoyAdminStatusUpdate = async (req, res) => {
   const { isActive, number } = req.body;
 
-  await DeliveryBoyModel.findOneAndUpdate({ 'number': number }, { isActive: isActive });
-  const deliveryBoy = await DeliveryBoyModel.findOne({ 'number': number });
-  res.send({ "msg": "delivery boy updated successfully", deliveryBoy: deliveryBoy });
-}
-
+  await DeliveryBoyModel.findOneAndUpdate(
+    { number: number },
+    { isActive: isActive }
+  );
+  const deliveryBoy = await DeliveryBoyModel.findOne({ number: number });
+  res.status(200).send({
+    status: "sucess",
+    msg: "delivery boy updated successfully",
+    deliveryBoy: deliveryBoy,
+  });
+};

@@ -75,19 +75,30 @@ exports.addProduct = async (req, res) => {
 
 // update product
 exports.updateProduct = async (req, res) => {
-  const product = await Product.findById(req.params.id);
+  const number = req.body.number;
+
+  const shop = await Shop.findOne({ number });
+
+  if (!shop) {
+    res.status(404).send({
+      status: "Fail",
+      msg: "Not found",
+    });
+  }
+
+  const product = await Product.findOne({ shop_id: shop._id });
 
   if (!product) {
     return res.status(404).send({ status: "fail", msg: "Product not found" });
   }
 
-  await Product.findByIdAndUpdate(req.params.id, req.body, {
+  await Product.findOneAndUpdate(shop._id, req.body, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
   });
 
-  const updatedProduct = await Product.findById(req.params.id);
+  const updatedProduct = await Product.findOne({ shop_id: shop._id });
 
   res.status(200).send({
     status: "sucess",
@@ -98,7 +109,17 @@ exports.updateProduct = async (req, res) => {
 
 // delete product using req.params.id
 exports.deleteProduct = async (req, res) => {
-  const product = await Product.findByIdAndDelete(req.params.id);
+  const number = req.body.number;
+
+  const shop = await Shop.findOne({ number });
+
+  if (!shop) {
+    res.status(404).send({
+      status: "Fail",
+      msg: "Not found",
+    });
+  }
+  const product = await Product.findOneAndDelete({ shop_id: shop._id });
 
   if (!product) {
     return res.status(404).send({ status: "fail", msg: "Product not found." });
