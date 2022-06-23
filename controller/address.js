@@ -89,6 +89,7 @@ exports.updateAddress = async (req, res) => {
     !contact_no ||
     !state ||
     !city ||
+    !delivery_note ||
     !type
   ) {
     return res.status(400).send({
@@ -124,7 +125,7 @@ exports.updateAddress = async (req, res) => {
   });
 };
 
-exports.deleteAddress = async (req, res) => {
+exports.removeAddress = async (req, res) => {
   const id = req.user._id;
   const address = await findOneAndDelete({ user_id: id });
 
