@@ -10,7 +10,7 @@ const BannerSchema = mongoose.Schema({
     enum: ["product", "categories", "shop"],
     required: [true, "Enter Open Type"],
   },
-  productIds: [
+  product_id: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
@@ -21,7 +21,7 @@ const BannerSchema = mongoose.Schema({
       type: mongoose.Schema.Types.ObjectId,
     },
   ],
-  shop: {
+  shop_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Shop",
     required: [true, "Please enter shop id"],

@@ -15,6 +15,18 @@ tags:
     description: Signin to the application
   - name: Shop
     description: Add/Update/Delete/Get shops
+  - name: Product
+    description: Add/Update/Delete/Get products
+  - name: Cart
+    description: Cart
+  - name: Address
+    description: Add/Update/Delete Address
+  - name: DeliveryBoy
+    description: Add/Update/Delete/status update of Delivery Boy
+  - name: Banner
+    description: Add/Update/Delete/Get Banner
+  - name: Coupon
+    description: Add/Update/Delete/Get Coupon
 
 components:
   schemas:
@@ -29,7 +41,6 @@ components:
           msg:
             type: string
             example: "Not found"
-
     Shop:
       type: object
       items:
@@ -89,8 +100,265 @@ components:
           delivery_charges:
             type: number
             example: 500
+    Product:
+      type: object
+      items:
+        required:
+          - name
+          - type
+          - status
+          - featured
+          - description
+          - veg_type
+          - price
+          - regular_price
+          - weight
+          - images
+          - shop_id
+        properties:
+          name:
+            type: string
+          date_created:
+            type: string
+          type:
+            type: string
+          status:
+            type: integer
+          featured:
+            type: string
+          description:
+            type: string
+          veg_type:
+            type: string
+          price:
+            type: integer
+          regular_price:
+            type: integer
+          weight:
+            type: integer
+          rating_count:
+            type: integer
+          reviews:
+            type: array
+            items:
+              type: string
+          categories:
+            type: array
+            items:
+              type: string
+          tags:
+            type: array
+            items:
+              type: string
+          images:
+            type: string
+          variations:
+            type: string
+          shop_id:
+            type: string
+    Cart:
+      type: object
+      items:
+        required:
+          - inventory_total_amt
+          - delivery_total_amt
+          - coupon_code_id
+          - discount_amt
+          - delivery_address_id
+          - net_amt
+          - shop_id
+          - cart_inventory
+          - total_gst
+          - user_id
+        properties:
+          inventory_total_amt:
+            type: integer
+          delivery_total_amt:
+            type: integer
+          coupon_code_id:
+            type: string
+          discount_amt:
+            type: integer
+          admin_commission_rate:
+            type: integer
+          delivery_address_id:
+            type: string
+          net_amt:
+            type: integer
+          shop_id:
+            type: string
+          cart_inventory:
+            type: string
+          total_gst:
+            type: integer
+          user_id:
+            type: string
+    Address:
+      type: object
+      items:
+        required:
+          - name
+          - line1
+          - landmark
+          - pincode
+          - user_id
+          - contact_no
+          - state
+          - city
+          - delivery_note
+          - type
+        properties:
+          name:
+            type: string
+          line1:
+            type: string
+          landmark:
+            type: string
+          pincode:
+            type: integer
+          user_id:
+            type: string
+          contact_no:
+            type: integer
+          state:
+            type: string
+          city:
+            type: string
+          delivery_note:
+            type: string
+          type:
+            type: string
+    DeliveryBoy:
+      type: object
+      items:
+        required:
+          - name
+          - image
+          - number
+          - aadhar
+          - pan
+          - upi
+          - bike_number
+          - driving_license_image
+          - isOnline
+          - isActive
+        properties:
+          name:
+            type: string
+          image:
+            type: string
+          number:
+            type: integer
+          aadhar:
+            type: integer
+          pan:
+            type: string
+          upi:
+            type: string
+          bike_number:
+            type: string
+          driving_license_image:
+            type: string
+          isOnline:
+            type: boolean
+          isActive:
+            type: boolean
+    Banner:
+      type: object
+      items:
+        required:
+          - image
+          - openType
+          - shop_id
+        properties:
+          image:
+            type: string
+          openType:
+            type: integer
+          product_id:
+            type: array
+            items:
+              type: string
+          categories:
+            type: array
+            items:
+              type: string
+          shop_id:
+            type: string
+          isActive:
+            type: boolean
+    Coupon:
+      type: object
+      items:
+        required:
+          - coupon_code
+          - description
+          - percentage_discount
+          - valid_from
+          - valid_to
+          - max_discount
+          - min_cart_value
+          - max_no_times
+          - max_no_of_times_per_user
+          - is_active 
+          - shop_id
+          - added_on
+          - categories
+          - products
+          - restaurants
+        properties:
+          coupon_code:
+            type:
+              string
+          description:
+            type:
+              string
+          percentage_discount:
+            type:
+              integer
+          valid_from:
+            type:
+              string
+          valid_to:
+            type:
+              string
+          max_discount:
+            type:
+              integer
+          min_cart_value:
+            type:
+              integer
+          max_no_times:
+            type:
+              integer
+          max_no_of_times_per_user:
+            type:
+              integer
+          is_active:
+            type:
+              boolean 
+          shop_id:
+            type:
+              string
+          added_on:
+            type:
+              string
+          categories:
+            type: array
+              items:
+                type: string
+          products:
+            type: array
+              items:
+                type: string
+          restaurants:
+            type: array
+              items:
+                type: string
 
 paths:
+  # AUTH ROUTES
+
   /auth/send_otp:
     post:
       tags:
@@ -195,6 +463,8 @@ paths:
               schema:
                 $ref: "#/components/schemas/Error"
 
+  # SHOP ROUTES
+
   /shop/add_shop:
     post:
       tags:
@@ -230,7 +500,7 @@ paths:
                 $ref: "#/components/schemas/Error"
 
   /shop/update_shop:
-    post:
+    put:
       tags:
         - Shop
       summary: Updates the shop (admin)
@@ -262,3 +532,1283 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
+  /shop/delete_shop:
+    delete:
+      tags:
+        - Shop
+      summary: Delete the shop (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  number:
+                    type: integer
+                    example: 1234567890
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Shop"
+
+  /shop/get_shops:
+    get:
+      tags:
+        - Shop
+      summary: Retrive all the shops (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Shop"
+
+  /shop/store_status_update:
+    post:
+      tags:
+        - Shop
+      summary: Store status update (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  number:
+                    type: integer
+                    example: 1234567890
+
+                  isOnline:
+                    type: boolean
+                    example: true/false
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Shop"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        500:
+          description: Server error
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /shop/store_admin_status_update:
+    post:
+      tags:
+        - Shop
+      summary: Store admin status update (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  number:
+                    type: integer
+                    example: 1234567890
+
+                  isActive:
+                    type: boolean
+                    example: true/false
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Shop"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # PRODUCT ROUTES
+
+  /product/add_product:
+    post:
+      tags:
+        - Product
+      summary: Add product (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  number:
+                    type: integer
+                  $ref: "#/components/schemas/Product"
+      responses:
+        201:
+          description: Created Sucessfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /product/update_product:
+    put:
+      tags:
+        - Product
+      summary: Update product (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  number:
+                    type: integer
+                  $ref: "#/components/schemas/Product"
+      responses:
+        201:
+          description: Created Sucessfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /product/delete_product:
+    delete:
+      tags:
+        - Product
+      summary: Delete product (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  number:
+                    type: integer
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /product/get_products:
+    get:
+      tags:
+        - Product
+      summary: Get All products (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /product/search_products:
+    get:
+      tags:
+        - Product
+      summary: Search product (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  name:
+                    type: string
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /product/filter_products:
+    get:
+      tags:
+        - Product
+      summary: Filter product (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/Product"
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /product/get_product_by_location:
+    get:
+      tags:
+        - Product
+      summary: Get product by location (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  pincode:
+                    type: integer
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Product"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # CART ROUTES
+
+  /cart/add_cart:
+    post:
+      tags:
+        - Cart
+      summary: Add to cart (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  productId:
+                    type: string
+                  delivery_address_id:
+                    type: string
+                  coupon_code_id:
+                    type: string
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /cart/get_cart:
+    get:
+      tags:
+        - Cart
+      summary: Get all the carts (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /cart/remove_cart:
+    delete:
+      tags:
+        - Cart
+      summary: Delete the cart (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /cart/update_cart:
+    put:
+      tags:
+        - Cart
+      summary: Update the cart (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /cart/update_qty:
+    put:
+      tags:
+        - Cart
+      summary: Update the cart (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  productId:
+                    type: string
+                  quantity:
+                    type: integer
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Cart"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # ADDRESS ROUTES
+
+  /address/add_adress:
+    post:
+      tags:
+        - Address
+      summary: Add address
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  name:
+                    type: string
+                  line1:
+                    type: string
+                  landmark:
+                    type: string
+                  pincode:
+                    type: integer
+                  contact_no:
+                    type: integer
+                  state:
+                    type: string
+                  city:
+                    type: string
+                  delivery_note:
+                    type: string
+                  type:
+                    type: string
+      responses:
+        201:
+          description: Created sucessfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Address"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /address/update_adress:
+    put:
+      tags:
+        - Address
+      summary: Update address
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  name:
+                    type: string
+                  line1:
+                    type: string
+                  landmark:
+                    type: string
+                  pincode:
+                    type: integer
+                  contact_no:
+                    type: integer
+                  state:
+                    type: string
+                  city:
+                    type: string
+                  delivery_note:
+                    type: string
+                  type:
+                    type: string
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Address"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /address/remove_address:
+    delete:
+      tags:
+        - Address
+      summary: Delete address
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Address"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # DELIVERY BOY ROUTES
+
+  /delivery_boy/add_delivery_boy:
+    post:
+      tags:
+        - DeliveryBoy
+      summary: Adds Delivery Boy (admin)
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  $ref: "#/components/schemas/DeliveryBoy"
+      responses:
+        201:
+          description: Created sucessfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryBoy"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /delivery_boy/update_delivery_boy:
+    put:
+      tags:
+        - DeliveryBoy
+      summary: Update Delivery Boy
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  $ref: "#/components/schemas/DeliveryBoy"
+      responses:
+        200:
+          description: Updated sucessfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryBoy"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /delivery_boy/delete_delivery_boy:
+    delete:
+      tags:
+        - DeliveryBoy
+      summary: Delete Delivery Boy
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  $ref: "#/components/schemas/DeliveryBoy"
+      responses:
+        200:
+          description: Deleted sucessfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryBoy"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /delivery_boy/get_delivery_boy:
+    get:
+      tags:
+        - DeliveryBoy
+      summary: Get Delivery Boy
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Fetched sucessfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryBoy"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /delivery_boy/delivery_boy_status_update:
+    post:
+      tags:
+        - DeliveryBoy
+      summary: Delivery Boy status update
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  isOnline:
+                    type: boolean
+                  number:
+                    type: integer
+      responses:
+        200:
+          description: Updated sucessfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryBoy"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /delivery_boy/delivery_boy_admin_status_update:
+    post:
+      tags:
+        - DeliveryBoy
+      summary: Delivery Boy admin status update
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  isActive:
+                    type: boolean
+                  number:
+                    type: integer
+      responses:
+        200:
+          description: Updated sucessfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DeliveryBoy"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # BANNER ROUTES
+
+  # Add banner Route
+  /shop/add_banner:
+    post:
+      tags:
+        - Banner
+      summary: Add banner
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  $ref: "#/components/schemas/Banner"
+      responses:
+        201:
+          description: Created sucessfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Banner"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # Delete banner route
+  /shop/delete_banner:
+    delete:
+      tags:
+        - Banner
+      summary: Delete banner
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Banner"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # Update banner route
+  /shop/update_banner:
+    put:
+      tags:
+        - Banner
+      summary: Update banner
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  $ref: "#/components/schemas/Banner"
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Banner"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # Get single banner Route
+  /shop/get_banner:
+    get:
+      tags:
+        - Banner
+      summary: Get banner
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+        - in: path
+          name: id
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Banner"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  # Get all banner route
+  /shop/get_all_banner:
+    get:
+      tags:
+        - Banner
+      summary: Update banner
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Banner"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+
+  # COUPON ROUTES
+
+
+  /coupon/add_coupon:
+    post:
+      tags:
+        - Coupon
+      summary: Add coupon
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  number:
+                    type: integer
+                  $ref: "#/components/schemas/Coupon"
+      responses:
+        201:
+          description: Created Sucessfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Coupon"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /coupon/update_coupon:
+    put:
+      tags:
+        - Coupon
+      summary: Update coupon
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  number:
+                    type: integer
+                  $ref: "#/components/schemas/Coupon"
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Coupon"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /coupon/delete_coupon:
+    delete:
+      tags:
+        - Coupon
+      summary: Delete coupon
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  number:
+                    type: integer
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Coupon"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /coupon/get_coupon:
+    get:
+      tags:
+        - Coupon
+      summary: Get coupons of a shop
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  number:
+                    type: integer
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Coupon"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+
+
+  # PAYMENT ROUTES
+
+
+  /payment/init_payment:
+    get:
+      tags:
+        - Payment
+      summary: Initialize the payment
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                status:
+                  type: string
+                cart:
+                  $ref: "#/components/schemas/Cart"
+                payment_response:
+                  type: object
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
