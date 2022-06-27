@@ -17,13 +17,10 @@ exports.initPayment = async (req, res) => {
 };
 exports.sucessPayment = async (req, res) => {
     const { order_note, transaction_id, amount_paid, payment_method_id } = req.body;
-
-
     const cart = await cartModel.findOne({ 'number': req.user.number });
     if (!cart) {
         res.status(200).send({ status: "fail", msg: "Cart not found !" });
     }
-
     await orderModel.create({
         order_note,
         order_inventory: cart.cart_inventory,
@@ -41,11 +38,6 @@ exports.sucessPayment = async (req, res) => {
         amount_paid,
         payment_method_id
     });
-
-
-
-
-
     res.status(200).send({ status: "sucess", order, msg: "order created and cart deleted" });
 
 };

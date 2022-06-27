@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 
-const DeliveryBoySchema = mongoose.Schema({
+const deliveryBoySchema = mongoose.Schema({
   name: {
     type: String,
     required: [true, "Please send name"],
@@ -51,4 +51,4 @@ const DeliveryBoySchema = mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("DeliveryBoy", DeliveryBoySchema);
+module.exports = mongoose.model("DeliveryBoy", deliveryBoySchema);

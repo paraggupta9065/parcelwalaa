@@ -49,7 +49,6 @@ exports.deleteProduct = async (req, res) => {
 
 exports.getProducts = async (req, res) => {
   const products = await productModel.find();
-
   res.status(200).send({ status: "sucess", products });
 };
 
@@ -93,7 +92,7 @@ exports.filterProducts = async (req, res) => {
 };
 
 
-// filter products
+// get product by products
 exports.getProductByLocation = async (req, res) => {
   const { pincode } = req.body;
   // const products = await productModel.find(body);
@@ -101,6 +100,14 @@ exports.getProductByLocation = async (req, res) => {
   if (shops.length == 0) {
     res.status(404).send({ status: "fail", msg: "No shops found." });
 
+  }
+  res.status(200).send({ status: "sucess", msg: "shops fetched.", shops });
+};
+exports.getProductByShop = async (req, res) => {
+  const { shop_id } = req.body;
+  const shops = await shopModel.find({ shop_id });
+  if (shops.length == 0) {
+    res.status(404).send({ status: "fail", msg: "No shops found." });
   }
   res.status(200).send({ status: "sucess", msg: "shops fetched.", shops });
 };
