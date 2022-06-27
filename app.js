@@ -11,6 +11,7 @@ const productRoute = require("./routes/product");
 const paymentRoute = require("./routes/payment");
 const cartRoute = require("./routes/cart");
 const addressRoute = require("./routes/address");
+const couponRoute = require("./routes/coupon");
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const { initPayment } = require("./controller/payment");
@@ -38,6 +39,7 @@ app.use("/product", productRoute);
 app.use("/payment", paymentRoute);
 app.use("/cart", cartRoute);
 app.use("/address", addressRoute);
+app.use("/coupon", couponRoute);
 
 app.use("/api_docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc));
 module.exports = app;

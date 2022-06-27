@@ -4,7 +4,7 @@ const orderModel = require("../model/order");
 exports.initPayment = async (req, res) => {
   const cart = await cartModel.findOne({ number: req.user.number });
   if (!cart) {
-    res.status(200).send({ status: "fail", msg: "Cart not found !" });
+    res.status(404).send({ status: "fail", msg: "Cart not found !" });
   }
 
   res
@@ -15,6 +15,7 @@ exports.initPayment = async (req, res) => {
       payment_response: { merchentKey: "8319905007@apl" },
     });
 };
+
 exports.sucessPayment = async (req, res) => {
   const { order_note, transaction_id, amount_paid, payment_method_id } =
     req.body;

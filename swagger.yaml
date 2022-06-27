@@ -15,6 +15,8 @@ tags:
     description: Signin to the application
   - name: Shop
     description: Add/Update/Delete/Get shops
+  - name: Product
+    description: Add/Update/Delete/Get products
   - name: Cart
     description: Cart
   - name: Address
@@ -23,6 +25,8 @@ tags:
     description: Add/Update/Delete/status update of Delivery Boy
   - name: Banner
     description: Add/Update/Delete/Get Banner
+  - name: Coupon
+    description: Add/Update/Delete/Get Coupon
 
 components:
   schemas:
@@ -283,6 +287,74 @@ components:
             type: string
           isActive:
             type: boolean
+    Coupon:
+      type: object
+      items:
+        required:
+          - coupon_code
+          - description
+          - percentage_discount
+          - valid_from
+          - valid_to
+          - max_discount
+          - min_cart_value
+          - max_no_times
+          - max_no_of_times_per_user
+          - is_active 
+          - shop_id
+          - added_on
+          - categories
+          - products
+          - restaurants
+        properties:
+          coupon_code:
+            type:
+              string
+          description:
+            type:
+              string
+          percentage_discount:
+            type:
+              integer
+          valid_from:
+            type:
+              string
+          valid_to:
+            type:
+              string
+          max_discount:
+            type:
+              integer
+          min_cart_value:
+            type:
+              integer
+          max_no_times:
+            type:
+              integer
+          max_no_of_times_per_user:
+            type:
+              integer
+          is_active:
+            type:
+              boolean 
+          shop_id:
+            type:
+              string
+          added_on:
+            type:
+              string
+          categories:
+            type: array
+              items:
+                type: string
+          products:
+            type: array
+              items:
+                type: string
+          restaurants:
+            type: array
+              items:
+                type: string
 
 paths:
   # AUTH ROUTES
@@ -1528,3 +1600,215 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
+
+
+  # COUPON ROUTES
+
+
+  /coupon/add_coupon:
+    post:
+      tags:
+        - Coupon
+      summary: Add coupon
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  number:
+                    type: integer
+                  $ref: "#/components/schemas/Coupon"
+      responses:
+        201:
+          description: Created Sucessfully
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Coupon"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /coupon/update_coupon:
+    put:
+      tags:
+        - Coupon
+      summary: Update coupon
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  number:
+                    type: integer
+                  $ref: "#/components/schemas/Coupon"
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Coupon"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /coupon/delete_coupon:
+    delete:
+      tags:
+        - Coupon
+      summary: Delete coupon
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  number:
+                    type: integer
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Coupon"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+  /coupon/get_coupon:
+    get:
+      tags:
+        - Coupon
+      summary: Get coupons of a shop
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              items:
+                properties:
+                  number:
+                    type: integer
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Coupon"
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+
+
+
+  # PAYMENT ROUTES
+
+
+  /payment/init_payment:
+    get:
+      tags:
+        - Payment
+      summary: Initialize the payment
+      parameters:
+        - in: header
+          name: token
+          schema:
+            type: string
+          required: true
+      responses:
+        200:
+          description: Sucess
+          content:
+            application/json:
+              schema:
+                status:
+                  type: string
+                cart:
+                  $ref: "#/components/schemas/Cart"
+                payment_response:
+                  type: object
+        400:
+          description: Bad request
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+        404:
+          description: Not found
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Error"
+

@@ -5,5 +5,4 @@ const router = express.Router();
 
 router.route('/init_payment').get(isLoggedIn, initPayment);
 
-
 module.exports = router;
