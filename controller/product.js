@@ -1,4 +1,3 @@
-const product = require("../model/product");
 const Product = require("../model/product");
 const Shop = require("../model/shop");
 
@@ -178,10 +177,17 @@ exports.filterProducts = async (req, res) => {
 // filter products
 exports.getProductByLocation = async (req, res) => {
   const { pincode } = req.body;
-  // const products = await Product.find(body);
+
   const shops = await Shop.find({ pincode });
-  if (shops.length == 0) {
+  if (shops.length === 0) {
     res.status(404).send({ status: "fail", msg: "No shops found." });
   }
-  res.status(200).send({ status: "sucess", msg: "shops fetched.", shops });
+
+  let products = [];
+  shops.map(async (shop) => {
+    const product = await Product.find({ shop_id: shop._id });
+    products.push(product);
+  });
+
+  res.status(200).send({ status: "sucess", msg: "shops fetched.", products });
 };

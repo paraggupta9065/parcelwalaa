@@ -7,13 +7,11 @@ exports.initPayment = async (req, res) => {
     res.status(404).send({ status: "fail", msg: "Cart not found !" });
   }
 
-  res
-    .status(200)
-    .send({
-      status: "sucess",
-      cart,
-      payment_response: { merchentKey: "8319905007@apl" },
-    });
+  res.status(200).send({
+    status: "sucess",
+    cart,
+    payment_response: { merchentKey: "8319905007@apl" },
+  });
 };
 
 exports.sucessPayment = async (req, res) => {
@@ -46,6 +44,17 @@ exports.sucessPayment = async (req, res) => {
   res
     .status(200)
     .send({ status: "sucess", order, msg: "order created and cart deleted" });
+};
+
+exports.deleteOrder = async (req, res) => {
+  const orderId = req.params.id;
+
+  await orderModel.findByIdAndDelete(orderId);
+
+  res.status(200).send({
+    status: "sucess",
+    msg: "Order deleted sucessfully.",
+  });
 };
 
 exports.failPayment = async (req, res) => {
