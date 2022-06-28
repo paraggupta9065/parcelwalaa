@@ -1,7 +1,6 @@
 // need to go through logic of removeCart and updateCart again
 
-const cart = require("../model/cart");
-const Cart = require("../model/cart");
+
 
 exports.homeLayout = async (req, res) => {
   res.send([
@@ -33,3 +32,24 @@ exports.banner = async (req, res) => {
 //Filters=list of categories model
 //storesVerticle = title, List of stores
 //Dishes=title, list of product
+
+
+exports.homeLayout = async (req, res) => {
+  res.send([
+    { type: "banner" },
+    { type: "list" },
+    { type: "icon" },
+    { type: "categories" },
+    { type: "dishes" },
+  ]);
+};
+
+exports.banner = async (req, res) => {
+  res.send([
+    { type: "banner" },
+    { type: "list" },
+    { type: "icon" },
+    { type: "categories" },
+    { type: "dishes" },
+  ]);
+};
