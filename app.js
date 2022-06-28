@@ -1,5 +1,4 @@
 const express = require("express");
-const { sendOtp, verifyOtp } = require("./controller/auth");
 const connectToDb = require("./utils/connectToDb");
 const app = express();
 const authRoute = require("./routes/auth");
@@ -17,6 +16,7 @@ const YAML = require("yamljs");
 const { initPayment } = require("./controller/payment");
 const swaggerJsDoc = YAML.load("./swagger.yaml");
 
+
 require("dotenv").config();
 connectToDb();
 app.use(express.json());
@@ -28,6 +28,7 @@ app.use((err, req, res, next) => {
 app.get("/", (req, res) =>
   res.send({ status: "sucess", msg: "Server Up And Running" })
 );
+
 
 app.use(express.urlencoded({ extended: true }));
 app.use("/auth", authRoute);
@@ -42,4 +43,6 @@ app.use("/address", addressRoute);
 app.use("/coupon", couponRoute);
 
 app.use("/api_docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc));
+
+
 module.exports = app;
