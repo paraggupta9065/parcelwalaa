@@ -2,17 +2,17 @@ const cartModel = require("../model/cart");
 const orderModel = require("../model/order");
 
 exports.initPayment = async (req, res) => {
-  const cart = await cartModel.findOne({ number: req.user.number });
+
+
+  const cart = await cartModel.findOne({ 'number': req.user.number });
   if (!cart) {
-    res.status(404).send({ status: "fail", msg: "Cart not found !" });
+    res.status(200).send({ status: "fail", msg: "Cart not found !" });
   }
 
-  res.status(200).send({
-    status: "sucess",
-    cart,
-    payment_response: { merchentKey: "8319905007@apl" },
-  });
+  res.status(200).send({ status: "sucess", cart, payment_response: { merchentKey: "8319905007@apl", } });
+
 };
+
 
 exports.sucessPayment = async (req, res) => {
   const { order_note, transaction_id, amount_paid, payment_method_id } =

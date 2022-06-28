@@ -68,6 +68,7 @@ const ProductSchema = mongoose.Schema({
     ref: "Shop",
     required: true,
   },
+  pincode: Number,
 });
 
 module.exports = mongoose.model("Product", ProductSchema);

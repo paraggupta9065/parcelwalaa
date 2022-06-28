@@ -71,3 +71,20 @@ exports.storeAdminStatusUpdate = async (req, res) => {
     .status(200)
     .send({ status: "sucess", msg: "shop updated successfully", shop: shop });
 };
+exports.getStoresByPincode = async (req, res) => {
+  const { pincode } = req.body;
+  if (!pincode) {
+    res
+      .status(404)
+      .send({ status: "fail", msg: "pincode not found" });
+  }
+  const shops = await shopModel.find({ "pincode": pincode });
+  if (shops.length == 0) {
+    res
+      .status(404)
+      .send({ status: "fail", msg: "no shops found" });
+  }
+  res
+    .status(200)
+    .send({ status: "sucess", msg: "shop fetched successfully", shops });
+};

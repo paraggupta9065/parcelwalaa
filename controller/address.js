@@ -1,5 +1,5 @@
 const { findOneAndDelete } = require("../model/address");
-const Address = require("../model/address");
+const addressModel = require("../model/address");
 
 exports.addAddress = async (req, res) => {
   const id = req.user._id;
@@ -49,7 +49,7 @@ exports.addAddress = async (req, res) => {
     type,
   };
 
-  const address = await Address.create(addressData);
+  const address = await addressModel.create(addressData);
 
   res.status(201).send({
     status: "sucess",
@@ -60,7 +60,7 @@ exports.addAddress = async (req, res) => {
 exports.updateAddress = async (req, res) => {
   const id = req.user._id;
 
-  let address = await Address.findOne({ user_id: id });
+  let address = await addressModel.findOne({ user_id: id });
 
   if (!address) {
     res.status(404).send({
@@ -117,7 +117,7 @@ exports.updateAddress = async (req, res) => {
 
   address = await Address.findByIdAndUpdate(address._id, addressData);
 
-  const updatedAddress = await Address.findById(address._id);
+  const updatedAddress = await addressModel.findById(address._id);
 
   res.status(200).send({
     status: "sucess",
@@ -127,10 +127,22 @@ exports.updateAddress = async (req, res) => {
 
 exports.removeAddress = async (req, res) => {
   const id = req.user._id;
-  const address = await findOneAndDelete({ user_id: id });
+  await addressModel.findOneAndDelete({ user_id: id });
 
   res.status(200).send({
     status: "sucess",
     msg: "Address deleted.",
   });
 };
+
+
+exports.getCustumerAddress = async (req, res) => {
+  const id = req.user._id;
+  const addressList = await addressModel.find({ user_id: id });
+
+  res.status(200).send({
+    status: "sucess",
+    msg: "Address deleted.",
+  });
+};
+

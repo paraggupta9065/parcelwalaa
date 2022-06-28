@@ -1,11 +1,14 @@
-const Product = require("../model/product");
-const Shop = require("../model/shop");
+
+const productModel = require("../model/product");
+
+
+const shopModel = require("../model/shop");
 
 // create the product
 exports.addProduct = async (req, res) => {
   const number = req.user.number;
 
-  const shop = await Shop.findOne({ number });
+  const shop = await shopModel.findOne({ number });
 
   const {
     name,
@@ -65,9 +68,10 @@ exports.addProduct = async (req, res) => {
     images,
     variations,
     shop_id: shop._id,
+    pincode: shop.pincode,
   };
 
-  const product = await Product.create(productData);
+  const product = await productModel.create(productData);
 
   res.status(201).send({ status: "sucess", product });
 };
@@ -76,7 +80,7 @@ exports.addProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
   const number = req.body.number;
 
-  const shop = await Shop.findOne({ number });
+  const shop = await shopModel.findOne({ number });
 
   if (!shop) {
     res.status(404).send({
@@ -85,19 +89,19 @@ exports.updateProduct = async (req, res) => {
     });
   }
 
-  const product = await Product.findOne({ shop_id: shop._id });
+  const product = await productModel.findOne({ shop_id: shop._id });
 
   if (!product) {
-    return res.status(404).send({ status: "fail", msg: "Product not found" });
+    return res.status(404).send({ status: "fail", msg: "productModel not found" });
   }
 
-  await Product.findOneAndUpdate(shop._id, req.body, {
+  await productModel.findOneAndUpdate(shop._id, req.body, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
   });
 
-  const updatedProduct = await Product.findOne({ shop_id: shop._id });
+  const updatedProduct = await productModel.findOne({ shop_id: shop._id });
 
   res.status(200).send({
     status: "sucess",
@@ -110,7 +114,7 @@ exports.updateProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
   const number = req.body.number;
 
-  const shop = await Shop.findOne({ number });
+  const shop = await shopModel.findOne({ number });
 
   if (!shop) {
     res.status(404).send({
@@ -118,20 +122,19 @@ exports.deleteProduct = async (req, res) => {
       msg: "Not found",
     });
   }
-  const product = await Product.findOneAndDelete({ shop_id: shop._id });
+  const product = await productModel.findOneAndDelete({ shop_id: shop._id });
 
   if (!product) {
-    return res.status(404).send({ status: "fail", msg: "Product not found." });
+    return res.status(404).send({ status: "fail", msg: "productModel not found." });
   }
 
   res
     .status(200)
-    .send({ status: "sucess", msg: "Product deleted sucessfully" });
+    .send({ status: "sucess", msg: "productModel deleted sucessfully" });
 };
 
 exports.getProducts = async (req, res) => {
-  const products = await Product.find();
-
+  const products = await productModel.find();
   res.status(200).send({ status: "sucess", products });
 };
 
@@ -150,7 +153,7 @@ exports.searchProducts = async (req, res) => {
     });
   }
 
-  const products = await Product.find({
+  const products = await productModel.find({
     name: { $regex: new RegExp(name), $options: "i" },
   });
 
@@ -165,7 +168,7 @@ exports.searchProducts = async (req, res) => {
 exports.filterProducts = async (req, res) => {
   const body = req.body;
 
-  const products = await Product.find(body);
+  const products = await productModel.find(body);
 
   if (!products) {
     res.status(404).send({ status: "fail", msg: "No products found." });
@@ -174,18 +177,31 @@ exports.filterProducts = async (req, res) => {
   res.status(200).send({ status: "sucess", products });
 };
 
-// filter products
+
+// get product by products
 exports.getProductByLocation = async (req, res) => {
   const { pincode } = req.body;
 
-  const shops = await Shop.find({ pincode });
-  if (shops.length === 0) {
+  // const products = await productModel.find(body);
+
+  const products = await productModel.find({ pincode }).populate('shop_id');
+  if (products.length == 0) {
+    res.status(404).send({ status: "fail", msg: "No product found." });
+  }
+  res.status(200).send({ status: "sucess", msg: "products fetched.", products });
+};
+
+exports.getProductByShop = async (req, res) => {
+  const { shop_id } = req.body;
+  const shops = await shopModel.find({ shop_id });
+  if (shops.length == 0) {
+
     res.status(404).send({ status: "fail", msg: "No shops found." });
   }
 
   let products = [];
   shops.map(async (shop) => {
-    const product = await Product.find({ shop_id: shop._id });
+    const product = await productModel.find({ shop_id: shop._id });
     products.push(product);
   });
 
