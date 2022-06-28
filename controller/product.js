@@ -1,5 +1,4 @@
-const product = require("../model/product");
-const Product = require("../model/product");
+const productModel = require("../model/product");
 const Shop = require("../model/shop");
 
 // create the product
@@ -66,6 +65,7 @@ exports.addProduct = async (req, res) => {
     images,
     variations,
     shop_id: shop._id,
+    pincode: shop.pincode,
   };
 
   const product = await Product.create(productData);
@@ -86,19 +86,19 @@ exports.updateProduct = async (req, res) => {
     });
   }
 
-  const product = await Product.findOne({ shop_id: shop._id });
+  const product = await productModel.findOne({ shop_id: shop._id });
 
   if (!product) {
     return res.status(404).send({ status: "fail", msg: "Product not found" });
   }
 
-  await Product.findOneAndUpdate(shop._id, req.body, {
+  await productModel.findOneAndUpdate(shop._id, req.body, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
   });
 
-  const updatedProduct = await Product.findOne({ shop_id: shop._id });
+  const updatedProduct = await productModel.findOne({ shop_id: shop._id });
 
   res.status(200).send({
     status: "sucess",
@@ -119,7 +119,7 @@ exports.deleteProduct = async (req, res) => {
       msg: "Not found",
     });
   }
-  const product = await Product.findOneAndDelete({ shop_id: shop._id });
+  const product = await productModel.findOneAndDelete({ shop_id: shop._id });
 
   if (!product) {
     return res.status(404).send({ status: "fail", msg: "Product not found." });
@@ -150,7 +150,7 @@ exports.searchProducts = async (req, res) => {
     });
   }
 
-  const products = await Product.find({
+  const products = await productModel.find({
     name: { $regex: new RegExp(name), $options: "i" },
   });
 
@@ -165,7 +165,7 @@ exports.searchProducts = async (req, res) => {
 exports.filterProducts = async (req, res) => {
   const body = req.body;
 
-  const products = await Product.find(body);
+  const products = await productModel.find(body);
 
   if (!products) {
     res.status(404).send({ status: "fail", msg: "No products found." });
@@ -179,7 +179,8 @@ exports.filterProducts = async (req, res) => {
 exports.getProductByLocation = async (req, res) => {
   const { pincode } = req.body;
   // const products = await Product.find(body);
-  const products = await productModel.find({ pincode });
+
+  const products = await productModel.find({ pincode }).populate('shop_id');
   if (products.length == 0) {
     res.status(404).send({ status: "fail", msg: "No product found." });
   }
