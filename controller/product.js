@@ -1,11 +1,14 @@
+
 const productModel = require("../model/product");
-const Shop = require("../model/shop");
+
+
+const shopModel = require("../model/shop");
 
 // create the product
 exports.addProduct = async (req, res) => {
   const number = req.user.number;
 
-  const shop = await Shop.findOne({ number });
+  const shop = await shopModel.findOne({ number });
 
   const {
     name,
@@ -68,7 +71,7 @@ exports.addProduct = async (req, res) => {
     pincode: shop.pincode,
   };
 
-  const product = await Product.create(productData);
+  const product = await productModel.create(productData);
 
   res.status(201).send({ status: "sucess", product });
 };
@@ -77,7 +80,7 @@ exports.addProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
   const number = req.body.number;
 
-  const shop = await Shop.findOne({ number });
+  const shop = await shopModel.findOne({ number });
 
   if (!shop) {
     res.status(404).send({
@@ -89,7 +92,7 @@ exports.updateProduct = async (req, res) => {
   const product = await productModel.findOne({ shop_id: shop._id });
 
   if (!product) {
-    return res.status(404).send({ status: "fail", msg: "Product not found" });
+    return res.status(404).send({ status: "fail", msg: "productModel not found" });
   }
 
   await productModel.findOneAndUpdate(shop._id, req.body, {
@@ -111,7 +114,7 @@ exports.updateProduct = async (req, res) => {
 exports.deleteProduct = async (req, res) => {
   const number = req.body.number;
 
-  const shop = await Shop.findOne({ number });
+  const shop = await shopModel.findOne({ number });
 
   if (!shop) {
     res.status(404).send({
@@ -122,12 +125,12 @@ exports.deleteProduct = async (req, res) => {
   const product = await productModel.findOneAndDelete({ shop_id: shop._id });
 
   if (!product) {
-    return res.status(404).send({ status: "fail", msg: "Product not found." });
+    return res.status(404).send({ status: "fail", msg: "productModel not found." });
   }
 
   res
     .status(200)
-    .send({ status: "sucess", msg: "Product deleted sucessfully" });
+    .send({ status: "sucess", msg: "productModel deleted sucessfully" });
 };
 
 exports.getProducts = async (req, res) => {
@@ -178,7 +181,8 @@ exports.filterProducts = async (req, res) => {
 // get product by products
 exports.getProductByLocation = async (req, res) => {
   const { pincode } = req.body;
-  // const products = await Product.find(body);
+
+  // const products = await productModel.find(body);
 
   const products = await productModel.find({ pincode }).populate('shop_id');
   if (products.length == 0) {
@@ -191,7 +195,15 @@ exports.getProductByShop = async (req, res) => {
   const { shop_id } = req.body;
   const shops = await shopModel.find({ shop_id });
   if (shops.length == 0) {
+
     res.status(404).send({ status: "fail", msg: "No shops found." });
   }
-  res.status(200).send({ status: "sucess", msg: "shops fetched.", shops });
+
+  let products = [];
+  shops.map(async (shop) => {
+    const product = await productModel.find({ shop_id: shop._id });
+    products.push(product);
+  });
+
+  res.status(200).send({ status: "sucess", msg: "shops fetched.", products });
 };
