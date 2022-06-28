@@ -1,6 +1,19 @@
 const express = require("express");
 const connectToDb = require("./utils/connectToDb");
+
+// socket
+const http = require("http");
+const { Server } = require("socket.io");
+
 const app = express();
+const server = http.createServer(app);
+const io = new Server(server);
+
+io.on("connection", (socket) => {
+  console.log("New WebSocket connection");
+});
+
+// Routes
 const authRoute = require("./routes/auth");
 const shopRoute = require("./routes/shop");
 const homeRoute = require("./routes/home");
@@ -11,6 +24,7 @@ const paymentRoute = require("./routes/payment");
 const cartRoute = require("./routes/cart");
 const addressRoute = require("./routes/address");
 const couponRoute = require("./routes/coupon");
+
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const { initPayment } = require("./controller/payment");
@@ -44,5 +58,5 @@ app.use("/coupon", couponRoute);
 
 app.use("/api_docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc));
 
-
-module.exports = app;
+// exporting server
+module.exports = server;

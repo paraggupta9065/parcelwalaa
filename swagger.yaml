@@ -32,329 +32,313 @@ components:
   schemas:
     Error:
       type: object
-      items:
-        properties:
-          status:
-            type: string
-            example: "sucess/fail"
-
-          msg:
-            type: string
-            example: "Not found"
+      properties:
+        status:
+          type: string
+          example: "sucess/fail"
+        msg:
+          type: string
+          example: "Not found"
     Shop:
       type: object
-      items:
-        required:
-          - image
-          - banner
-          - number
-          - fssai
-          - admin_commission_rate
-          - store_name
-          - email
-          - address_line1
-          - city
-          - state
-          - delivery_charges
-        properties:
-          image:
-            type: string
-            example: "adscsvf"
+      required:
+        - image
+        - banner
+        - number
+        - fssai
+        - admin_commission_rate
+        - store_name
+        - email
+        - address_line1
+        - city
+        - state
+        - delivery_charges
+      properties:
+        image:
+          type: string
+          example: "adscsvf"
 
-          banner:
-            type: string
-            example: "adcascdsd"
+        banner:
+          type: string
+          example: "adcascdsd"
 
-          number:
-            type: integer
-            example: 1234567890
+        number:
+          type: integer
+          example: 1234567890
 
-          fssai:
-            type: string
-            example: "adcadc"
+        fssai:
+          type: string
+          example: "adcadc"
 
-          admin_commission_rate:
-            type: integer
-            example: 4
+        admin_commission_rate:
+          type: integer
+          example: 4
 
-          store_name:
-            type: number
-            example: macd
+        store_name:
+          type: number
+          example: macd
 
-          email:
-            type: string
-            example: asxnakc@csd.com
+        email:
+          type: string
+          example: asxnakc@csd.com
 
-          address_line1:
-            type: string
-            example: "acxacdadc"
+        address_line1:
+          type: string
+          example: "acxacdadc"
 
-          city:
-            type: string
-            example: "mumbai"
+        city:
+          type: string
+          example: "mumbai"
 
-          state:
-            type: string
-            example: "maharashtra"
+        state:
+          type: string
+          example: "maharashtra"
 
-          delivery_charges:
-            type: number
-            example: 500
+        delivery_charges:
+          type: number
+          example: 500
     Product:
       type: object
-      items:
-        required:
-          - name
-          - type
-          - status
-          - featured
-          - description
-          - veg_type
-          - price
-          - regular_price
-          - weight
-          - images
-          - shop_id
-        properties:
-          name:
+      required:
+        - name
+        - type
+        - status
+        - featured
+        - description
+        - veg_type
+        - price
+        - regular_price
+        - weight
+        - images
+        - shop_id
+      properties:
+        name:
+          type: string
+        date_created:
+          type: string
+        type:
+          type: string
+        status:
+          type: integer
+        featured:
+          type: string
+        description:
+          type: string
+        veg_type:
+          type: string
+        price:
+          type: integer
+        regular_price:
+          type: integer
+        weight:
+          type: integer
+        rating_count:
+          type: integer
+        reviews:
+          type: array
+          items:
             type: string
-          date_created:
+        categories:
+          type: array
+          items:
             type: string
-          type:
+        tags:
+          type: array
+          items:
             type: string
-          status:
-            type: integer
-          featured:
-            type: string
-          description:
-            type: string
-          veg_type:
-            type: string
-          price:
-            type: integer
-          regular_price:
-            type: integer
-          weight:
-            type: integer
-          rating_count:
-            type: integer
-          reviews:
-            type: array
-            items:
-              type: string
-          categories:
-            type: array
-            items:
-              type: string
-          tags:
-            type: array
-            items:
-              type: string
-          images:
-            type: string
-          variations:
-            type: string
-          shop_id:
-            type: string
+        images:
+          type: string
+        variations:
+          type: string
+        shop_id:
+          type: string
     Cart:
       type: object
-      items:
-        required:
-          - inventory_total_amt
-          - delivery_total_amt
-          - coupon_code_id
-          - discount_amt
-          - delivery_address_id
-          - net_amt
-          - shop_id
-          - cart_inventory
-          - total_gst
-          - user_id
-        properties:
-          inventory_total_amt:
-            type: integer
-          delivery_total_amt:
-            type: integer
-          coupon_code_id:
-            type: string
-          discount_amt:
-            type: integer
-          admin_commission_rate:
-            type: integer
-          delivery_address_id:
-            type: string
-          net_amt:
-            type: integer
-          shop_id:
-            type: string
-          cart_inventory:
-            type: string
-          total_gst:
-            type: integer
-          user_id:
-            type: string
+      required:
+        - inventory_total_amt
+        - delivery_total_amt
+        - coupon_code_id
+        - discount_amt
+        - pickup_address_id
+        - delivery_address_id
+        - net_amt
+        - shop_id
+        - cart_inventory
+        - total_gst
+        - user_id
+      properties:
+        inventory_total_amt:
+          type: integer
+        delivery_total_amt:
+          type: integer
+        coupon_code_id:
+          type: string
+        discount_amt:
+          type: integer
+        admin_commission_rate:
+          type: integer
+        pickup_address_id:
+          type: string
+        delivery_address_id:
+          type: string
+        net_amt:
+          type: integer
+        shop_id:
+          type: string
+        cart_inventory:
+          type: string
+        total_gst:
+          type: integer
+        user_id:
+          type: string
     Address:
       type: object
-      items:
-        required:
-          - name
-          - line1
-          - landmark
-          - pincode
-          - user_id
-          - contact_no
-          - state
-          - city
-          - delivery_note
-          - type
-        properties:
-          name:
-            type: string
-          line1:
-            type: string
-          landmark:
-            type: string
-          pincode:
-            type: integer
-          user_id:
-            type: string
-          contact_no:
-            type: integer
-          state:
-            type: string
-          city:
-            type: string
-          delivery_note:
-            type: string
-          type:
-            type: string
+      required:
+        - name
+        - line1
+        - landmark
+        - pincode
+        - user_id
+        - contact_no
+        - state
+        - city
+        - delivery_note
+        - type
+      properties:
+        name:
+          type: string
+        line1:
+          type: string
+        landmark:
+          type: string
+        pincode:
+          type: integer
+        user_id:
+          type: string
+        contact_no:
+          type: integer
+        state:
+          type: string
+        city:
+          type: string
+        delivery_note:
+          type: string
+        type:
+          type: string
     DeliveryBoy:
       type: object
-      items:
-        required:
-          - name
-          - image
-          - number
-          - aadhar
-          - pan
-          - upi
-          - bike_number
-          - driving_license_image
-          - isOnline
-          - isActive
-        properties:
-          name:
-            type: string
-          image:
-            type: string
-          number:
-            type: integer
-          aadhar:
-            type: integer
-          pan:
-            type: string
-          upi:
-            type: string
-          bike_number:
-            type: string
-          driving_license_image:
-            type: string
-          isOnline:
-            type: boolean
-          isActive:
-            type: boolean
+      required:
+        - name
+        - image
+        - number
+        - aadhar
+        - pan
+        - upi
+        - bike_number
+        - driving_license_image
+        - isOnline
+        - isActive
+      properties:
+        name:
+          type: string
+        image:
+          type: string
+        number:
+          type: integer
+        aadhar:
+          type: integer
+        pan:
+          type: string
+        upi:
+          type: string
+        bike_number:
+          type: string
+        driving_license_image:
+          type: string
+        isOnline:
+          type: boolean
+        isActive:
+          type: boolean
     Banner:
       type: object
-      items:
-        required:
-          - image
-          - openType
-          - shop_id
-        properties:
-          image:
+      required:
+        - image
+        - openType
+        - shop_id
+      properties:
+        image:
+          type: string
+        openType:
+          type: integer
+        product_id:
+          type: array
+          items:
             type: string
-          openType:
-            type: integer
-          product_id:
-            type: array
-            items:
-              type: string
-          categories:
-            type: array
-            items:
-              type: string
-          shop_id:
+        categories:
+          type: array
+          items:
             type: string
-          isActive:
-            type: boolean
+        shop_id:
+          type: string
+        isActive:
+          type: boolean
     Coupon:
       type: object
-      items:
-        required:
-          - coupon_code
-          - description
-          - percentage_discount
-          - valid_from
-          - valid_to
-          - max_discount
-          - min_cart_value
-          - max_no_times
-          - max_no_of_times_per_user
-          - is_active 
-          - shop_id
-          - added_on
-          - categories
-          - products
-          - restaurants
-        properties:
-          coupon_code:
-            type:
-              string
-          description:
-            type:
-              string
-          percentage_discount:
-            type:
-              integer
-          valid_from:
-            type:
-              string
-          valid_to:
-            type:
-              string
-          max_discount:
-            type:
-              integer
-          min_cart_value:
-            type:
-              integer
-          max_no_times:
-            type:
-              integer
-          max_no_of_times_per_user:
-            type:
-              integer
-          is_active:
-            type:
-              boolean 
-          shop_id:
-            type:
-              string
-          added_on:
-            type:
-              string
-          categories:
-            type: array
-              items:
-                type: string
-          products:
-            type: array
-              items:
-                type: string
-          restaurants:
-            type: array
-              items:
-                type: string
+      required:
+        - coupon_code
+        - description
+        - percentage_discount
+        - valid_from
+        - valid_to
+        - max_discount
+        - min_cart_value
+        - max_no_times
+        - max_no_of_times_per_user
+        - is_active 
+        - shop_id
+        - added_on
+        - categories
+        - products
+        - restaurants
+      properties:
+        coupon_code:
+          type: string
+        description:
+          type: string
+        percentage_discount:
+          type: integer
+        valid_from:
+          type: string
+        valid_to:
+          type: string
+        max_discount:
+          type: integer
+        min_cart_value:
+          type: integer
+        max_no_times:
+          type: integer
+        max_no_of_times_per_user:
+          type: integer
+        is_active:
+          type: boolean 
+        categories:
+          type: array
+          items:
+            type: string
+        products:
+          type: array
+          items:
+            type: string
+        restaurants:
+          type: array
+          items:
+            type: string
+        shop_id:
+          type:
+            string
+        added_on:
+          type:
+            string
 
 paths:
   # AUTH ROUTES
@@ -428,7 +412,6 @@ paths:
       responses:
         200:
           description: Sucess
-
           content:
             application/json:
               schema:
@@ -482,9 +465,62 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  $ref: "#/components/schemas/Shop"
+              required:
+                  - image
+                  - banner
+                  - number
+                  - fssai
+                  - admin_commission_rate
+                  - store_name
+                  - email
+                  - address_line1
+                  - city
+                  - state
+                  - delivery_charges
+              properties:
+                  image:
+                    type: string
+                    example: "adscsvf"
+
+                  banner:
+                    type: string
+                    example: "adcascdsd"
+
+                  number:
+                    type: integer
+                    example: 1234567890
+
+                  fssai:
+                    type: string
+                    example: "adcadc"
+
+                  admin_commission_rate:
+                    type: integer
+                    example: 4
+
+                  store_name:
+                    type: number
+                    example: macd
+
+                  email:
+                    type: string
+                    example: asxnakc@csd.com
+
+                  address_line1:
+                    type: string
+                    example: "acxacdadc"
+
+                  city:
+                    type: string
+                    example: "mumbai"
+
+                  state:
+                    type: string
+                    example: "maharashtra"
+
+                  delivery_charges:
+                    type: number
+                    example: 500
       responses:
         200:
           description: Sucess
@@ -516,9 +552,62 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  $ref: "#/components/schemas/Shop"
+              required:
+                  - image
+                  - banner
+                  - number
+                  - fssai
+                  - admin_commission_rate
+                  - store_name
+                  - email
+                  - address_line1
+                  - city
+                  - state
+                  - delivery_charges
+              properties:
+                  image:
+                    type: string
+                    example: "adscsvf"
+
+                  banner:
+                    type: string
+                    example: "adcascdsd"
+
+                  number:
+                    type: integer
+                    example: 1234567890
+
+                  fssai:
+                    type: string
+                    example: "adcadc"
+
+                  admin_commission_rate:
+                    type: integer
+                    example: 4
+
+                  store_name:
+                    type: number
+                    example: macd
+
+                  email:
+                    type: string
+                    example: asxnakc@csd.com
+
+                  address_line1:
+                    type: string
+                    example: "acxacdadc"
+
+                  city:
+                    type: string
+                    example: "mumbai"
+
+                  state:
+                    type: string
+                    example: "maharashtra"
+
+                  delivery_charges:
+                    type: number
+                    example: 500
       responses:
         200:
           description: Sucess
@@ -550,8 +639,7 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
+              properties:
                   number:
                     type: integer
                     example: 1234567890
@@ -599,15 +687,14 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  number:
-                    type: integer
-                    example: 1234567890
+              properties:
+                number:
+                  type: integer
+                  example: 1234567890
 
-                  isOnline:
-                    type: boolean
-                    example: true/false
+                isOnline:
+                  type: boolean
+                  example: true/false
       responses:
         200:
           description: Sucess
@@ -645,15 +732,14 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  number:
-                    type: integer
-                    example: 1234567890
+              properties:
+                number:
+                  type: integer
+                  example: 1234567890
 
-                  isActive:
-                    type: boolean
-                    example: true/false
+                isActive:
+                  type: boolean
+                  example: true/false
       responses:
         200:
           description: Sucess
@@ -687,11 +773,77 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  number:
-                    type: integer
-                  $ref: "#/components/schemas/Product"
+              required:
+                - number
+                - name
+                - type
+                - status
+                - featured
+                - description
+                - veg_type
+                - price
+                - regular_price
+                - weight
+                - images
+                - shop_id
+              properties:
+                number:
+                  type: integer
+                  example: 8456293240
+                name:
+                  type: string
+                  example: "Apple"
+                type:
+                  type: string
+                  example: "food/grocery"
+                status:
+                  type: integer
+                  example: 1
+                featured:
+                  type: string
+                  example: "asdacsd"
+                description:
+                  type: string
+                  example: "Very tasty"
+                veg_type:
+                  type: string
+                  example: "veg/non-veg/eggs"
+                price:
+                  type: integer
+                  example: 100
+                regular_price:
+                  type: integer
+                  example: 150
+                weight:
+                  type: integer
+                  example: 1
+                rating_count:
+                  type: integer
+                  example: 1-5
+                reviews:
+                  type: array
+                  items:
+                    type: string
+                    example: "Good"
+                categories:
+                  type: array
+                  items:
+                    type: string
+                    example: "adsxasc"
+                tags:
+                  type: array
+                  items:
+                    type: string
+                    example: "adsxasc"
+                images:
+                  type: string
+                  example: "adsxasc"
+                variations:
+                  type: string
+                  example: "adsxasc"
+                shop_id:
+                  type: string
+                  example: "adsxasc"
       responses:
         201:
           description: Created Sucessfully
@@ -723,11 +875,77 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  number:
-                    type: integer
-                  $ref: "#/components/schemas/Product"
+              required:
+                - number
+                - name
+                - type
+                - status
+                - featured
+                - description
+                - veg_type
+                - price
+                - regular_price
+                - weight
+                - images
+                - shop_id
+              properties:
+                number:
+                  type: integer
+                  example: 8456293240
+                name:
+                  type: string
+                  example: "Apple"
+                type:
+                  type: string
+                  example: "food/grocery"
+                status:
+                  type: integer
+                  example: 1
+                featured:
+                  type: string
+                  example: "asdacsd"
+                description:
+                  type: string
+                  example: "Very tasty"
+                veg_type:
+                  type: string
+                  example: "veg/non-veg/eggs"
+                price:
+                  type: integer
+                  example: 100
+                regular_price:
+                  type: integer
+                  example: 150
+                weight:
+                  type: integer
+                  example: 1
+                rating_count:
+                  type: integer
+                  example: 1-5
+                reviews:
+                  type: array
+                  items:
+                    type: string
+                    example: "Good"
+                categories:
+                  type: array
+                  items:
+                    type: string
+                    example: "adsxasc"
+                tags:
+                  type: array
+                  items:
+                    type: string
+                    example: "adsxasc"
+                images:
+                  type: string
+                  example: "adsxasc"
+                variations:
+                  type: string
+                  example: "adsxasc"
+                shop_id:
+                  type: string
+                  example: "adsxasc"
       responses:
         201:
           description: Created Sucessfully
@@ -765,10 +983,10 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  number:
-                    type: integer
+              properties:
+                number:
+                  type: integer
+                  example: 8345932423
       responses:
         200:
           description: Sucess
@@ -837,10 +1055,10 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  name:
-                    type: string
+              properties:
+                name:
+                  type: string
+                
       responses:
         200:
           description: Sucess
@@ -877,7 +1095,78 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "#/components/schemas/Product"
+              type: object
+              required:
+                - number
+                - name
+                - type
+                - status
+                - featured
+                - description
+                - veg_type
+                - price
+                - regular_price
+                - weight
+                - images
+                - shop_id
+              properties:
+                number:
+                  type: integer
+                  example: 8456293240
+                name:
+                  type: string
+                  example: "Apple"
+                type:
+                  type: string
+                  example: "food/grocery"
+                status:
+                  type: integer
+                  example: 1
+                featured:
+                  type: string
+                  example: "asdacsd"
+                description:
+                  type: string
+                  example: "Very tasty"
+                veg_type:
+                  type: string
+                  example: "veg/non-veg/eggs"
+                price:
+                  type: integer
+                  example: 100
+                regular_price:
+                  type: integer
+                  example: 150
+                weight:
+                  type: integer
+                  example: 1
+                rating_count:
+                  type: integer
+                  example: 1-5
+                reviews:
+                  type: array
+                  items:
+                    type: string
+                    example: "Good"
+                categories:
+                  type: array
+                  items:
+                    type: string
+                    example: "adsxasc"
+                tags:
+                  type: array
+                  items:
+                    type: string
+                    example: "adsxasc"
+                images:
+                  type: string
+                  example: "adsxasc"
+                variations:
+                  type: string
+                  example: "adsxasc"
+                shop_id:
+                  type: string
+                  example: "adsxasc"
       responses:
         200:
           description: Sucess
@@ -915,10 +1204,10 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  pincode:
-                    type: integer
+              properties:
+                pincode:
+                  type: integer
+                  example: 800001
       responses:
         200:
           description: Sucess
@@ -958,14 +1247,13 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  productId:
-                    type: string
-                  delivery_address_id:
-                    type: string
-                  coupon_code_id:
-                    type: string
+              properties:
+                productId:
+                  type: string
+                delivery_address_id:
+                  type: string
+                coupon_code_id:
+                  type: string  
       responses:
         200:
           description: Sucess
@@ -1047,6 +1335,29 @@ paths:
           schema:
             type: string
           required: true
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                inventory_total_amt:
+                  type: integer
+                delivery_total_amt:
+                  type: integer
+                discount_amt:
+                  type: integer
+                net_amt:
+                  type: integer
+                pickup_address_id:
+                  type: string
+                delivery_address_id:
+                  type: string
+                cart_inventory:
+                  type: string
+                total_gst:
+                  type: integer
       responses:
         200:
           description: Sucess
@@ -1078,12 +1389,11 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  productId:
-                    type: string
-                  quantity:
-                    type: integer
+              properties:
+                productId:
+                  type: string
+                quantity:
+                  type: integer
       responses:
         200:
           description: Sucess
@@ -1117,26 +1427,25 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  name:
-                    type: string
-                  line1:
-                    type: string
-                  landmark:
-                    type: string
-                  pincode:
-                    type: integer
-                  contact_no:
-                    type: integer
-                  state:
-                    type: string
-                  city:
-                    type: string
-                  delivery_note:
-                    type: string
-                  type:
-                    type: string
+              properties:
+                name:
+                  type: string
+                line1:
+                  type: string
+                landmark:
+                  type: string
+                pincode:
+                  type: integer
+                contact_no:
+                  type: integer
+                state:
+                  type: string
+                city:
+                  type: string
+                delivery_note:
+                  type: string
+                type:
+                  type: string
       responses:
         201:
           description: Created sucessfully
@@ -1168,26 +1477,25 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  name:
-                    type: string
-                  line1:
-                    type: string
-                  landmark:
-                    type: string
-                  pincode:
-                    type: integer
-                  contact_no:
-                    type: integer
-                  state:
-                    type: string
-                  city:
-                    type: string
-                  delivery_note:
-                    type: string
-                  type:
-                    type: string
+              properties:
+                name:
+                  type: string
+                line1:
+                  type: string
+                landmark:
+                  type: string
+                pincode:
+                  type: integer
+                contact_no:
+                  type: integer
+                state:
+                  type: string
+                city:
+                  type: string
+                delivery_note:
+                  type: string
+                type:
+                  type: string
       responses:
         200:
           description: Sucess
@@ -1252,9 +1560,32 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  $ref: "#/components/schemas/DeliveryBoy"
+              required:
+                - name
+                - image
+                - number
+                - aadhar
+                - pan
+                - upi
+                - bike_number
+                - driving_license_image
+              properties:
+                name:
+                  type: string
+                image:
+                  type: string
+                number:
+                  type: integer
+                aadhar:
+                  type: integer
+                pan:
+                  type: string
+                upi:
+                  type: string
+                bike_number:
+                  type: string
+                driving_license_image:
+                  type: string
       responses:
         201:
           description: Created sucessfully
@@ -1286,9 +1617,32 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  $ref: "#/components/schemas/DeliveryBoy"
+              required:
+                - name
+                - image
+                - number
+                - aadhar
+                - pan
+                - upi
+                - bike_number
+                - driving_license_image
+              properties:
+                name:
+                  type: string
+                image:
+                  type: string
+                number:
+                  type: integer
+                aadhar:
+                  type: integer
+                pan:
+                  type: string
+                upi:
+                  type: string
+                bike_number:
+                  type: string
+                driving_license_image:
+                  type: string
       responses:
         200:
           description: Updated sucessfully
@@ -1320,9 +1674,11 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  $ref: "#/components/schemas/DeliveryBoy"
+              required:
+                - number
+              properties:
+                number:
+                  type: integer
       responses:
         200:
           description: Deleted sucessfully
@@ -1347,7 +1703,7 @@ paths:
           name: token
           schema:
             type: string
-          required: true
+          required: true    
       responses:
         200:
           description: Fetched sucessfully
@@ -1379,12 +1735,14 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  isOnline:
-                    type: boolean
-                  number:
-                    type: integer
+              required:
+                - number
+                - isOnline
+              properties:
+                number:
+                  type: integer
+                isOnline:
+                  type: boolean
       responses:
         200:
           description: Updated sucessfully
@@ -1416,12 +1774,11 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  isActive:
-                    type: boolean
-                  number:
-                    type: integer
+              properties:
+                isActive:
+                  type: boolean
+                number:
+                  type: integer
       responses:
         200:
           description: Updated sucessfully
@@ -1456,9 +1813,23 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  $ref: "#/components/schemas/Banner"
+              required:
+                - image
+                - openType
+                - shop_id
+              properties:
+                image:
+                  type: string
+                openType:
+                  type: integer
+                categories:
+                  type: array
+                  items:
+                    type: string
+                shop_id:
+                  type: string
+                isActive:
+                  type: boolean
       responses:
         201:
           description: Created sucessfully
@@ -1527,9 +1898,23 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  $ref: "#/components/schemas/Banner"
+              required:
+                - image
+                - openType
+                - shop_id
+              properties:
+                image:
+                  type: string
+                openType:
+                  type: integer
+                categories:
+                  type: array
+                  items:
+                    type: string
+                shop_id:
+                  type: string
+                isActive:
+                  type: boolean
       responses:
         200:
           description: Sucess
@@ -1622,11 +2007,56 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  number:
-                    type: integer
-                  $ref: "#/components/schemas/Coupon"
+              required:
+                - number
+                - coupon_code
+                - description
+                - percentage_discount
+                - valid_from
+                - valid_to
+                - max_discount
+                - min_cart_value
+                - max_no_times
+                - max_no_of_times_per_user
+                - is_active 
+                - categories
+                - products
+                - restaurants
+              properties:
+                number:
+                  type: integer
+                coupon_code:
+                  type: string
+                description:
+                  type: string
+                percentage_discount:
+                  type: integer
+                valid_from:
+                  type: string
+                valid_to:
+                  type: string
+                max_discount:
+                  type: integer
+                min_cart_value:
+                  type: integer
+                max_no_times:
+                  type: integer
+                max_no_of_times_per_user:
+                  type: integer
+                is_active:
+                  type: boolean 
+                categories:
+                  type: array
+                  items:
+                    type: string
+                products:
+                  type: array
+                  items:
+                    type: string
+                restaurants:
+                  type: array
+                  items:
+                    type: string
       responses:
         201:
           description: Created Sucessfully
@@ -1664,11 +2094,60 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  number:
-                    type: integer
-                  $ref: "#/components/schemas/Coupon"
+              required:
+                - number
+                - coupon_code
+                - description
+                - percentage_discount
+                - valid_from
+                - valid_to
+                - max_discount
+                - min_cart_value
+                - max_no_times
+                - max_no_of_times_per_user
+                - is_active 
+                - shop_id
+                - categories
+                - products
+                - restaurants
+              properties:
+                number:
+                  type: integer
+                coupon_code:
+                  type: string
+                description:
+                  type: string
+                percentage_discount:
+                  type: integer
+                valid_from:
+                  type: string
+                valid_to:
+                  type: string
+                max_discount:
+                  type: integer
+                min_cart_value:
+                  type: integer
+                max_no_times:
+                  type: integer
+                max_no_of_times_per_user:
+                  type: integer
+                is_active:
+                  type: boolean 
+                categories:
+                  type: array
+                  items:
+                    type: string
+                products:
+                  type: array
+                  items:
+                    type: string
+                restaurants:
+                  type: array
+                  items:
+                    type: string
+                shop_id:
+                  type:
+                    string
       responses:
         200:
           description: Sucess
@@ -1706,10 +2185,9 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  number:
-                    type: integer
+              properties:
+                number:
+                  type: integer
       responses:
         200:
           description: Sucess
@@ -1747,10 +2225,9 @@ paths:
           application/json:
             schema:
               type: object
-              items:
-                properties:
-                  number:
-                    type: integer
+              properties:
+                number:
+                  type: integer
       responses:
         200:
           description: Sucess
@@ -1811,4 +2288,3 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Error"
-
