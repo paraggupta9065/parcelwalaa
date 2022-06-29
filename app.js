@@ -1,17 +1,6 @@
 const express = require("express");
 const connectToDb = require("./utils/connectToDb");
-
-// socket
-const http = require("http");
-const { Server } = require("socket.io");
-
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server);
-
-io.on("connection", (socket) => {
-  console.log("New WebSocket connection");
-});
 
 // Routes
 const authRoute = require("./routes/auth");
@@ -24,27 +13,28 @@ const paymentRoute = require("./routes/payment");
 const cartRoute = require("./routes/cart");
 const addressRoute = require("./routes/address");
 const couponRoute = require("./routes/coupon");
-
+const tripRoute = require("./routes/trip");
+//
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
-const { initPayment } = require("./controller/payment");
 const swaggerJsDoc = YAML.load("./swagger.yaml");
-
-
 require("dotenv").config();
+const { EventEmitter } = require('events');
+const timerEventEmitter = new EventEmitter();
+//
 connectToDb();
+app.get("/", (req, res) =>
+  res.send({ status: "sucess", msg: "Server Up And Running" })
+);
 app.use(express.json());
 app.use((err, req, res, next) => {
   res.status(500).send({
     message: err.message,
   });
 });
-app.get("/", (req, res) =>
-  res.send({ status: "sucess", msg: "Server Up And Running" })
-);
-
-
 app.use(express.urlencoded({ extended: true }));
+
+app.set("emmiter", timerEventEmitter);
 app.use("/auth", authRoute);
 app.use("/shop", shopRoute);
 app.use("/shop", bannerRoute);
@@ -55,8 +45,8 @@ app.use("/payment", paymentRoute);
 app.use("/cart", cartRoute);
 app.use("/address", addressRoute);
 app.use("/coupon", couponRoute);
-
+app.use("/trip", tripRoute);
 app.use("/api_docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc));
 
 // exporting server
-module.exports = server;
+module.exports = app;
