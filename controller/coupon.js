@@ -1,10 +1,10 @@
-const Coupon = require("../model/coupon");
-const Shop = require("../model/shop");
+const couponModel = require("../model/coupon");
+const shopModel = require("../model/shop");
 
 exports.addCoupon = async (req, res) => {
   const number = req.body.number;
 
-  const shop = await Shop.findOne({ number });
+  const shop = await shopModel.findOne({ number });
 
   if (!shop) {
     res.status(404).send({
@@ -38,7 +38,7 @@ exports.addCoupon = async (req, res) => {
 
   couponData["shop_id"] = shop._id;
 
-  const coupon = await Coupon.create(couponData);
+  const coupon = await couponModel.create(couponData);
 
   res.status(201).send({
     status: "Sucess",
@@ -50,7 +50,7 @@ exports.addCoupon = async (req, res) => {
 exports.updateCoupon = async (req, res) => {
   const number = req.body.number;
 
-  const shop = await Shop.findOne({ number });
+  const shop = await shopModel.findOne({ number });
 
   if (!shop) {
     res.status(404).send({
@@ -59,7 +59,7 @@ exports.updateCoupon = async (req, res) => {
     });
   }
 
-  const coupon = await Coupon.findOne({ shop_id: shop._id });
+  const coupon = await couponModel.findOne({ shop_id: shop._id });
 
   if (!coupon) {
     res.status(404).send({
@@ -102,9 +102,9 @@ exports.updateCoupon = async (req, res) => {
     restaurants,
   };
 
-  await Coupon.findByIdAndUpdate(coupon._id, newCouponData);
+  await couponModel.findByIdAndUpdate(coupon._id, newCouponData);
 
-  const newCoupon = await Coupon.findById(coupon._id);
+  const newCoupon = await couponModel.findById(coupon._id);
 
   res.status(200).send({
     status: "Sucess",
@@ -116,7 +116,7 @@ exports.updateCoupon = async (req, res) => {
 exports.deleteCoupon = async (req, res) => {
   const number = req.body.number;
 
-  const shop = await Shop.findOne({ number });
+  const shop = await shopModel.findOne({ number });
 
   if (!shop) {
     res.status(404).send({
@@ -125,7 +125,7 @@ exports.deleteCoupon = async (req, res) => {
     });
   }
 
-  await Coupon.findOneAndDelete({ shop_id: shop._id });
+  await couponModel.findOneAndDelete({ shop_id: shop._id });
 
   res.status(200).send({
     status: "Sucess",
@@ -136,7 +136,7 @@ exports.deleteCoupon = async (req, res) => {
 exports.getCoupons = async (req, res) => {
   const number = req.body.number;
 
-  const shop = await Shop.findOne({ number });
+  const shop = await shopModel.findOne({ number });
 
   if (!shop) {
     res.status(404).send({
@@ -145,7 +145,7 @@ exports.getCoupons = async (req, res) => {
     });
   }
 
-  const coupons = await Coupon.find({ shop_id: shop._id });
+  const coupons = await couponModel.find({ shop_id: shop._id });
 
   res.status(200).send({
     status: "Sucess",

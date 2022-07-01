@@ -1,4 +1,4 @@
-const DeliveryBoyModel = require("../model/deliveryBoy");
+const deliveryBoyModel = require("../model/deliveryBoy");
 
 // create a delivery boy
 exports.addDeliveryBoy = async (req, res) => {
@@ -23,7 +23,7 @@ exports.addDeliveryBoy = async (req, res) => {
     res.status(400).send({ status: "fail", msg: "Incomplete Data." });
   }
 
-  const deliveryBoy = await DeliveryBoyModel.create(deliveryBoyData);
+  const deliveryBoy = await deliveryBoyModel.create(deliveryBoyData);
 
   res.status(201).send({
     status: "sucess",
@@ -34,7 +34,7 @@ exports.addDeliveryBoy = async (req, res) => {
 
 //get delivery boy
 exports.getDeliveryBoy = async (req, res) => {
-  const deliveryBoys = await DeliveryBoyModel.find();
+  const deliveryBoys = await deliveryBoyModel.find();
   res.status(200).send({
     status: "sucess",
     msg: "delivery boy fetched successfully",
@@ -46,7 +46,7 @@ exports.getDeliveryBoy = async (req, res) => {
 exports.updateDeliveryBoy = async (req, res) => {
   const number = req.body.number;
 
-  let deliveryBoy = await DeliveryBoyModel.findOne({ number: number });
+  let deliveryBoy = await deliveryBoyModel.findOne({ number: number });
 
   if (!deliveryBoy) {
     return res
@@ -54,7 +54,7 @@ exports.updateDeliveryBoy = async (req, res) => {
       .send({ status: "fail", msg: "Delivery boy not found." });
   }
 
-  deliveryBoy = await DeliveryBoyModel.findByIdAndUpdate(
+  deliveryBoy = await deliveryBoyModel.findByIdAndUpdate(
     deliveryBoy.id,
     req.body,
     {
@@ -64,7 +64,7 @@ exports.updateDeliveryBoy = async (req, res) => {
     }
   );
 
-  const updated = await DeliveryBoyModel.findById(deliveryBoy._id);
+  const updated = await deliveryBoyModel.findById(deliveryBoy._id);
 
   res.status(200).send({
     status: "sucess",
@@ -76,7 +76,7 @@ exports.updateDeliveryBoy = async (req, res) => {
 // delete a delivery boy
 exports.deleteDeliveryBoy = async (req, res) => {
   const number = req.body.number;
-  const deliveryBoy = await DeliveryBoyModel.findOneAndDelete({
+  const deliveryBoy = await deliveryBoyModel.findOneAndDelete({
     number: number,
   });
 
@@ -94,11 +94,11 @@ exports.deleteDeliveryBoy = async (req, res) => {
 exports.deliveryBoyStatusUpdate = async (req, res) => {
   const { isOnline, number } = req.body;
 
-  await DeliveryBoyModel.findOneAndUpdate(
+  await deliveryBoyModel.findOneAndUpdate(
     { number: number },
     { isOnline: isOnline }
   );
-  const deliveryBoy = await DeliveryBoyModel.findOne({ number: number });
+  const deliveryBoy = await deliveryBoyModel.findOne({ number: number });
   res.status(200).send({
     status: "sucess",
     msg: "delivery boy updated successfully",
@@ -109,11 +109,11 @@ exports.deliveryBoyStatusUpdate = async (req, res) => {
 exports.deliveryBoyAdminStatusUpdate = async (req, res) => {
   const { isActive, number } = req.body;
 
-  await DeliveryBoyModel.findOneAndUpdate(
+  await deliveryBoyModel.findOneAndUpdate(
     { number: number },
     { isActive: isActive }
   );
-  const deliveryBoy = await DeliveryBoyModel.findOne({ number: number });
+  const deliveryBoy = await deliveryBoyModel.findOne({ number: number });
   res.status(200).send({
     status: "sucess",
     msg: "delivery boy updated successfully",

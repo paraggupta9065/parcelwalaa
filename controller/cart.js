@@ -3,44 +3,6 @@ const productModel = require("../model/product");
 const shopModel = require("../model/shop");
 const couponModel = require("../model/coupon");
 
-// exports.addTocartModel = async (req, res) => {
-//   const {
-//     inventory_total_amt,
-//     delivery_total_amt,
-//     coupon_code_id,
-//     discount_amt,
-//     net_amt,
-//     pickup_address_id,
-//     delivery_address_id,
-//     cart_inventory,
-//     total_gst,
-//   } = req.body;
-
-//   if (
-//     !inventory_total_amt ||
-//     !delivery_total_amt ||
-//     !coupon_code_id ||
-//     !discount_amt ||
-//     !net_amt ||
-//     !pickup_address_id ||
-//     !delivery_address_id ||
-//     !cart_inventory ||
-//     !total_gst
-//   ) {
-//     res.status(400).send({
-//       status: "fail",
-//       msg: "Please provide all the fields",
-//     });
-//   }
-
-//   const cart = await cartModel.create(cartData);
-
-//   res.status(201).send({
-//     status: "sucess",
-//     cart,
-//   });
-// };
-
 exports.addToCart = async (req, res) => {
   const { productId, delivery_address_id, coupon_code_id } = req.body;
   let inventory_total_amt = 0;

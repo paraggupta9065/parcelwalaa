@@ -1,4 +1,4 @@
-const Banner = require("../model/banner");
+const bannerModel = require("../model/banner");
 
 exports.addBanner = async (req, res) => {
   const image = "hi";
@@ -12,7 +12,7 @@ exports.addBanner = async (req, res) => {
     });
   }
 
-  const banner = await Banner.create(bannerData);
+  const banner = await bannerModel.create(bannerData);
 
   return res.status(201).send({
     status: "sucess",
@@ -22,7 +22,7 @@ exports.addBanner = async (req, res) => {
 
 exports.deleteBanner = async (req, res) => {
   const id = req.params.id;
-  await Banner.findByIdAndDelete(id);
+  await bannerModel.findByIdAndDelete(id);
 
   return res.status(200).send({
     status: "sucess",
@@ -43,8 +43,8 @@ exports.updateBanner = async (req, res) => {
     });
   }
 
-  await Banner.findOneAndUpdate(id, bannerData);
-  const banner = await Banner.findById(id);
+  await bannerModel.findOneAndUpdate(id, bannerData);
+  const banner = await bannerModel.findById(id);
 
   return res.status(200).send({
     status: "sucess",
@@ -54,7 +54,7 @@ exports.updateBanner = async (req, res) => {
 };
 
 exports.getAllBanner = async (req, res) => {
-  const banner = await Banner.find();
+  const banner = await bannerModel.find();
 
   return res.status(200).send({
     status: "sucess",
@@ -65,7 +65,7 @@ exports.getAllBanner = async (req, res) => {
 
 exports.getBannerById = async (req, res) => {
   const id = req.params.id;
-  const banner = await Banner.findById(id);
+  const banner = await bannerModel.findById(id);
 
   return res.status(200).send({
     status: "sucess",
