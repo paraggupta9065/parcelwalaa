@@ -13,7 +13,6 @@ exports.addProduct = async (req, res) => {
   const {
     name,
     type,
-    status,
     featured,
     description,
     veg_type,
@@ -31,7 +30,6 @@ exports.addProduct = async (req, res) => {
   if (
     !name ||
     !type ||
-    !status ||
     !featured ||
     !description ||
     !veg_type ||
@@ -45,7 +43,7 @@ exports.addProduct = async (req, res) => {
     !images ||
     !variations
   ) {
-    res.status(400).send({
+    return res.status(400).send({
       status: "fail",
       msg: "Please provide all feilds",
     });
@@ -54,7 +52,6 @@ exports.addProduct = async (req, res) => {
   const productData = {
     name,
     type,
-    status,
     featured,
     description,
     veg_type,
@@ -73,7 +70,7 @@ exports.addProduct = async (req, res) => {
 
   const product = await productModel.create(productData);
 
-  res.status(201).send({ status: "sucess", product });
+  return res.status(201).send({ status: "sucess", product });
 };
 
 // update product
@@ -83,7 +80,7 @@ exports.updateProduct = async (req, res) => {
   const shop = await shopModel.findOne({ number });
 
   if (!shop) {
-    res.status(404).send({
+    return res.status(404).send({
       status: "Fail",
       msg: "Not found",
     });
@@ -103,7 +100,7 @@ exports.updateProduct = async (req, res) => {
 
   const updatedProduct = await productModel.findOne({ shop_id: shop._id });
 
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     msg: "Updated sucessfully",
     product: updatedProduct,
@@ -117,7 +114,7 @@ exports.deleteProduct = async (req, res) => {
   const shop = await shopModel.findOne({ number });
 
   if (!shop) {
-    res.status(404).send({
+    return res.status(404).send({
       status: "Fail",
       msg: "Not found",
     });
@@ -135,7 +132,7 @@ exports.deleteProduct = async (req, res) => {
 
 exports.getProducts = async (req, res) => {
   const products = await productModel.find();
-  res.status(200).send({ status: "sucess", products });
+  return res.status(200).send({ status: "sucess", products });
 };
 
 // search products using name
@@ -143,11 +140,11 @@ exports.searchProducts = async (req, res) => {
   const name = req.body.name;
 
   if (!name) {
-    res.status(400).send({ status: "fail", msg: "Please provide the keyword" });
+    return res.status(400).send({ status: "fail", msg: "Please provide the keyword" });
   }
 
   if (name.length < 3) {
-    res.status(400).send({
+    return res.status(400).send({
       status: "fail",
       msg: "Please provide keyword of length 3 or more",
     });
@@ -158,10 +155,10 @@ exports.searchProducts = async (req, res) => {
   });
 
   if (!products) {
-    res.status(404).send({ status: "fail", msg: "No products found." });
+    return res.status(404).send({ status: "fail", msg: "No products found." });
   }
 
-  res.status(200).send({ status: "sucess", products });
+  return res.status(200).send({ status: "sucess", products });
 };
 
 // filter products
@@ -171,10 +168,10 @@ exports.filterProducts = async (req, res) => {
   const products = await productModel.find(body);
 
   if (!products) {
-    res.status(404).send({ status: "fail", msg: "No products found." });
+    return res.status(404).send({ status: "fail", msg: "No products found." });
   }
 
-  res.status(200).send({ status: "sucess", products });
+  return res.status(200).send({ status: "sucess", products });
 };
 
 
@@ -186,24 +183,22 @@ exports.getProductByLocation = async (req, res) => {
 
   const products = await productModel.find({ pincode }).populate('shop_id');
   if (products.length == 0) {
-    res.status(404).send({ status: "fail", msg: "No product found." });
+    return res.status(404).send({ status: "fail", msg: "No product found." });
   }
-  res.status(200).send({ status: "sucess", msg: "products fetched.", products });
+  return res.status(200).send({ status: "sucess", msg: "products fetched.", products });
 };
 
 exports.getProductByShop = async (req, res) => {
-  const { shop_id } = req.body;
-  const shops = await shopModel.find({ shop_id });
-  if (shops.length == 0) {
-
-    res.status(404).send({ status: "fail", msg: "No shops found." });
+  const { shop_id } = req.params;
+  if (!shop_id) {
+    return res.status(404).send({ status: "fail", msg: "No Shop Found." });
+  }
+  const products = await productModel.find({ shop_id });
+  if (products.length == 0) {
+    return res.status(404).send({ status: "fail", msg: "No Product Found." });
   }
 
-  let products = [];
-  shops.map(async (shop) => {
-    const product = await productModel.find({ shop_id: shop._id });
-    products.push(product);
-  });
 
-  res.status(200).send({ status: "sucess", msg: "shops fetched.", products });
+
+  return res.status(200).send({ status: "sucess", msg: "shops fetched.", products });
 };

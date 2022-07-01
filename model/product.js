@@ -16,12 +16,14 @@ const ProductSchema = mongoose.Schema({
     required: [true, "Please enter product type"],
   },
   status: {
-    type: Number,
-    enum: [0, 1],
+    type: Boolean,
     required: [true, "Please enter product status"],
+    default: true,
   },
   featured: {
-    type: String,
+    type: Boolean,
+    required: [true, "Please enter featured status"],
+    default: false,
   },
   description: {
     type: String,

@@ -3,7 +3,7 @@
 
 
 exports.homeLayout = async (req, res) => {
-  res.send([
+  return res.send([
     { type: "banner" },
     { type: "list" },
     { type: "icon" },
@@ -13,7 +13,7 @@ exports.homeLayout = async (req, res) => {
 };
 
 exports.banner = async (req, res) => {
-  res.send([
+  return res.send([
     { type: "banner" },
     { type: "list" },
     { type: "icon" },
@@ -35,7 +35,7 @@ exports.banner = async (req, res) => {
 
 
 exports.homeLayout = async (req, res) => {
-  res.send([
+  return res.send([
     { type: "banner" },
     { type: "list" },
     { type: "icon" },
@@ -45,7 +45,7 @@ exports.homeLayout = async (req, res) => {
 };
 
 exports.banner = async (req, res) => {
-  res.send([
+  return res.send([
     { type: "banner" },
     { type: "list" },
     { type: "icon" },

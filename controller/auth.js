@@ -21,7 +21,7 @@ exports.sendOtp = async (req, res) => {
   });
   await otpModel.findOneAndDelete({ number: number });
   await otpModel.create({ otp: otpCode, number: number });
-  res.status(200).send({
+  return res.status(200).send({
     msg: "otp sended successfully",
     status: "sucess",
     number: number,
@@ -35,6 +35,7 @@ exports.verifyOtp = async (req, res) => {
     return res.status(404).send({ status: "fail", msg: "Number not found" });
   }
   const otpFound = await otpModel.findOne({ number: number });
+  console.log(otpFound);
 
   if (!otpFound) {
     return res.status(400).send({ status: "fail", msg: "Otp Not Sended Yet" });
@@ -47,6 +48,7 @@ exports.verifyOtp = async (req, res) => {
     return res.status(400).send({ status: "fail", msg: "Incorrect Otp" });
   }
   const userFound = await userModel.findOne({ number: number });
+  console.log(userFound);
   if (!userFound) {
     const { name, role } = req.body;
     if (!name && !role) {
@@ -64,20 +66,33 @@ exports.verifyOtp = async (req, res) => {
       .status(201)
       .send({ status: "sucess", msg: "User created succesfuly", token: token });
   }
-  const token = await userFound.getJwtToken();
-  await otpModel.findOneAndDelete({ number: number });
-  const shop = shopModel.findOne({ user_id: userFound._id })
 
+
+  const token = await userFound.getJwtToken();
+
+  const shop = await shopModel.findOne({ user_id: userFound._id })
+  await otpModel.findOneAndDelete({ number: number });
+
+  console.log(shop);
   if (userFound.role == "shop") {
-    return res
+    let shopres = res
       .status(200)
       .send({
         status: "sucess",
         role: userFound.role,
+        shop: shop,
         msg: "Login succesfuly",
         token: token,
       });
+    return shopres;
   }
+  console.log({
+    status: "sucess",
+    role: userFound.role,
+    msg: "Login succesfuly",
+    token: token,
+  });
+
   return res
     .status(200)
     .send({

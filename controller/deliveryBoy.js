@@ -20,12 +20,12 @@ exports.addDeliveryBoy = async (req, res) => {
     !deliveryBoyData["upi"] ||
     !deliveryBoyData["bike_number"]
   ) {
-    res.status(400).send({ status: "fail", msg: "Incomplete Data." });
+    return res.status(400).send({ status: "fail", msg: "Incomplete Data." });
   }
 
   const deliveryBoy = await DeliveryBoyModel.create(deliveryBoyData);
 
-  res.status(201).send({
+  return res.status(201).send({
     status: "sucess",
     msg: "Delivery boy created sucessfully",
     deliveryBoy,
@@ -35,7 +35,7 @@ exports.addDeliveryBoy = async (req, res) => {
 //get delivery boy
 exports.getDeliveryBoy = async (req, res) => {
   const deliveryBoys = await DeliveryBoyModel.find();
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     msg: "delivery boy fetched successfully",
     deliveryBoys,
@@ -66,7 +66,7 @@ exports.updateDeliveryBoy = async (req, res) => {
 
   const updated = await DeliveryBoyModel.findById(deliveryBoy._id);
 
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     msg: "Updated Sucessfully",
     deliveryBoy: updated,
@@ -99,7 +99,7 @@ exports.deliveryBoyStatusUpdate = async (req, res) => {
     { isOnline: isOnline }
   );
   const deliveryBoy = await DeliveryBoyModel.findOne({ number: number });
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     msg: "delivery boy updated successfully",
     deliveryBoy: deliveryBoy,
@@ -114,7 +114,7 @@ exports.deliveryBoyAdminStatusUpdate = async (req, res) => {
     { isActive: isActive }
   );
   const deliveryBoy = await DeliveryBoyModel.findOne({ number: number });
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     msg: "delivery boy updated successfully",
     deliveryBoy: deliveryBoy,

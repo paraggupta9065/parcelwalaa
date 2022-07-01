@@ -6,10 +6,10 @@ exports.initPayment = async (req, res) => {
 
   const cart = await cartModel.findOne({ 'number': req.user.number });
   if (!cart) {
-    res.status(200).send({ status: "fail", msg: "Cart not found !" });
+    return res.status(200).send({ status: "fail", msg: "Cart not found !" });
   }
 
-  res.status(200).send({ status: "sucess", cart, payment_response: { merchentKey: "8319905007@apl", } });
+  return res.status(200).send({ status: "sucess", cart, payment_response: { merchentKey: "8319905007@apl", } });
 
 };
 
@@ -20,7 +20,7 @@ exports.sucessPayment = async (req, res) => {
 
   const cart = await cartModel.findOne({ number: req.user.number });
   if (!cart) {
-    res.status(200).send({ status: "fail", msg: "Cart not found !" });
+    return res.status(200).send({ status: "fail", msg: "Cart not found !" });
   }
 
   await orderModel.create({
@@ -51,7 +51,7 @@ exports.deleteOrder = async (req, res) => {
 
   await orderModel.findByIdAndDelete(orderId);
 
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     msg: "Order deleted sucessfully.",
   });

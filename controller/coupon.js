@@ -7,7 +7,7 @@ exports.addCoupon = async (req, res) => {
   const shop = await Shop.findOne({ number });
 
   if (!shop) {
-    res.status(404).send({
+    return res.status(404).send({
       status: "Fail",
       msg: "Not found",
     });
@@ -30,7 +30,7 @@ exports.addCoupon = async (req, res) => {
     !couponData["products"] ||
     !couponData["restaurants"]
   ) {
-    res.status(400).send({
+    return res.status(400).send({
       status: "Fail",
       msg: "Please provide all the feilds",
     });
@@ -40,7 +40,7 @@ exports.addCoupon = async (req, res) => {
 
   const coupon = await Coupon.create(couponData);
 
-  res.status(201).send({
+  return res.status(201).send({
     status: "Sucess",
     msg: "Created sucessfully",
     coupon,
@@ -53,7 +53,7 @@ exports.updateCoupon = async (req, res) => {
   const shop = await Shop.findOne({ number });
 
   if (!shop) {
-    res.status(404).send({
+    return res.status(404).send({
       status: "Fail",
       msg: "Not found",
     });
@@ -62,7 +62,7 @@ exports.updateCoupon = async (req, res) => {
   const coupon = await Coupon.findOne({ shop_id: shop._id });
 
   if (!coupon) {
-    res.status(404).send({
+    return res.status(404).send({
       status: "Fail",
       msg: "Coupon not found",
     });
@@ -106,7 +106,7 @@ exports.updateCoupon = async (req, res) => {
 
   const newCoupon = await Coupon.findById(coupon._id);
 
-  res.status(200).send({
+  return res.status(200).send({
     status: "Sucess",
     msg: "Updated sucessfully",
     newCoupon,
@@ -119,7 +119,7 @@ exports.deleteCoupon = async (req, res) => {
   const shop = await Shop.findOne({ number });
 
   if (!shop) {
-    res.status(404).send({
+    return res.status(404).send({
       status: "Fail",
       msg: "Not found",
     });
@@ -127,7 +127,7 @@ exports.deleteCoupon = async (req, res) => {
 
   await Coupon.findOneAndDelete({ shop_id: shop._id });
 
-  res.status(200).send({
+  return res.status(200).send({
     status: "Sucess",
     msg: "Updated sucessfully",
   });
@@ -139,7 +139,7 @@ exports.getCoupons = async (req, res) => {
   const shop = await Shop.findOne({ number });
 
   if (!shop) {
-    res.status(404).send({
+    return res.status(404).send({
       status: "Fail",
       msg: "Not found",
     });
@@ -147,7 +147,7 @@ exports.getCoupons = async (req, res) => {
 
   const coupons = await Coupon.find({ shop_id: shop._id });
 
-  res.status(200).send({
+  return res.status(200).send({
     status: "Sucess",
     msg: "Fetched all coupons of a shop",
     coupons,

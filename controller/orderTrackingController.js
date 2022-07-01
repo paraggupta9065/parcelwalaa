@@ -12,7 +12,7 @@ exports.startTrip = async (req, res) => {
     const timerEventEmitter = req.app.get('emmiter');
     timerEventEmitter.emit('trip_started', trip);
 
-    res.status(201).send({
+    return res.status(201).send({
         status: "sucess",
         trip,
     });

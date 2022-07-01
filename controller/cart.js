@@ -27,7 +27,7 @@ const couponModel = require("../model/coupon");
 //     !cart_inventory ||
 //     !total_gst
 //   ) {
-//     res.status(400).send({
+//      return res.status(400).send({
 //       status: "fail",
 //       msg: "Please provide all the fields",
 //     });
@@ -35,7 +35,7 @@ const couponModel = require("../model/coupon");
 
 //   const cart = await cartModel.create(cartData);
 
-//   res.status(201).send({
+//    return res.status(201).send({
 //     status: "sucess",
 //     cart,
 //   });
@@ -90,7 +90,7 @@ exports.addToCart = async (req, res) => {
 
     cart = await cartModel.create(newCart);
 
-    res.status(201).send({
+    return res.status(201).send({
       status: "sucess",
       cart,
     });
@@ -129,7 +129,7 @@ exports.addToCart = async (req, res) => {
 
   cart = await cartModel.findByIdAndUpdate(cart._id, updateCart);
 
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     msg: "Added To Cart",
     cart,
@@ -141,13 +141,13 @@ exports.getCart = async (req, res) => {
   const cart = await cartModel.findOne({ user: id });
 
   if (!cart) {
-    res.status(404).send({
+    return res.status(404).send({
       status: "fail",
       msg: "cartModel not found",
     });
   }
 
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     cart,
   });
@@ -158,7 +158,7 @@ exports.removeCart = async (req, res) => {
 
   await cartModel.findOneAndDelete({ user: id });
 
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     msg: "cartModel deleted.",
   });
@@ -200,7 +200,7 @@ exports.updateQty = async (req, res) => {
   const cart = await cartModel.findOne({ user: id });
 
   if (!cart) {
-    res.status(404).send({
+    return res.status(404).send({
       status: "fail",
       msg: "Cart not found",
     });
@@ -219,7 +219,7 @@ exports.updateQty = async (req, res) => {
 
   cartModel.findByIdAndUpdate(cart._id, { cart_inventory: inventoryUpdate });
 
-  res.status(201).send({
+  return res.status(201).send({
     status: "sucess",
     msg: "Product qty updated",
   });

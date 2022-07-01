@@ -62,13 +62,13 @@ exports.deleteShops = async (req, res) => {
   const { number } = req.body;
   await shopModel.findOneAndDelete({ number: number });
   await userModel.findOneAndDelete({ number: number });
-  res.status(200).send({ status: "sucess", msg: "shop deleted successfully" });
+  return res.status(200).send({ status: "sucess", msg: "shop deleted successfully" });
 };
 
 exports.getShops = async (req, res) => {
   const shops = await shopModel.find();
 
-  res.status(200).send({ status: "sucess", msg: "shop successfully", shops });
+  return res.status(200).send({ status: "sucess", msg: "shop successfully", shops });
 };
 
 exports.storeStatusUpdate = async (req, res) => {

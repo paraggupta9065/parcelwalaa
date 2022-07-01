@@ -51,7 +51,7 @@ exports.addAddress = async (req, res) => {
 
   const address = await addressModel.create(addressData);
 
-  res.status(201).send({
+  return res.status(201).send({
     status: "sucess",
     address,
   });
@@ -63,7 +63,7 @@ exports.updateAddress = async (req, res) => {
   let address = await addressModel.findOne({ user_id: id });
 
   if (!address) {
-    res.status(404).send({
+    return res.status(404).send({
       status: "fail",
       msg: "Address not found",
     });
@@ -119,7 +119,7 @@ exports.updateAddress = async (req, res) => {
 
   const updatedAddress = await addressModel.findById(address._id);
 
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     address: updatedAddress,
   });
@@ -129,7 +129,7 @@ exports.removeAddress = async (req, res) => {
   const id = req.user._id;
   await addressModel.findOneAndDelete({ user_id: id });
 
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     msg: "Address deleted.",
   });
@@ -140,7 +140,7 @@ exports.getCustumerAddress = async (req, res) => {
   const id = req.user._id;
   const addressList = await addressModel.find({ user_id: id });
 
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     msg: "Address deleted.",
   });
