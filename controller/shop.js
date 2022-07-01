@@ -1,32 +1,53 @@
-const bcrypt = require("bcryptjs");
-const jsonwebtoken = require("jsonwebtoken");
-const otpGenerator = require("otp-generator");
-const otp = require("../model/otp");
+const otpModel = require("../model/otp");
 const shopModel = require("../model/shop");
 const userModel = require("../model/user");
 
 exports.addShops = async (req, res) => {
   const image = "adf";
   const banner = "dfsdf";
-  // const { number, store_name, email, address_line1, admin_commission_rate,city, state, fssai ,deliveryCharges} = req.body;
+  // const { otpCode,number, store_name, email, address_line1, admin_commission_rate,city,pincode, state, fssai ,deliveryCharges} = req.body;
   const shopData = req.body;
-  const jwtToken = req.headers.token;
-
-  const token = await jsonwebtoken.verify(jwtToken, process.env.JWT_SECRET);
-  const user = await userModel.findById(token.id);
-  if (!user) {
-    res
-      .status(404)
-      .send({ status: "fail", msg: "No user found related to token" });
+  const { number, store_name, otpCode } = shopData;
+  //Verify Otp
+  if (!number) {
+    return res.status(404).send({ status: "fail", msg: "Number not found" });
   }
-  shopData["user_id"] = token.id;
+  const otpFound = await otpModel.findOne({ number: number });
+
+  if (!otpFound) {
+    return res.status(400).send({ status: "fail", msg: "Otp Not Sended Yet" });
+  }
+  if (otpFound.otpExpiry < Date.now) {
+    return res.status(400).send({ status: "fail", msg: "Otp expired" });
+  }
+  const isVerified = await otpFound.isValidatedOtp(otpCode);
+  if (!isVerified) {
+    return res.status(400).send({ status: "fail", msg: "Incorrect Otp" });
+  }
+  //Otp Verified
+  //Creating User
+
+  if (!store_name) {
+    return res
+      .status(404)
+      .send({ status: "fail", msg: "Please send shop info to create shop" });
+  }
+  const userCreated = await userModel.create({
+    name: store_name,
+    number: number,
+    role: "shop",
+  });
+  //User Created
+  //Creating Shop
+  shopData["user_id"] = userCreated._id;
   shopData["image"] = image;
   shopData["banner"] = banner;
   const shop = await shopModel.create(shopData);
   res
     .status(201)
-    .send({ status: "sucess", msg: "shop added successfully", shop: shop });
+    .send({ status: "sucess", msg: "shop added successfully", shop: shop, user: userCreated });
 };
+
 
 exports.updateShops = async (req, res) => {
   const shopData = req.body;
@@ -87,4 +108,42 @@ exports.getStoresByPincode = async (req, res) => {
   res
     .status(200)
     .send({ status: "sucess", msg: "shop fetched successfully", shops });
+};
+exports.isVerified = async (req, res) => {
+  const id = req.user._id;
+  console.log(id);
+
+  const shop = await shopModel.findOne({ "user_id": id });
+  if (!shop) {
+    res
+      .status(404)
+      .send({ status: "fail", msg: "You are not a vendor", });
+  }
+  res
+    .status(200)
+    .send({ status: "sucess", msg: "Verification status", isVerified: shop.isVerified });
+};
+exports.verifyShop = async (req, res) => {
+  const id = req.params.shop_id;
+  const shop = await shopModel.findByIdAndUpdate(id, { isVerified: true });
+  if (!shop) {
+    res
+      .status(404)
+      .send({ status: "fail", msg: "You are not a vendor", });
+  }
+  res
+    .status(200)
+    .send({ status: "sucess", msg: "Shop Verified", });
+};
+exports.getUnverifiedShop = async (req, res) => {
+
+  const shops = await shopModel.find({ isVerified: false });
+  if (!shops) {
+    res
+      .status(404)
+      .send({ status: "fail", msg: "All Shop Are Verified", });
+  }
+  res
+    .status(200)
+    .send({ status: "sucess", msg: "Shop Fecthed", shops });
 };

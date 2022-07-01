@@ -14,6 +14,7 @@ const cartRoute = require("./routes/cart");
 const addressRoute = require("./routes/address");
 const couponRoute = require("./routes/coupon");
 const tripRoute = require("./routes/trip");
+const ordersRoute = require("./routes/orders");
 //
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
@@ -46,6 +47,7 @@ app.use("/cart", cartRoute);
 app.use("/address", addressRoute);
 app.use("/coupon", couponRoute);
 app.use("/trip", tripRoute);
+app.use("/orders", ordersRoute);
 app.use("/api_docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc));
 
 // exporting server

@@ -26,6 +26,7 @@ const shopSchema = mongoose.Schema({
   admin_commission_rate: {
     type: Number,
     required: [true, "Please enter commission rate"],
+    default: 18,
   },
   store_name: {
     type: String,
@@ -55,6 +56,17 @@ const shopSchema = mongoose.Schema({
   createdAt: {
     type: Date,
     default: Date.now,
+  },
+  isVerified: {
+    type: Boolean,
+    default: false,
+  },
+  isActive: {
+    type: Boolean,
+    default: true,
+  }, isOnline: {
+    type: Boolean,
+    default: true,
   }
 });
 
