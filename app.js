@@ -14,13 +14,8 @@ const cartRoute = require("./routes/cart");
 const addressRoute = require("./routes/address");
 const couponRoute = require("./routes/coupon");
 const tripRoute = require("./routes/trip");
-<<<<<<< HEAD
-// const uploadFile = require("./routes/uploadFile");
-
-=======
 const ordersRoute = require("./routes/orders");
 //
->>>>>>> 74c967b2f42231fa2c8abc63a46ab7a963b3a0aa
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const swaggerJsDoc = YAML.load("./swagger.yaml");
