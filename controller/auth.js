@@ -1,8 +1,9 @@
 const bcrypt = require("bcryptjs");
 const otpGenerator = require("otp-generator");
-const otp = require("../model/otp");
-const user = require("../model/user");
+const otpModel = require("../model/otp");
+const userModel = require("../model/user");
 const jwt = require("jsonwebtoken");
+const shopModel = require("../model/shop");
 
 exports.sendOtp = async (req, res) => {
   const { number } = req.body;
@@ -18,8 +19,8 @@ exports.sendOtp = async (req, res) => {
     upperCaseAlphabets: false,
     specialChars: false,
   });
-  await otp.findOneAndDelete({ number: number });
-  await otp.create({ otp: otpCode, number: number });
+  await otpModel.findOneAndDelete({ number: number });
+  await otpModel.create({ otp: otpCode, number: number });
   res.status(200).send({
     msg: "otp sended successfully",
     status: "sucess",
@@ -33,7 +34,7 @@ exports.verifyOtp = async (req, res) => {
   if (!number) {
     return res.status(404).send({ status: "fail", msg: "Number not found" });
   }
-  const otpFound = await otp.findOne({ number: number });
+  const otpFound = await otpModel.findOne({ number: number });
 
   if (!otpFound) {
     return res.status(400).send({ status: "fail", msg: "Otp Not Sended Yet" });
@@ -45,15 +46,15 @@ exports.verifyOtp = async (req, res) => {
   if (!isVerified) {
     return res.status(400).send({ status: "fail", msg: "Incorrect Otp" });
   }
-  const userFound = await user.findOne({ number: number });
+  const userFound = await userModel.findOne({ number: number });
   if (!userFound) {
     const { name, role } = req.body;
     if (!name && !role) {
       return res
         .status(404)
-        .send({ status: "fail", msg: "Please send user info to create user" });
+        .send({ status: "fail", msg: "Please user not found create user" });
     }
-    const userCreated = await user.create({
+    const userCreated = await userModel.create({
       name: name,
       number: number,
       role: role,
@@ -64,7 +65,19 @@ exports.verifyOtp = async (req, res) => {
       .send({ status: "sucess", msg: "User created succesfuly", token: token });
   }
   const token = await userFound.getJwtToken();
-  await otp.findOneAndDelete({ number: number });
+  await otpModel.findOneAndDelete({ number: number });
+  const shop = shopModel.findOne({ user_id: userFound._id })
+
+  if (userFound.role == "shop") {
+    return res
+      .status(200)
+      .send({
+        status: "sucess",
+        role: userFound.role,
+        msg: "Login succesfuly",
+        token: token,
+      });
+  }
   return res
     .status(200)
     .send({
