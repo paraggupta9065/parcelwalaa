@@ -48,7 +48,6 @@ exports.verifyOtp = async (req, res) => {
     return res.status(400).send({ status: "fail", msg: "Incorrect Otp" });
   }
   const userFound = await userModel.findOne({ number: number });
-  console.log(userFound);
   if (!userFound) {
     const { name, role } = req.body;
     if (!name && !role) {
@@ -73,7 +72,6 @@ exports.verifyOtp = async (req, res) => {
   const shop = await shopModel.findOne({ user_id: userFound._id })
   await otpModel.findOneAndDelete({ number: number });
 
-  console.log(shop);
   if (userFound.role == "shop") {
     let shopres = res
       .status(200)
