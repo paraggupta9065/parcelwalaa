@@ -14,13 +14,8 @@ const cartRoute = require("./routes/cart");
 const addressRoute = require("./routes/address");
 const couponRoute = require("./routes/coupon");
 const tripRoute = require("./routes/trip");
-<<<<<<< HEAD
-// const uploadFile = require("./routes/uploadFile");
-
-=======
 const ordersRoute = require("./routes/orders");
 //
->>>>>>> 74c967b2f42231fa2c8abc63a46ab7a963b3a0aa
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const swaggerJsDoc = YAML.load("./swagger.yaml");
@@ -71,6 +66,34 @@ app.post("/upload", upload.single("file"), async (req, res) => {
         status: "sucess",
         msg: "File uploaded sucessfully",
         signedUrl,
+      });
+    });
+});
+
+// PUSH NOTIFICATION
+const notification_options = {
+  priority: "high",
+  timeToLive: 60 * 60 * 24,
+};
+
+app.post("/notification", (req, res) => {
+  const registrationToken = req.body.registrationToken;
+  const message = req.body.message;
+  const options = notification_options;
+
+  admin
+    .messaging()
+    .sendToDevice(registrationToken, message, options)
+    .then((response) => {
+      res.status(200).send({
+        status: "sucess",
+        msg: "Notification send sucessfully",
+      });
+    })
+    .catch((error) => {
+      res.status(400).send({
+        status: "fail",
+        message: error,
       });
     });
 });
