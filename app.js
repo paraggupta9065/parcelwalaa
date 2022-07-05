@@ -15,6 +15,7 @@ const addressRoute = require("./routes/address");
 const couponRoute = require("./routes/coupon");
 const tripRoute = require("./routes/trip");
 const ordersRoute = require("./routes/orders");
+const categoriesRoute = require("./routes/categories");
 const admin = require("firebase-admin");
 //
 const swaggerUi = require("swagger-ui-express");
@@ -33,7 +34,7 @@ const firebaseConfig = {
   storageBucket: "parcelwalaa-47f46.appspot.com",
   messagingSenderId: "237544535660",
   appId: "1:237544535660:web:cd3b9126ba00778928ca49",
-  measurementId: "G-JERKGHXV0L"
+  measurementId: "G-JERKGHXV0L",
 };
 
 // Initialize Firebase
@@ -42,10 +43,12 @@ app.get("/", (req, res) =>
   res.send({ status: "sucess", msg: "Server Up And Running" })
 );
 app.use(express.json());
-app.use(fileUpload({
-  useTempFiles: true,
-  tempFileDir: 'image'
-}));
+app.use(
+  fileUpload({
+    useTempFiles: true,
+    tempFileDir: "image",
+  })
+);
 app.use((err, req, res, next) => {
   res.status(500).send({
     message: err.message,
@@ -53,8 +56,8 @@ app.use((err, req, res, next) => {
 });
 app.use(express.urlencoded({ extended: true }));
 
-const multer = require('multer')
-const upload = multer({ dest: 'uploads/' })
+const multer = require("multer");
+const upload = multer({ dest: "uploads/" });
 
 // PUSH NOTIFICATION
 const notification_options = {
@@ -97,13 +100,12 @@ app.use("/address", addressRoute);
 app.use("/coupon", couponRoute);
 app.use("/trip", tripRoute);
 app.use("/orders", ordersRoute);
+app.use("/categories", categoriesRoute);
 app.use("/api_docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc));
-app.post("/file", upload.single('image'), (req, res) => {
-  console.log(req.file)
-  res.send("hi")
-}
-
-);
+app.post("/file", upload.single("image"), (req, res) => {
+  console.log(req.file);
+  res.send("hi");
+});
 
 // exporting server
 module.exports = app;
