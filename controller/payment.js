@@ -23,7 +23,7 @@ exports.sucessPayment = async (req, res) => {
     return res.status(200).send({ status: "fail", msg: "Cart not found !" });
   }
 
-  await orderModel.create({
+  const order = await orderModel.create({
     order_note,
     order_inventory: cart.cart_inventory,
     pickup_address_id: delivery_address_id,
@@ -40,6 +40,10 @@ exports.sucessPayment = async (req, res) => {
     amount_paid,
     payment_method_id,
   });
+
+
+  const timerEventEmitter = req.app.get('emmiter');
+  timerEventEmitter.emit('order_recived', order._id);
 
   res
     .status(200)

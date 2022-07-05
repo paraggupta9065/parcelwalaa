@@ -1,11 +1,10 @@
 const bannerModel = require("../model/banner");
 
 exports.addBanner = async (req, res) => {
-  const image = "hi";
   const bannerData = ({ categoryId, openType, isActive, shopId } = req.body);
-  bannerData["image"] = image;
+  bannerData["image"] = req.file.filename;
 
-  if (!openType || !isActive || !shopId) {
+  if (!openType || !isActive) {
     return res.status(400).send({
       status: "fail",
       msg: "Please provide all the fields",

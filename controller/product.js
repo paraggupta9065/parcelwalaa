@@ -10,35 +10,25 @@ exports.addProduct = async (req, res) => {
   const {
     name,
     type,
-    featured,
     description,
     veg_type,
     price,
     regular_price,
     weight,
-    rating_count,
-    reviews,
     categories,
     tags,
     images,
-    variations,
   } = req.body;
+  console.log(req.body);
 
   if (
     !name ||
     !type ||
-    !featured ||
     !description ||
     !veg_type ||
     !price ||
     !regular_price ||
-    !weight ||
-    !rating_count ||
-    !reviews ||
-    !categories ||
-    !tags ||
-    !images ||
-    !variations
+    !weight
   ) {
     return res.status(400).send({
       status: "fail",
@@ -49,18 +39,15 @@ exports.addProduct = async (req, res) => {
   const productData = {
     name,
     type,
-    featured,
     description,
     veg_type,
     price,
     regular_price,
     weight,
-    rating_count,
-    reviews,
-    categories,
-    tags,
-    images,
-    variations,
+    categories: [],
+    tags: [],
+    images: "aaa",
+    variations: "",
     shop_id: shop._id,
     pincode: shop.pincode,
   };

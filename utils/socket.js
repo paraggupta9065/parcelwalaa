@@ -2,13 +2,19 @@ const connectToSocket = (app) => {
     const server = require('http').createServer(app);
     const io = require("socket.io")(server);
     io.on('connection', (socket) => {
-        socket.join("driver");
-        console.log("room joined");
+
+        socket.on("shop_join", (shop_id) => {
+            socket.join(shop_id);
+            console.log(`Shop with id ${shop_id} joined`)
+
+        })
     });
     const timerEventEmitter = app.get('emmiter');
-    timerEventEmitter.on('trip_started', (trip) => {
-        io.to("driver").emit("trip_started", trip);
+
+    timerEventEmitter.on('order_recived', (id) => {
+        io.to(id).emit("order_recived", id);
     });
+
     return server;
 }
 

@@ -111,7 +111,6 @@ exports.getStoresByPincode = async (req, res) => {
 };
 exports.isVerified = async (req, res) => {
   const id = req.user._id;
-  console.log(id);
 
   const shop = await shopModel.findOne({ "user_id": id });
   if (!shop) {

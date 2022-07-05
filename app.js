@@ -16,16 +16,17 @@ const couponRoute = require("./routes/coupon");
 const tripRoute = require("./routes/trip");
 const ordersRoute = require("./routes/orders");
 const admin = require("firebase-admin");
-//
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
 const swaggerJsDoc = YAML.load("./swagger.yaml");
 require("dotenv").config();
 const { EventEmitter } = require("events");
 const timerEventEmitter = new EventEmitter();
-const fileUpload = require("express-fileupload");
 
+
+//init start
 connectToDb();
+//init end
 const firebaseConfig = {
   apiKey: "AIzaSyCYGD3DwuQcWklpa3ABh49F7KcEr4C2FAU",
   authDomain: "parcelwalaa-47f46.firebaseapp.com",
@@ -38,23 +39,16 @@ const firebaseConfig = {
 
 // Initialize Firebase
 admin.initializeApp(firebaseConfig);
-app.get("/", (req, res) =>
+app.get("/", (req, res) => {
+  const timerEventEmitter = req.app.get('emmiter');
+  timerEventEmitter.emit('order_recived', "ghgh");
   res.send({ status: "sucess", msg: "Server Up And Running" })
-);
-app.use(express.json());
-app.use(fileUpload({
-  useTempFiles: true,
-  tempFileDir: 'image'
-}));
-app.use((err, req, res, next) => {
-  res.status(500).send({
-    message: err.message,
-  });
-});
-app.use(express.urlencoded({ extended: true }));
+}
 
-const multer = require('multer')
-const upload = multer({ dest: 'uploads/' })
+);
+
+
+
 
 // PUSH NOTIFICATION
 const notification_options = {
@@ -84,10 +78,19 @@ app.post("/notification", (req, res) => {
     });
 });
 
+
 app.set("emmiter", timerEventEmitter);
+//middleware use
+app.use(express.json());
+app.use((err, req, res, next) => {
+  res.status(500).send({
+    message: err.message,
+  });
+});
+app.use(express.urlencoded({ extended: true }));
 app.use("/auth", authRoute);
 app.use("/shop", shopRoute);
-app.use("/shop", bannerRoute);
+app.use("/banner", bannerRoute);
 app.use("/home", homeRoute);
 app.use("/delivery_boy", deliveryBoyRoute);
 app.use("/product", productRoute);
@@ -98,12 +101,27 @@ app.use("/coupon", couponRoute);
 app.use("/trip", tripRoute);
 app.use("/orders", ordersRoute);
 app.use("/api_docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc));
-app.post("/file", upload.single('image'), (req, res) => {
-  console.log(req.file)
-  res.send("hi")
-}
+//middleware use
+// const fs = require('fs')
+// const stream = require('stream')
+// // app.post("/file", upload.single('image'), (req, res) => {
 
-);
+// //   // res.sendFile(req.file.path, { root: __dirname });
+// //   const r = fs.createReadStream(__dirname + '/' + req.file.path) // or any other way to get a readable stream
+// //   const ps = new stream.PassThrough() // <---- this makes a trick with stream error handling
+// //   stream.pipeline(
+// //     r,
+// //     ps, // <---- this makes a trick with stream error handling
+// //     (err) => {
+// //       if (err) {
+// //         console.log(err) // No such file or any other kind of error
+// //         return res.sendStatus(400);
+// //       }
+// //     })
+// //   ps.pipe(res)
+// // }
+// // );
+
 
 // exporting server
 module.exports = app;

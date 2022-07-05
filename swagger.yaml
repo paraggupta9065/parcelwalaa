@@ -280,6 +280,8 @@ components:
             type: string
         shop_id:
           type: string
+        placement:
+          type: string
         isActive:
           type: boolean
     Coupon:
@@ -1825,6 +1827,8 @@ paths:
                   items:
                     type: string
                 shop_id:
+                  type: string
+                placement:
                   type: string
                 isActive:
                   type: boolean

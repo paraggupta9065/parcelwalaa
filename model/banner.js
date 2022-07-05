@@ -24,7 +24,11 @@ const BannerSchema = mongoose.Schema({
   shop_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Shop",
-    required: [true, "Please enter shop id"],
+  },
+  placement: {
+    type: String,
+    enum: ["home", "shop", "footer", 'header'],
+    required: [true, "Please enter placment id"],
   },
   isActive: {
     type: Boolean,
