@@ -15,6 +15,7 @@ const addressRoute = require("./routes/address");
 const couponRoute = require("./routes/coupon");
 const tripRoute = require("./routes/trip");
 const ordersRoute = require("./routes/orders");
+const categoriesRoute = require("./routes/categories");
 const admin = require("firebase-admin");
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
@@ -34,7 +35,7 @@ const firebaseConfig = {
   storageBucket: "parcelwalaa-47f46.appspot.com",
   messagingSenderId: "237544535660",
   appId: "1:237544535660:web:cd3b9126ba00778928ca49",
-  measurementId: "G-JERKGHXV0L"
+  measurementId: "G-JERKGHXV0L",
 };
 
 // Initialize Firebase
@@ -100,6 +101,7 @@ app.use("/address", addressRoute);
 app.use("/coupon", couponRoute);
 app.use("/trip", tripRoute);
 app.use("/orders", ordersRoute);
+app.use("/categories", categoriesRoute);
 app.use("/api_docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc));
 //middleware use
 // const fs = require('fs')
