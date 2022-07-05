@@ -3,11 +3,7 @@ const categoriesModel = require("../model/categories");
 exports.addCategories = async (req, res) => {
   const categoriesData = req.body;
 
-  if (
-    !categoriesData["name"] ||
-    !categoriesData["image"] ||
-    !categoriesData["subCategories"]
-  ) {
+  if (!categoriesData["name"] || !categoriesData["image"]) {
     res.status(400).send({
       status: "fail",
       msg: "Please provide all the fields",
@@ -59,5 +55,14 @@ exports.deleteCategories = async (req, res) => {
   res.status(200).send({
     status: "sucess",
     msg: "Deleted sucessfully",
+  });
+};
+
+exports.getCategories = async (req, res) => {
+  const categories = await categoriesModel.find();
+
+  res.status(200).send({
+    status: "sucess",
+    categories,
   });
 };
