@@ -1,5 +1,6 @@
 const cartModel = require("../model/cart");
 const orderModel = require("../model/order");
+const request = require('request');
 
 exports.initPayment = async (req, res) => {
 
@@ -44,6 +45,25 @@ exports.sucessPayment = async (req, res) => {
 
   const timerEventEmitter = req.app.get('emmiter');
   timerEventEmitter.emit('order_recived', order._id);
+  //send notification
+
+
+  request.post(
+    'https://fcm.googleapis.com/fcm/send',
+    { json: { key: 'value' } },
+    function (error, response, body) {
+      if (!error && response.statusCode == 200) {
+        console.log(body);
+      }
+    }
+  );
+  //send notification
+
+
+
+
+
+
 
   res
     .status(200)
