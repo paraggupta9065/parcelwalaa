@@ -17,6 +17,10 @@ const UserSchema = mongoose.Schema({
     enum: ["deliveryBoy", "user", "admin", "shop"],
     default: "user",
   },
+  fmc_token: {
+    type: String,
+    default: "null",
+  },
   createdAt: {
     type: Date,
     default: Date.now,

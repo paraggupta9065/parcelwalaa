@@ -1,7 +1,10 @@
 const bannerModel = require("../model/banner");
 
+
+
+
 exports.addBanner = async (req, res) => {
-  const bannerData = ({ categoryId, openType, isActive, shopId } = req.body);
+  const bannerData = ({ openType, isActive } = req.body);
   bannerData["image"] = req.file.filename;
 
   if (!openType || !isActive) {
@@ -31,16 +34,10 @@ exports.deleteBanner = async (req, res) => {
 
 exports.updateBanner = async (req, res) => {
   const id = req.params.id;
-  const image = "hi";
-  const bannerData = ({ categoryId, openType, isActive, shop } = req.body);
-  bannerData["image"] = image;
+  const bannerData = req.body;
+  console.log(bannerData);
 
-  if (!openType || !isActive || !shop) {
-    return res.status(400).send({
-      status: "fail",
-      msg: "Please provide all the fields",
-    });
-  }
+
 
   await bannerModel.findOneAndUpdate(id, bannerData);
   const banner = await bannerModel.findById(id);

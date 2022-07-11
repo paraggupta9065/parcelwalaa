@@ -100,3 +100,17 @@ exports.verifyOtp = async (req, res) => {
       token: token,
     });
 };
+
+
+exports.setToken = async (req, res) => {
+  const fmc_token = req.params.id;
+
+  const user_id = req.user._id;
+  await userModel.findByIdAndUpdate(user_id, { fmc_token });
+
+  req.status(200).send({
+    status: "sucess",
+    msg: "Token set succesfuly",
+  });
+
+};

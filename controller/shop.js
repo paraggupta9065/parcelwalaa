@@ -71,6 +71,13 @@ exports.getShops = async (req, res) => {
   return res.status(200).send({ status: "sucess", msg: "shop successfully", shops });
 };
 
+exports.getShop = async (req, res) => {
+  const id = req.params.id;
+  const shop = await shopModel.findById(id);
+
+  return res.status(200).send({ status: "sucess", msg: "shop successfully", shop });
+};
+
 exports.storeStatusUpdate = async (req, res) => {
   const { isOnline, number } = req.body;
   await shopModel.findOneAndUpdate({ number: number }, { isOnline: isOnline });

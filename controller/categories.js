@@ -2,8 +2,8 @@ const categoriesModel = require("../model/categories");
 
 exports.addCategories = async (req, res) => {
   const categoriesData = req.body;
-
-  if (!categoriesData["name"] || !categoriesData["image"]) {
+  categoriesData["image"] = req.file.filename;
+  if (!categoriesData["name"]) {
     res.status(400).send({
       status: "fail",
       msg: "Please provide all the fields",
@@ -11,6 +11,7 @@ exports.addCategories = async (req, res) => {
   }
 
   const categories = await categoriesModel.create(categoriesData);
+  console.log(categories);
 
   res.status(201).send({
     status: "sucess",
@@ -68,7 +69,7 @@ exports.deleteCategories = async (req, res) => {
 };
 
 exports.getCategories = async (req, res) => {
-  const categories = await categoriesModel.find();
+  const categories = await categoriesModel.find().populate();
 
   res.status(200).send({
     status: "sucess",

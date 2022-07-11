@@ -32,7 +32,7 @@ const BannerSchema = mongoose.Schema({
   },
   isActive: {
     type: Boolean,
-    default: true,
+    required: [true, "Please enter is active value"],
   },
 });
 
