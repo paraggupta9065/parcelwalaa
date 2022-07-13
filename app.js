@@ -22,6 +22,7 @@ const YAML = require("yamljs");
 const swaggerJsDoc = YAML.load("./swagger.yaml");
 require("dotenv").config();
 const { EventEmitter } = require("events");
+const userModel = require("./model/user");
 const timerEventEmitter = new EventEmitter();
 
 
@@ -34,10 +35,9 @@ const firebaseConfig = {
   projectId: "parcelwalaa-47f46",
   storageBucket: "parcelwalaa-47f46.appspot.com",
   messagingSenderId: "237544535660",
-  appId: "1:237544535660:web:cd3b9126ba00778928ca49",
-  measurementId: "G-JERKGHXV0L",
+  appId: "1:237544535660:web:ee2ad304e162321928ca49",
+  measurementId: "G-QCH44D2HMZ"
 };
-
 // Initialize Firebase
 admin.initializeApp(firebaseConfig);
 app.get("/", (req, res) => {
@@ -57,14 +57,24 @@ const notification_options = {
   timeToLive: 60 * 60 * 24,
 };
 
-app.post("/notification", (req, res) => {
-  const registrationToken = req.body.registrationToken;
-  const message = req.body.message;
-  const options = notification_options;
+app.post("/notification", async (req, res) => {
+  // const registrationToken = req.body.registrationToken;
+  // const message = req.body.message;
+  // const options = notification_options;
+  // .sendToDevice(registrationToken, message, options)
 
+
+  const user = await userModel.findOne({ number: 9179175597 });
+  const message = {
+    notification: {
+      title: '$FooCorp up 1.43% on the day',
+      body: '$FooCorp gained 11.80 points to close at 835.67, up 1.43% on the day.'
+    },
+    token: user.fmc_token,
+
+  };
   admin
-    .messaging()
-    .sendToDevice(registrationToken, message, options)
+    .messaging().send(message)
     .then((response) => {
       res.status(200).send({
         status: "sucess",
