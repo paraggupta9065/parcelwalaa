@@ -69,7 +69,13 @@ exports.deleteCategories = async (req, res) => {
 };
 
 exports.getCategories = async (req, res) => {
-  const categories = await categoriesModel.find().populate();
+  const { page = 1, limit = 10 } = req.query;
+
+  const categories = await categoriesModel
+    .find()
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .exec();
 
   res.status(200).send({
     status: "sucess",

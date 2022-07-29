@@ -119,16 +119,26 @@ exports.deleteProduct = async (req, res) => {
 };
 
 exports.getProducts = async (req, res) => {
-  const products = await productModel.find();
+  const { page = 1, limit = 10 } = req.query;
+
+  const products = await productModel
+    .find()
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .exec();
+
   return res.status(200).send({ status: "sucess", products });
 };
 
 // search products using name
 exports.searchProducts = async (req, res) => {
   const name = req.body.name;
+  const { page = 1, limit = 10 } = req.query;
 
   if (!name) {
-    return res.status(400).send({ status: "fail", msg: "Please provide the keyword" });
+    return res
+      .status(400)
+      .send({ status: "fail", msg: "Please provide the keyword" });
   }
 
   if (name.length < 3) {
@@ -138,9 +148,13 @@ exports.searchProducts = async (req, res) => {
     });
   }
 
-  const products = await productModel.find({
-    name: { $regex: new RegExp(name), $options: "i" },
-  });
+  const products = await productModel
+    .find({
+      name: { $regex: new RegExp(name), $options: "i" },
+    })
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .exec();
 
   if (!products) {
     return res.status(404).send({ status: "fail", msg: "No products found." });
@@ -176,16 +190,24 @@ exports.getProductByLocation = async (req, res) => {
 };
 
 exports.getProductByShop = async (req, res) => {
+  const { page = 1, limit = 10 } = req.query;
   const { shop_id } = req.params;
+
   if (!shop_id) {
     return res.status(404).send({ status: "fail", msg: "No Shop Found." });
   }
-  const products = await productModel.find({ shop_id });
+
+  const products = await productModel
+    .find({ shop_id })
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .exec();
+
   if (products.length == 0) {
     return res.status(404).send({ status: "fail", msg: "No Product Found." });
   }
 
-
-
-  return res.status(200).send({ status: "sucess", msg: "shops fetched.", products });
+  return res
+    .status(200)
+    .send({ status: "sucess", msg: "shops fetched.", products });
 };

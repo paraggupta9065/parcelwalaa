@@ -50,7 +50,13 @@ exports.updateBanner = async (req, res) => {
 };
 
 exports.getAllBanner = async (req, res) => {
-  const banner = await bannerModel.find();
+  const { page = 1, limit = 10 } = req.query;
+
+  const banner = await bannerModel
+    .find()
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .exec();
 
   return res.status(200).send({
     status: "sucess",

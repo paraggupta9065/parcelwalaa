@@ -34,7 +34,14 @@ exports.addDeliveryBoy = async (req, res) => {
 
 //get delivery boy
 exports.getDeliveryBoy = async (req, res) => {
-  const deliveryBoys = await deliveryBoyModel.find();
+  const { page = 1, limit = 10 } = req.query;
+
+  const deliveryBoys = await deliveryBoyModel
+    .find()
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .exec();
+
   res.status(200).send({
     status: "sucess",
     msg: "delivery boy fetched successfully",
