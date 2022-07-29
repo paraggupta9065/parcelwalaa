@@ -66,9 +66,16 @@ exports.deleteShops = async (req, res) => {
 };
 
 exports.getShops = async (req, res) => {
-  const shops = await shopModel.find();
+  const { page = 1, limit = 10 } = req.query;
+  const shops = await shopModel
+    .find()
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .exec();
 
-  return res.status(200).send({ status: "sucess", msg: "shop successfully", shops });
+  return res
+    .status(200)
+    .send({ status: "sucess", msg: "shop successfully", shops });
 };
 
 exports.getShop = async (req, res) => {
@@ -102,15 +109,16 @@ exports.storeAdminStatusUpdate = async (req, res) => {
 exports.getStoresByPincode = async (req, res) => {
   const { pincode } = req.body;
   if (!pincode) {
-    res
-      .status(404)
-      .send({ status: "fail", msg: "pincode not found" });
+    res.status(404).send({ status: "fail", msg: "pincode not found" });
   }
-  const shops = await shopModel.find({ "pincode": pincode });
+  const { page = 1, limit = 10 } = req.query;
+  const shops = await shopModel
+    .find({ pincode: pincode })
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .exec();
   if (shops.length == 0) {
-    res
-      .status(404)
-      .send({ status: "fail", msg: "no shops found" });
+    res.status(404).send({ status: "fail", msg: "no shops found" });
   }
   res
     .status(200)

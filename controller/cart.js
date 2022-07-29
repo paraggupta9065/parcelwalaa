@@ -100,7 +100,13 @@ exports.addToCart = async (req, res) => {
 
 exports.getCart = async (req, res) => {
   const id = req.user._id;
-  const cart = await cartModel.findOne({ user: id });
+  const { page = 1, limit = 10 } = req.query;
+
+  const cart = await cartModel
+    .findOne({ user: id })
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .exec();
 
   if (!cart) {
     return res.status(404).send({

@@ -135,6 +135,7 @@ exports.deleteCoupon = async (req, res) => {
 
 exports.getCoupons = async (req, res) => {
   const number = req.body.number;
+  const { page = 1, limit = 10 } = req.query;
 
   const shop = await shopModel.findOne({ number });
 
@@ -145,7 +146,11 @@ exports.getCoupons = async (req, res) => {
     });
   }
 
-  const coupons = await couponModel.find({ shop_id: shop._id });
+  const coupons = await couponModel
+    .find({ shop_id: shop._id })
+    .limit(limit * 1)
+    .skip((page - 1) * limit)
+    .exec();
 
   return res.status(200).send({
     status: "Sucess",
