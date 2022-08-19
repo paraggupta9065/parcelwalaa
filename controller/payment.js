@@ -87,7 +87,8 @@ exports.sucessPayment = async (req, res) => {
       body: JSON.stringify(body),
       headers: headers,
     });
-    // const vendor_responese = await response.json();
+    const vendor_responese = await response.json();
+    console.log(vendor_responese)
     //notification to custumer
     // const body_custumer = {
     //   "to": req.user.fmc_token,
