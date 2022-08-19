@@ -75,7 +75,8 @@ exports.sucessPayment = async (req, res) => {
       },
       'data': {}
     }
-    console.log(body)
+
+    console.log(typeof String(body))
     const headers = {
       'content-type': 'application/json',
       'Authorization':
@@ -86,7 +87,7 @@ exports.sucessPayment = async (req, res) => {
       body: JSON.stringify(body),
       headers: headers,
     });
-    const vendor_responese = await response.json();
+    // const vendor_responese = await response.json();
     //notification to custumer
     // const body_custumer = {
     //   "to": req.user.fmc_token,
@@ -117,7 +118,7 @@ exports.sucessPayment = async (req, res) => {
     // //send notification
     res
       .status(200)
-      .send({ status: "sucess", order, msg: "order created and cart deleted", vendor_responese });
+      .send({ status: "sucess", order, msg: "order created and cart deleted", });
 
   } catch (error) {
     // res
