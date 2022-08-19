@@ -85,7 +85,7 @@ exports.sucessPayment = async (req, res) => {
     };
     const response = await fetch(postUrl, {
       method: 'post',
-      body: body,
+      body: JSON.parse(body),
       headers: headers,
     });
     const vendor_responese = await response.json();
@@ -110,7 +110,7 @@ exports.sucessPayment = async (req, res) => {
     };
     const response_custumer = await fetch(postUrl, {
       method: 'post',
-      body: body_custumer,
+      body: JSON.parse(body_custumer),
       headers: headers_custumer,
     });
     const custumer_responese = await response_custumer.json();
