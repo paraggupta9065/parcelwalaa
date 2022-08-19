@@ -63,21 +63,21 @@ exports.sucessPayment = async (req, res) => {
   const postUrl = 'https://fcm.googleapis.com/fcm/send';
 
   //notification to vendor
-  console.log(vendor["fmc_token"]);
-  console.log(vendor.fmc_token);
+
   const body = {
-    "to": vendor.fmc_token,
-    "priority": "high",
-    "notification": {
-      "title": "New Order Received",
-      "body": "Order Received",
-      "mutable_content": true,
-      "sound": "Tri-tone"
+    'to': vendor.fmc_token,
+    'priority': 'high',
+    'notification': {
+      'title': 'New Order Received',
+      'body': 'Order Received',
+      'mutable_content': true,
+      'sound': 'Tri-tone'
     },
-    "data": {
-      "order": order
+    'data': {
+      'order': order
     }
   }
+  console.log(body);
   const headers = {
     'content-type': 'application/json',
     'Authorization':
@@ -85,39 +85,41 @@ exports.sucessPayment = async (req, res) => {
   };
   const response = await fetch(postUrl, {
     method: 'post',
-    body: JSON.parse(body),
+    body: JSON.stringify(body),
     headers: headers,
   });
   const vendor_responese = await response.json();
   //notification to custumer
-  const body_custumer = {
-    "to": req.user.fmc_token,
-    "notification": {
-      "title": "New Order Received",
-      "body": "Order Received",
-      "mutable_content": true,
-      "sound": "Tri-tone"
-    },
-    "data": {
-      "url": "",
-      "dl": ""
-    }
-  }
-  const headers_custumer = {
-    'content-type': 'application/json',
-    'Authorization':
-      `key=${process.env.fcm_token}`
-  };
-  const response_custumer = await fetch(postUrl, {
-    method: 'post',
-    body: JSON.parse(body_custumer),
-    headers: headers_custumer,
-  });
-  const custumer_responese = await response_custumer.json();
-  //send notification
+  // const body_custumer = {
+  //   "to": req.user.fmc_token,
+  //   "notification": {
+  //     "title": "New Order Received",
+  //     "body": "Order Received",
+  //     "mutable_content": true,
+  //     "sound": "Tri-tone"
+  //   },
+  //   "data": {
+  //     "url": "",
+  //     "dl": ""
+  //   }
+  // }
+  // console.log(body_custumer);
+
+  // const headers_custumer = {
+  //   'content-type': 'application/json',
+  //   'Authorization':
+  //     `key=${process.env.fcm_token}`
+  // };
+  // const response_custumer = await fetch(postUrl, {
+  //   method: 'post',
+  //   body: JSON.parse(body_custumer),
+  //   headers: headers_custumer,
+  // });
+  // const custumer_responese = await response_custumer.json();
+  // //send notification
   res
     .status(200)
-    .send({ status: "sucess", order, msg: "order created and cart deleted", vendor_responese, custumer_responese });
+    .send({ status: "sucess", order, msg: "order created and cart deleted", vendor_responese });
 
   // } catch (error) {
   //   res
@@ -142,3 +144,6 @@ exports.failPayment = async (req, res) => {
     .status(200)
     .send({ status: "fail", order, msg: "Payment Failed Cart Not Deleted" });
 };
+
+
+
