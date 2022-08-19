@@ -122,7 +122,7 @@ exports.sucessPayment = async (req, res) => {
   } catch (error) {
     res
       .status(404)
-      .send({ status: "fail", order, msg: error });
+      .send({ status: "fail", msg: error });
   }
 };
 
