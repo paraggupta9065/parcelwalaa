@@ -73,9 +73,7 @@ exports.sucessPayment = async (req, res) => {
       'mutable_content': true,
       'sound': 'Tri-tone'
     },
-    'data': {
-      'order': order
-    }
+    'data': {}
   }
   console.log(body);
   const headers = {
