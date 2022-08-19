@@ -3,6 +3,7 @@ const orderModel = require("../model/order");
 const userModel = require("../model/user");
 const shopModel = require("../model/shop");
 const user = require("../model/user");
+const admin = require("firebase-admin");
 
 
 
@@ -49,46 +50,108 @@ exports.sucessPayment = async (req, res) => {
     });
 
     order = await orderModel.findOne({ user_id: cart.user_id, }).populate("order_inventory.product");
-
-
     const timerEventEmitter = req.app.get('emmiter');
     timerEventEmitter.emit('order_recived', order._id);
     //send notification
-
     const shop = await shopModel.findById(cart.shop_id);
     const vendor = await userModel.findOne({ number: shop.number });
+    // message to vendor
 
-
-    const fetch = require("node-fetch");
-    const postUrl = 'https://fcm.googleapis.com/fcm/send';
-
-    //notification to vendor
-    const vendorToken = String(vendor["fmc_token"]);
-    const body = {
-      'to': vendorToken,
-      'priority': 'high',
-      'notification': {
-        'title': 'New Order Received',
-        'body': 'Order Received',
-        'mutable_content': true,
-        'sound': 'Tri-tone'
+    const message = {
+      notification: {
+        title: "New Order Received",
+        body: "Order Received",
       },
-      'data': {}
-    }
+      data: {
+        "link": "jhjhh"
+      },
+      token: vendor.fmc_token,
 
-    console.log(typeof String(body))
-    const headers = {
-      'content-type': 'application/json',
-      'Authorization':
-        `key=${process.env.fcm_token}`
     };
-    const response = await fetch(postUrl, {
-      method: 'post',
-      body: JSON.stringify(body),
-      headers: headers,
-    });
+    const vendorResp = await admin
+      .messaging().send(message);
+    console.log(req.user.fmc_toke);
+
+    //message to vendor
+    // message to customer
+
+    const messageCustomer = {
+      notification: {
+        title: "New Order Received",
+        body: "Order Received",
+      },
+      data: {
+        "link": "jhjhh"
+      },
+      token: req.user.fmc_token,
+
+    };
+    const customerPesp = await admin
+      .messaging().send(message);
+
+    //message to customer
+    return res
+      .status(200)
+      .send({ status: "sucess", order, msg: "order created and cart deleted", });
+
+  } catch (error) {
+    console.log(error)
+
+    return res
+      .status(404)
+      .send({ status: "fail", msg: error });
+  }
+};
+
+exports.deleteOrder = async (req, res) => {
+  const orderId = req.params.id;
+
+  await orderModel.findByIdAndDelete(orderId);
+
+  return res.status(200).send({
+    status: "sucess",
+    msg: "Order deleted sucessfully.",
+  });
+};
+
+exports.failPayment = async (req, res) => {
+  res
+    .status(200)
+    .send({ status: "fail", order, msg: "Payment Failed Cart Not Deleted" });
+};
+
+
+
+
+    // const fetch = require("node-fetch");
+    // const postUrl = 'https://fcm.googleapis.com/fcm/send';
+
+    // //notification to vendor
+    // const vendorToken = String(vendor["fmc_token"]);
+    // const body = {
+    //   'to': vendorToken,
+    //   'priority': 'high',
+    //   'notification': {
+    //     'title': 'New Order Received',
+    //     'body': 'Order Received',
+    //     'mutable_content': true,
+    //     'sound': 'Tri-tone'
+    //   },
+    //   'data': {}
+    // }
+
+    // const headers = {
+    //   'content-type': 'application/json',
+    //   'Authorization':
+    //     `key=${process.env.fcm_token}`
+    // };
+
+    // const response = await fetch(postUrl, {
+    //   method: 'post',
+    //   body: JSON.stringify(body),
+    //   headers: headers,
+    // });
     // const vendor_responese = await response.json();
-    // console.log(vendor_responese)
     //notification to custumer
     // const body_custumer = {
     //   "to": req.user.fmc_token,
@@ -117,34 +180,3 @@ exports.sucessPayment = async (req, res) => {
     // });
     // const custumer_responese = await response_custumer.json();
     // //send notification
-    res
-      .status(200)
-      .send({ status: "sucess", order, msg: "order created and cart deleted", });
-
-  } catch (error) {
-    // res
-    //   .status(404)
-    //   .send({ status: "fail", msg: error });
-    console.log(error)
-  }
-};
-
-exports.deleteOrder = async (req, res) => {
-  const orderId = req.params.id;
-
-  await orderModel.findByIdAndDelete(orderId);
-
-  return res.status(200).send({
-    status: "sucess",
-    msg: "Order deleted sucessfully.",
-  });
-};
-
-exports.failPayment = async (req, res) => {
-  res
-    .status(200)
-    .send({ status: "fail", order, msg: "Payment Failed Cart Not Deleted" });
-};
-
-
-

@@ -34,12 +34,14 @@ app.get("/", (req, res) => {
   const timerEventEmitter = req.app.get('emmiter');
   timerEventEmitter.emit('order_recived', "ghgh");
   res.send({ status: "sucess", msg: "Server Up And Running" })
-}
+});
 
-);
+var serviceAccount = require("./parcelwalaa-47f46-firebase-adminsdk-byjcf-613f1c6e19.json");
 
 
-
+admin.initializeApp({
+  credential: admin.credential.cert(serviceAccount),
+});
 
 // PUSH NOTIFICATION
 const notification_options = {
@@ -47,7 +49,7 @@ const notification_options = {
   timeToLive: 60 * 60 * 24,
 };
 
-app.post("/notification", async (req, res) => {
+app.get("/notification", async (req, res) => {
   // const registrationToken = req.body.registrationToken;
   // const message = req.body.message;
   // const options = notification_options;
