@@ -67,7 +67,8 @@ const shopSchema = mongoose.Schema({
   }, isOnline: {
     type: Boolean,
     default: true,
-  }
+  },
+
 });
 
 module.exports = mongoose.model("Shop", shopSchema);

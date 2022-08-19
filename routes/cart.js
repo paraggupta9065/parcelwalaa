@@ -15,6 +15,6 @@ router.route("/add_cart").post(isLoggedIn, isUser, addToCart);
 router.route("/get_cart").get(isLoggedIn, isUser, getCart);
 router.route("/remove_cart").delete(isLoggedIn, isUser, removeCart);
 router.route("/update_cart").put(isLoggedIn, isUser, updateCart);
-router.route("/update_qty").put(isLoggedIn, isUser, updateQty);
+router.route("/update_qty").post(isLoggedIn, isUser, updateQty);
 
 module.exports = router;

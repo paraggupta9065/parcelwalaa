@@ -7,13 +7,22 @@ const OrderSchema = mongoose.Schema({
   order_note: {
     type: String,
   },
-  order_inventory: {
-
-  },
+  order_inventory: [
+    {
+      quantity: {
+        type: Number,
+        default: 0,
+      },
+      product: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Product",
+        required: true,
+      },
+    },
+  ],
   pickup_address_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Address",
-    required: [true, "Please provide pickup address"],
   },
   delivery_address_id: {
     type: mongoose.Schema.Types.ObjectId,
@@ -21,7 +30,8 @@ const OrderSchema = mongoose.Schema({
     required: [true, "Please provide delivery address"],
   },
   coupon_code_id: {
-    type: mongoose.Schema.Types.ObjectId,
+    type: String,
+    default: "na",
   },
   total_gst: {
     type: Number,
@@ -73,6 +83,12 @@ const OrderSchema = mongoose.Schema({
   payment_method_id: {
     type: String,
     required: [true, "Please provide payment method id"],
+  },
+
+  status: {
+    type: String,
+    enum: ["recived", "accepted", "prepared", "assigned", "cancelled", "delivered"],
+    default: "recived",
   },
 });
 

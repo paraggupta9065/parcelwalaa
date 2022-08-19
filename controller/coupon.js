@@ -1,5 +1,7 @@
 const couponModel = require("../model/coupon");
 const shopModel = require("../model/shop");
+const cartModel = require("../model/cart");
+
 
 exports.addCoupon = async (req, res) => {
   const number = req.body.number;
@@ -14,7 +16,7 @@ exports.addCoupon = async (req, res) => {
   }
 
   const couponData = req.body;
-
+  // mm/dd/yyy
   if (
     !couponData["coupon_code"] ||
     !couponData["description"] ||
@@ -25,10 +27,7 @@ exports.addCoupon = async (req, res) => {
     !couponData["min_cart_value"] ||
     !couponData["max_no_times"] ||
     !couponData["max_no_of_times_per_user"] ||
-    !couponData["is_active"] ||
-    !couponData["categories"] ||
-    !couponData["products"] ||
-    !couponData["restaurants"]
+    !couponData["is_active"]
   ) {
     return res.status(400).send({
       status: "Fail",
@@ -41,7 +40,7 @@ exports.addCoupon = async (req, res) => {
   const coupon = await couponModel.create(couponData);
 
   return res.status(201).send({
-    status: "Sucess",
+    status: "sucess",
     msg: "Created sucessfully",
     coupon,
   });
@@ -107,7 +106,7 @@ exports.updateCoupon = async (req, res) => {
   const newCoupon = await couponModel.findById(coupon._id);
 
   return res.status(200).send({
-    status: "Sucess",
+    status: "sucess",
     msg: "Updated sucessfully",
     newCoupon,
   });
@@ -128,15 +127,15 @@ exports.deleteCoupon = async (req, res) => {
   await couponModel.findOneAndDelete({ shop_id: shop._id });
 
   return res.status(200).send({
-    status: "Sucess",
+    status: "sucess",
     msg: "Updated sucessfully",
   });
 };
 
 exports.getCoupons = async (req, res) => {
-  const number = req.body.number;
+  const { id } = req.body;
 
-  const shop = await shopModel.findOne({ number });
+  const shop = await shopModel.findById(id);
 
   if (!shop) {
     return res.status(404).send({
@@ -148,8 +147,32 @@ exports.getCoupons = async (req, res) => {
   const coupons = await couponModel.find({ shop_id: shop._id });
 
   return res.status(200).send({
-    status: "Sucess",
+    status: "sucess",
     msg: "Fetched all coupons of a shop",
     coupons,
   });
 };
+
+
+exports.applyCoupon = async (req, res) => {
+  const { couponId } = req.body;
+  let cart = await cartModel.findOne({ user: req.user._id });
+  await cartModel.findByIdAndUpdate(cart._id, {
+    "coupon_code_id": couponId,
+  })
+
+
+
+
+
+
+  return res.status(200).send({
+    status: "sucess",
+    msg: "coupon applyed",
+  });
+};
+
+
+
+
+

@@ -18,7 +18,6 @@ const multerStorage = multer.diskStorage({
 
 const upload = multer({ dest: 'uploads/', storage: multerStorage, })
 //end
-
 router.route("/add_banner").post(upload.single("image"), addBanner);
 router.route("/delete_banner/:id").delete(isLoggedIn, isAdmin, deleteBanner);
 router.route("/update_banner/:id").put(isLoggedIn, isAdmin, updateBanner);

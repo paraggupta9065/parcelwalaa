@@ -35,7 +35,6 @@ exports.verifyOtp = async (req, res) => {
     return res.status(404).send({ status: "fail", msg: "Number not found" });
   }
   const otpFound = await otpModel.findOne({ number: number });
-  console.log(otpFound);
 
   if (!otpFound) {
     return res.status(400).send({ status: "fail", msg: "Otp Not Sended Yet" });
@@ -84,12 +83,7 @@ exports.verifyOtp = async (req, res) => {
       });
     return shopres;
   }
-  console.log({
-    status: "sucess",
-    role: userFound.role,
-    msg: "Login succesfuly",
-    token: token,
-  });
+
 
   return res
     .status(200)
@@ -104,7 +98,6 @@ exports.verifyOtp = async (req, res) => {
 
 exports.setToken = async (req, res) => {
   const fmc_token = req.params.token;
-  console.log(fmc_token);
   const user_id = req.user._id;
   await userModel.findByIdAndUpdate(user_id, { fmc_token });
 

@@ -58,30 +58,21 @@ const CouponSchema = mongoose.Schema({
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Categories",
-      required: [
-        true,
-        "Please provide the categories applicable for this coupon",
-      ],
+
     },
   ],
   products: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
-      required: [
-        true,
-        "Please provide the products applicable for this coupon",
-      ],
+
     },
   ],
   restaurants: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Shop",
-      required: [
-        true,
-        "Please provide the restaurants applicable for this coupon",
-      ],
+
     },
   ],
 });

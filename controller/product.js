@@ -15,11 +15,12 @@ exports.addProduct = async (req, res) => {
     price,
     regular_price,
     weight,
-    categories,
+    // categories,
     tags,
-    images,
   } = req.body;
-  console.log(req.body);
+  // const images = req.file.filename;
+  const images = req.file.filename;
+
 
   if (
     !name ||
@@ -44,9 +45,9 @@ exports.addProduct = async (req, res) => {
     price,
     regular_price,
     weight,
-    categories: [],
+    categories: [{ "hisir": "byesir" },],
     tags: [],
-    images: "aaa",
+    images,
     variations: "",
     shop_id: shop._id,
     pincode: shop.pincode,
@@ -59,32 +60,14 @@ exports.addProduct = async (req, res) => {
 
 // update product
 exports.updateProduct = async (req, res) => {
-  const number = req.body.number;
-
-  const shop = await shopModel.findOne({ number });
-
-  if (!shop) {
-    return res.status(404).send({
-      status: "Fail",
-      msg: "Not found",
-    });
-  }
-
-  const product = await productModel.findOne({ shop_id: shop._id });
-
-  if (!product) {
-    return res
-      .status(404)
-      .send({ status: "fail", msg: "productModel not found" });
-  }
-
-  await productModel.findOneAndUpdate(shop._id, req.body, {
+  const id = req.params.id;
+  await productModel.findOneAndUpdate(id, req.body, {
     new: true,
     runValidators: true,
     useFindAndModify: false,
   });
 
-  const updatedProduct = await productModel.findOne({ shop_id: shop._id });
+  const updatedProduct = await productModel.findOne({ shop_id: req.shop._id });
 
   return res.status(200).send({
     status: "sucess",
@@ -95,27 +78,19 @@ exports.updateProduct = async (req, res) => {
 
 // delete product using req.params.id
 exports.deleteProduct = async (req, res) => {
-  const number = req.body.number;
+  const id = req.params.id;
 
-  const shop = await shopModel.findOne({ number });
-
-  if (!shop) {
-    return res.status(404).send({
-      status: "Fail",
-      msg: "Not found",
-    });
-  }
-  const product = await productModel.findOneAndDelete({ shop_id: shop._id });
+  const product = await productModel.findByIdAndDelete(id);
 
   if (!product) {
     return res
       .status(404)
-      .send({ status: "fail", msg: "productModel not found." });
+      .send({ status: "fail", msg: "product not found." });
   }
 
   res
     .status(200)
-    .send({ status: "sucess", msg: "productModel deleted sucessfully" });
+    .send({ status: "sucess", msg: "product deleted sucessfully" });
 };
 
 exports.getProducts = async (req, res) => {
@@ -188,4 +163,17 @@ exports.getProductByShop = async (req, res) => {
 
 
   return res.status(200).send({ status: "sucess", msg: "shops fetched.", products });
+};
+
+exports.getProduct = async (req, res) => {
+  const { id } = req.params;
+
+  const product = await productModel.findById(id);
+  if (!product) {
+    return res.status(404).send({ status: "fail", msg: "No Product Found." });
+  }
+
+
+
+  return res.status(200).send({ status: "sucess", msg: "shops fetched.", product });
 };

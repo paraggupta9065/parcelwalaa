@@ -29,17 +29,7 @@ const timerEventEmitter = new EventEmitter();
 //init start
 connectToDb();
 //init end
-const firebaseConfig = {
-  apiKey: "AIzaSyCYGD3DwuQcWklpa3ABh49F7KcEr4C2FAU",
-  authDomain: "parcelwalaa-47f46.firebaseapp.com",
-  projectId: "parcelwalaa-47f46",
-  storageBucket: "parcelwalaa-47f46.appspot.com",
-  messagingSenderId: "237544535660",
-  appId: "1:237544535660:web:ee2ad304e162321928ca49",
-  measurementId: "G-QCH44D2HMZ"
-};
-// Initialize Firebase
-admin.initializeApp(firebaseConfig);
+
 app.get("/", (req, res) => {
   const timerEventEmitter = req.app.get('emmiter');
   timerEventEmitter.emit('order_recived', "ghgh");
@@ -113,26 +103,41 @@ app.use("/trip", tripRoute);
 app.use("/orders", ordersRoute);
 app.use("/categories", categoriesRoute);
 app.use("/api_docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc));
+app.use("/uploads", express.static("uploads"));
 //middleware use
-// const fs = require('fs')
-// const stream = require('stream')
-// // app.post("/file", upload.single('image'), (req, res) => {
+const fs = require('fs')
+const stream = require('stream')
+app.get("/file/:image", (req, res) => {
 
-// //   // res.sendFile(req.file.path, { root: __dirname });
-// //   const r = fs.createReadStream(__dirname + '/' + req.file.path) // or any other way to get a readable stream
-// //   const ps = new stream.PassThrough() // <---- this makes a trick with stream error handling
-// //   stream.pipeline(
-// //     r,
-// //     ps, // <---- this makes a trick with stream error handling
-// //     (err) => {
-// //       if (err) {
-// //         console.log(err) // No such file or any other kind of error
-// //         return res.sendStatus(400);
-// //       }
-// //     })
-// //   ps.pipe(res)
-// // }
-// // );
+  // res.sendFile('image-1657089228800.png', { root: __dirname + "/uploads" });
+  // const r = fs.createReadStream(__dirname + '/uploads/' + 'image-1657089228800.png') // or any other way to get a readable stream
+  // const ps = new stream.PassThrough() // <---- this makes a trick with stream error handling
+  // stream.pipeline(
+  //   r,
+  //   ps, // <---- this makes a trick with stream error handling
+  //   (err) => {
+  //     if (err) {
+  //       console.log(err) // No such file or any other kind of error
+  //       return res.sendStatus(400);
+  //     }
+  //   })
+  // ps.pipe(res)
+
+  //read the image using fs and send the image content back in the response
+  const image = req.params.image;
+  fs.readFile(__dirname + '/uploads/' + image, function (err, content) {
+    if (err) {
+      res.writeHead(400, { 'Content-type': 'text/html' })
+      console.log(err);
+      res.end("No such image");
+    } else {
+      //specify the content type in the response will be an image
+      res.writeHead(200, { 'Content-type': 'image/jpg' });
+      res.end(content);
+    }
+  });
+}
+);
 
 
 // exporting server

@@ -35,10 +35,6 @@ exports.deleteBanner = async (req, res) => {
 exports.updateBanner = async (req, res) => {
   const id = req.params.id;
   const bannerData = req.body;
-  console.log(bannerData);
-
-
-
   await bannerModel.findOneAndUpdate(id, bannerData);
   const banner = await bannerModel.findById(id);
 

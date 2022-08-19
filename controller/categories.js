@@ -9,10 +9,7 @@ exports.addCategories = async (req, res) => {
       msg: "Please provide all the fields",
     });
   }
-
   const categories = await categoriesModel.create(categoriesData);
-  console.log(categories);
-
   res.status(201).send({
     status: "sucess",
     categories,

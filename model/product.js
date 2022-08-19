@@ -52,10 +52,7 @@ const ProductSchema = mongoose.Schema({
   },
   reviews: [String],
   categories: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Categories",
-    },
+    Object
   ],
   tags: [String],
   images: {

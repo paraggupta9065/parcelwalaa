@@ -33,7 +33,7 @@ const CartModel = mongoose.Schema({
   pickup_address_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Address",
-    required: [true, "Please provide delivery address."],
+    // required: [true, "Please provide delivery address."],
   },
   delivery_address_id: {
     type: mongoose.Schema.Types.ObjectId,

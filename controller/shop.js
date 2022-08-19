@@ -1,3 +1,4 @@
+const orderModel = require("../model/order");
 const otpModel = require("../model/otp");
 const shopModel = require("../model/shop");
 const userModel = require("../model/user");
@@ -74,6 +75,9 @@ exports.getShops = async (req, res) => {
 exports.getShop = async (req, res) => {
   const id = req.params.id;
   const shop = await shopModel.findById(id);
+  if (!shop) {
+    return res.status(404).send({ status: "fail", msg: "Not found" });
+  }
 
   return res.status(200).send({ status: "sucess", msg: "shop successfully", shop });
 };
@@ -152,4 +156,26 @@ exports.getUnverifiedShop = async (req, res) => {
   res
     .status(200)
     .send({ status: "sucess", msg: "Shop Fecthed", shops });
+};
+
+
+exports.getOrdersReport = async (req, res) => {
+  const { start_date, end_date } = req.body;// yyyy/mm/dd
+
+  const parsed_start_date = Date(start_date);
+  const parsed_end_date = Date(end_date);
+
+  const shops = await shopModel.findOne({ number: req.user.number });
+  const orders = await orderModel.find(
+    {
+      "shop_id": shops._id,
+      $and: [
+        { From: { $gte: parsed_start_date } },
+        { To: { $lte: parsed_end_date } },
+      ],
+    }
+  );
+  res
+    .status(200)
+    .send({ status: "sucess", msg: "Order Fetched", orders });
 };

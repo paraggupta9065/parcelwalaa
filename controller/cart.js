@@ -15,11 +15,12 @@ exports.addToCart = async (req, res) => {
   const product = await productModel.findById(productId);
   const shop_id = product.shop_id;
 
-  const shop = await shopModel.findOne({ user_id: shop_id });
+  const shop = await shopModel.findById(shop_id);
 
   if (!cart) {
     inventory_total_amt = product.price;
-    delivery_total_amt = product.deliveryCharges;
+
+    delivery_total_amt = shop.delivery_charges;
 
     if (coupon_code_id != "na") {
       const coupon = await couponModel.findById(coupon_code_id);
@@ -34,12 +35,10 @@ exports.addToCart = async (req, res) => {
       inventory_total_amt,
       delivery_total_amt,
       coupon_code_id,
-
       discount_amt,
       net_amt,
       shop_id,
       delivery_address_id,
-
       cart_inventory: [
         {
           quantity: 0,
@@ -47,7 +46,7 @@ exports.addToCart = async (req, res) => {
         },
       ],
       total_gst,
-      user_id: user._id,
+      user_id: req.user._id,
     };
 
     cart = await cartModel.create(newCart);
@@ -58,8 +57,8 @@ exports.addToCart = async (req, res) => {
     });
   }
 
-  inventory_total_amt = inventory_total_amt + product.price;
-  delivery_total_amt = delivery_total_amt + product.deliveryCharges;
+  inventory_total_amt = cart.inventory_total_amt + product.price;
+  delivery_total_amt = delivery_total_amt + shop.delivery_charges;
 
   if (coupon_code_id != "na") {
     const coupon = await couponModel.findById(coupon_code_id);
@@ -86,7 +85,7 @@ exports.addToCart = async (req, res) => {
     delivery_address_id,
     cart_inventory: cart_inventory,
     total_gst,
-    user: user._id,
+    user: req.user._id,
   };
 
   cart = await cartModel.findByIdAndUpdate(cart._id, updateCart);
@@ -100,18 +99,36 @@ exports.addToCart = async (req, res) => {
 
 exports.getCart = async (req, res) => {
   const id = req.user._id;
-  const cart = await cartModel.findOne({ user: id });
+  let cart = await cartModel.findOne({ user: id });
+  let cartInventory = [];
+  cartInventory = cart.cart_inventory;
+
+  let products = [];
+
+
+
+  for (let element in cartInventory) {
+
+    const product = await productModel.findById(cartInventory[element]['product']);
+
+    products.push(product);
+  }
+
+
+
 
   if (!cart) {
     return res.status(404).send({
       status: "fail",
-      msg: "cartModel not found",
+      msg: "Cart not found",
     });
   }
 
   return res.status(200).send({
     status: "sucess",
     cart,
+    products
+
   });
 };
 
@@ -161,6 +178,14 @@ exports.updateQty = async (req, res) => {
   const id = req.user._id;
   const cart = await cartModel.findOne({ user: id });
 
+  if (quantity < 1) {
+    return res.status(201).send({
+      status: "fail",
+      msg: "Qty should be more then 1",
+    });
+
+  }
+
   if (!cart) {
     return res.status(404).send({
       status: "fail",
@@ -178,8 +203,9 @@ exports.updateQty = async (req, res) => {
     quantity: quantity,
     product: productId,
   };
+  console.log(inventoryUpdate)
 
-  cartModel.findByIdAndUpdate(cart._id, { cart_inventory: inventoryUpdate });
+  await cartModel.findByIdAndUpdate(cart._id, { cart_inventory: inventoryUpdate });
 
   return res.status(201).send({
     status: "sucess",

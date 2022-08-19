@@ -142,7 +142,8 @@ exports.getCustumerAddress = async (req, res) => {
 
   return res.status(200).send({
     status: "sucess",
-    msg: "Address deleted.",
+    msg: "Address fetched",
+    addressList
   });
 };
 

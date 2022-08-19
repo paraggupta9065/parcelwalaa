@@ -33,6 +33,24 @@ exports.getOrders = async (req, res) => {
     });
 };
 
+exports.updateStatus = async (req, res) => {
+    const id = req.params.id;
+    const status = req.body.status;
+    const orders = await ordersModel.findByIdAndUpdate(id, { "status": status })
+    if (!orders) {
+        return res.status(200).send({
+            status: "failed",
+            msg: "order not found",
+        });
+    }
+
+    return res.status(200).send({
+        status: "sucess",
+        orders,
+    });
+};
+
+
 // exports.removeCart = async (req, res) => {
 //     const id = req.user._id;
 
