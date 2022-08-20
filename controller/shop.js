@@ -44,9 +44,10 @@ exports.addShops = async (req, res) => {
   shopData["image"] = image;
   shopData["banner"] = banner;
   const shop = await shopModel.create(shopData);
+  const token = await userCreated.getJwtToken();
   res
     .status(201)
-    .send({ status: "sucess", msg: "shop added successfully", shop: shop, user: userCreated });
+    .send({ status: "sucess", msg: "shop added successfully", shop: shop, user: userCreated, token });
 };
 
 
