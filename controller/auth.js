@@ -20,7 +20,8 @@ exports.sendOtp = async (req, res) => {
     specialChars: false,
   });
   const checkOtp = await otpModel.findOne({ number: number });
-  if (!checkOtp) {
+
+  if (checkOtp) {
     await otpModel.findOneAndDelete({ number: number });
   }
   await otpModel.create({ otp: otpCode, number: number });
