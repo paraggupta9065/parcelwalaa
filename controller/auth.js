@@ -19,7 +19,10 @@ exports.sendOtp = async (req, res) => {
     upperCaseAlphabets: false,
     specialChars: false,
   });
-  await otpModel.findOneAndDelete({ number: number });
+  const checkOtp = await otpModel.findOne({ number: number });
+  if (!checkOtp) {
+    await otpModel.findOneAndDelete({ number: number });
+  }
   await otpModel.create({ otp: otpCode, number: number });
   return res.status(200).send({
     msg: "otp sended successfully",
