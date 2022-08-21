@@ -4,7 +4,32 @@ const deliveryBoyModel = require("../model/deliveryBoy");
 exports.addDeliveryBoy = async (req, res) => {
   const image = "asad";
   const driving_license_image = "adf";
+  const { number, name, otpCode } = req.body;
 
+  //Verify Otp
+  if (!number) {
+    return res.status(404).send({ status: "fail", msg: "Number not found" });
+  }
+  const otpFound = await otpModel.findOne({ number: number });
+
+  if (!otpFound) {
+    return res.status(400).send({ status: "fail", msg: "Otp Not Sended Yet" });
+  }
+  if (otpFound.otpExpiry < Date.now) {
+    return res.status(400).send({ status: "fail", msg: "Otp expired" });
+  }
+  const isVerified = await otpFound.isValidatedOtp(otpCode);
+  if (!isVerified) {
+    return res.status(400).send({ status: "fail", msg: "Incorrect Otp" });
+  }
+  //Otp Verified
+  //Creating User
+  const userCreated = await userModel.create({
+    name: name,
+    number: number,
+    role: "deliveryBoy",
+  });
+  //User Created 
   const deliveryBoyData = req.body;
 
   deliveryBoyData["image"] = image;

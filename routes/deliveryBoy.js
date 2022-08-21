@@ -12,7 +12,7 @@ const { isAdmin } = require("../middleware/isAdmin");
 const { isDeliveryBoy } = require("../middleware/isDeliveryBoy");
 const router = express.Router();
 
-router.route("/add_delivery_boy").post(isLoggedIn, isAdmin, addDeliveryBoy);
+router.route("/add_delivery_boy").post(addDeliveryBoy);
 router
   .route("/update_delivery_boy")
   .put(isLoggedIn, isDeliveryBoy, updateDeliveryBoy);
