@@ -1,4 +1,5 @@
 const deliveryBoyModel = require("../model/deliveryBoy");
+const otpModel = require("../model/otp");
 
 // create a delivery boy
 exports.addDeliveryBoy = async (req, res) => {
