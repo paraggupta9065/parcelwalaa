@@ -4,6 +4,7 @@ const otpModel = require("../model/otp");
 const userModel = require("../model/user");
 const jwt = require("jsonwebtoken");
 const shopModel = require("../model/shop");
+const deliveryBoyModel = require("../model/deliveryBoy");
 
 exports.sendOtp = async (req, res) => {
   const { number } = req.body;
@@ -72,11 +73,12 @@ exports.verifyOtp = async (req, res) => {
 
   const token = await userFound.getJwtToken();
 
-  const shop = await shopModel.findOne({ user_id: userFound._id })
   await otpModel.findOneAndDelete({ number: number });
 
   if (userFound.role == "shop") {
-    let shopres = res
+    const shop = await shopModel.findOne({ user_id: userFound._id })
+
+    return res
       .status(200)
       .send({
         status: "sucess",
@@ -85,9 +87,22 @@ exports.verifyOtp = async (req, res) => {
         msg: "Login succesfuly",
         token: token,
       });
-    return shopres;
-  }
 
+  }
+  if (userFound.role == "deliveryBoy") {
+    const driver = await deliveryBoyModel.findOne({ user_id: userFound._id });
+
+    return res
+      .status(200)
+      .send({
+        status: "sucess",
+        role: userFound.role,
+        driver,
+        msg: "Login succesfuly",
+        token: token,
+      });
+
+  }
 
   return res
     .status(200)

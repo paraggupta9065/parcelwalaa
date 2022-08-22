@@ -1,6 +1,11 @@
 const mongoose = require("mongoose");
 
 const deliveryBoySchema = mongoose.Schema({
+  user_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: [true, "Please send user_id"],
+  },
   name: {
     type: String,
     required: [true, "Please send name"],
@@ -41,11 +46,14 @@ const deliveryBoySchema = mongoose.Schema({
     type: String,
     required: [true, "Please send driving license image"],
   },
-  isOnline: {
+  isVerified: {
     type: Boolean,
-    default: true,
+    default: false,
   },
   isActive: {
+    type: Boolean,
+    default: true,
+  }, isOnline: {
     type: Boolean,
     default: true,
   },
