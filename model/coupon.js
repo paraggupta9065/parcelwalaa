@@ -45,11 +45,7 @@ const CouponSchema = mongoose.Schema({
     type: Boolean,
     required: [true, "Please provide if coupon is active or not."],
   },
-  shop_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Shop",
-    required: [true, "Please provide shop id"],
-  },
+
   added_on: {
     type: Date,
     default: Date.now,

@@ -4,16 +4,7 @@ const cartModel = require("../model/cart");
 
 
 exports.addCoupon = async (req, res) => {
-  const number = req.body.number;
 
-  const shop = await shopModel.findOne({ number });
-
-  if (!shop) {
-    return res.status(404).send({
-      status: "Fail",
-      msg: "Not found",
-    });
-  }
 
   const couponData = req.body;
   // mm/dd/yyy
@@ -35,7 +26,6 @@ exports.addCoupon = async (req, res) => {
     });
   }
 
-  couponData["shop_id"] = shop._id;
 
   const coupon = await couponModel.create(couponData);
 
@@ -47,25 +37,6 @@ exports.addCoupon = async (req, res) => {
 };
 
 exports.updateCoupon = async (req, res) => {
-  const number = req.body.number;
-
-  const shop = await shopModel.findOne({ number });
-
-  if (!shop) {
-    return res.status(404).send({
-      status: "Fail",
-      msg: "Not found",
-    });
-  }
-
-  const coupon = await couponModel.findOne({ shop_id: shop._id });
-
-  if (!coupon) {
-    return res.status(404).send({
-      status: "Fail",
-      msg: "Coupon not found",
-    });
-  }
 
   const {
     coupon_code,
@@ -83,6 +54,23 @@ exports.updateCoupon = async (req, res) => {
     products,
     restaurants,
   } = req.body;
+  if (!shop_id) {
+    return res.status(404).send({
+      status: "Fail",
+      msg: "Not found",
+    });
+  }
+
+  const coupon = await couponModel.findOne({ shop_id: shop_id });
+
+  if (!coupon) {
+    return res.status(404).send({
+      status: "Fail",
+      msg: "Coupon not found",
+    });
+  }
+
+
 
   const newCouponData = {
     coupon_code,
@@ -113,38 +101,28 @@ exports.updateCoupon = async (req, res) => {
 };
 
 exports.deleteCoupon = async (req, res) => {
-  const number = req.body.number;
-
-  const shop = await shopModel.findOne({ number });
-
-  if (!shop) {
-    return res.status(404).send({
-      status: "Fail",
-      msg: "Not found",
-    });
-  }
-
-  await couponModel.findOneAndDelete({ shop_id: shop._id });
+  const id = req.params.id;
+  await couponModel.findByIdAndDelete(id);
 
   return res.status(200).send({
     status: "sucess",
-    msg: "Updated sucessfully",
+    msg: "Deleted sucessfully",
   });
 };
 
 exports.getCoupons = async (req, res) => {
-  const { id } = req.body;
+  // const { id } = req.body;
 
-  const shop = await shopModel.findById(id);
+  // const shop = await shopModel.findById(id);
 
-  if (!shop) {
-    return res.status(404).send({
-      status: "Fail",
-      msg: "Not found",
-    });
-  }
+  // if (!shop) {
+  //   return res.status(404).send({
+  //     status: "Fail",
+  //     msg: "Not found",
+  //   });
+  // }
 
-  const coupons = await couponModel.find({ shop_id: shop._id });
+  const coupons = await couponModel.find();
 
   return res.status(200).send({
     status: "sucess",
