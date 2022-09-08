@@ -126,18 +126,26 @@ app.get("/file/:image", (req, res) => {
   // ps.pipe(res)
 
   //read the image using fs and send the image content back in the response
-  const image = req.params.image;
-  fs.readFile(__dirname + '/uploads/' + image, function (err, content) {
-    if (err) {
-      res.writeHead(400, { 'Content-type': 'text/html' })
-      console.log(err);
-      res.end("No such image");
-    } else {
-      //specify the content type in the response will be an image
-      res.writeHead(200, { 'Content-type': 'image/jpg' });
-      res.end(content);
-    }
-  });
+  try {
+    const image = req.params.image;
+    fs.readFile(__dirname + '/uploads/' + image, function (err, content) {
+      if (err) {
+        res.writeHead(400, { 'Content-type': 'text/html' })
+        console.log(err);
+        res.send("No such image");
+      } else {
+        //specify the content type in the response will be an image
+        res.writeHead(200, { 'Content-type': 'image/jpg' });
+        res.end(content);
+      }
+    });
+  } catch (error) {
+    res.status(400).send({
+      status: "fail",
+      error
+    });
+
+  }
 }
 );
 
