@@ -76,7 +76,7 @@ exports.addDeliveryBoy = async (req, res) => {
 //get delivery boy
 exports.getDeliveryBoy = async (req, res) => {
   const deliveryBoys = await deliveryBoyModel.find();
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     msg: "delivery boy fetched successfully",
 
@@ -141,7 +141,7 @@ exports.deliveryBoyStatusUpdate = async (req, res) => {
     { isOnline: isOnline }
   );
   const deliveryBoy = await deliveryBoyModel.findOne({ number: number });
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     msg: "delivery boy updated successfully",
     deliveryBoy: deliveryBoy,
@@ -156,7 +156,7 @@ exports.deliveryBoyAdminStatusUpdate = async (req, res) => {
     { isActive: isActive }
   );
   const deliveryBoy = await deliveryBoyModel.findOne({ number: number });
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     msg: "delivery boy updated successfully",
     deliveryBoy: deliveryBoy,

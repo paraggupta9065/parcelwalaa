@@ -1,16 +1,21 @@
 const categoriesModel = require("../model/categories");
+const cloudinary = require('cloudinary').v2;
+
 
 exports.addCategories = async (req, res) => {
   const categoriesData = req.body;
-  categoriesData["image"] = req.file.filename;
+
+  categoriesData["image"] = result["url"];
   if (!categoriesData["name"]) {
-    res.status(400).send({
+    return res.status(400).send({
       status: "fail",
       msg: "Please provide all the fields",
     });
   }
+  const result = await cloudinary.uploader.upload(req.file.path);
+  categoriesData["image"] = result["url"];
   const categories = await categoriesModel.create(categoriesData);
-  res.status(201).send({
+  return res.status(201).send({
     status: "sucess",
     categories,
   });
@@ -20,7 +25,7 @@ exports.updateCategories = async (req, res) => {
   const id = req.params.id;
 
   if (!id) {
-    res.status(400).send({
+    return res.status(400).send({
       status: "fail",
       msg: "Please provide Id",
     });
@@ -41,7 +46,7 @@ exports.updateCategories = async (req, res) => {
 
   const categories = await categoriesModel.findById(id);
 
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     categories,
   });
@@ -51,7 +56,7 @@ exports.deleteCategories = async (req, res) => {
   const id = req.params.id;
 
   if (!id) {
-    res.status(400).send({
+    return res.status(400).send({
       status: "fail",
       msg: "Please provide Id",
     });
@@ -59,7 +64,7 @@ exports.deleteCategories = async (req, res) => {
 
   await categoriesModel.findByIdAndDelete(id);
 
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     msg: "Deleted sucessfully",
   });
@@ -68,7 +73,7 @@ exports.deleteCategories = async (req, res) => {
 exports.getCategories = async (req, res) => {
   const categories = await categoriesModel.find().populate();
 
-  res.status(200).send({
+  return res.status(200).send({
     status: "sucess",
     categories,
   });

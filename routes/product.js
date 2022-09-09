@@ -15,21 +15,11 @@ const { isAdmin } = require("../middleware/isAdmin");
 const { isShop } = require("../middleware/isShop");
 const router = express.Router();
 //file upload
-const multer = require('multer')
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, "uploads");
-  },
-  filename: (req, file, cb) => {
-    const ext = file.mimetype.split("/")[1];
-    cb(null, `${file.fieldname}-${Date.now()}.${"png"}`);
-  },
-});
+const multerMod = require("../middleware/multerMod");
 
-const upload = multer({ dest: 'uploads/', storage: multerStorage, })
 //end
 
-router.route("/add_product").post(upload.single("image"), isLoggedIn, isShop, addProduct);
+router.route("/add_product").post(multerMod.single("image"), isLoggedIn, isShop, addProduct);
 router.route("/update_product").post(isLoggedIn, isShop, updateProduct);
 router.route("/delete_product/:id").delete(isLoggedIn, isShop, deleteProduct);
 router.route("/get_product/:id").delete(isLoggedIn, isShop, getProduct);

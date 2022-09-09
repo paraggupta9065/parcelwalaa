@@ -139,13 +139,13 @@ exports.setToken = async (req, res) => {
 
     const user = await userModel.findById(user_id);
 
-    res.status(200).send({
+    return res.status(200).send({
       status: "sucess",
       msg: "Token set succesfuly",
       user,
     });
   } catch (error) {
-    res.status(400).send({
+    return res.status(400).send({
       status: "fail",
       error
     });

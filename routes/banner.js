@@ -5,20 +5,10 @@ const { isAdmin } = require("../middleware/isAdmin");
 
 const router = express.Router();
 //file upload
-const multer = require('multer')
-const multerStorage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, "uploads");
-    },
-    filename: (req, file, cb) => {
-        const ext = file.mimetype.split("/")[1];
-        cb(null, `${file.fieldname}-${Date.now()}.${"png"}`);
-    },
-});
+const multerMod = require("../middleware/multerMod");
 
-const upload = multer({ dest: 'uploads/', storage: multerStorage, })
 //end
-router.route("/add_banner").post(upload.single("image"), addBanner);
+router.route("/add_banner").post(multerMod.single("image"), addBanner);
 router.route("/delete_banner/:id").delete(isLoggedIn, isAdmin, deleteBanner);
 router.route("/update_banner/:id").put(isLoggedIn, isAdmin, updateBanner);
 router.route("/get_all_banner").get(isLoggedIn, getAllBanner);

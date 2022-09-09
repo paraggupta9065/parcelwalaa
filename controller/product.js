@@ -1,5 +1,7 @@
 const productModel = require("../model/product");
 const shopModel = require("../model/shop");
+const cloudinary = require('cloudinary').v2;
+
 
 // create the product
 exports.addProduct = async (req, res) => {
@@ -19,7 +21,8 @@ exports.addProduct = async (req, res) => {
     tags,
   } = req.body;
   // const images = req.file.filename;
-  const images = req.file.filename;
+  const result = await cloudinary.uploader.upload(req.file.path);
+  const images = result["url"];
 
 
   if (

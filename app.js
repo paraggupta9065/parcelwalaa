@@ -24,6 +24,10 @@ require("dotenv").config();
 const { EventEmitter } = require("events");
 const userModel = require("./model/user");
 const timerEventEmitter = new EventEmitter();
+const cloudinary = require('cloudinary');
+const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const multer = require("multer");
+
 
 
 //init start
@@ -36,6 +40,12 @@ app.get("/", (req, res) => {
   res.send({ status: "sucess", msg: "Server Up And Running" })
 });
 
+cloudinary.config({
+  cloud_name: 'parcelwalaa',
+  api_key: '831894749651799',
+  api_secret: 'PuGyGmO4Jrmiulgne-KwTrYg9lU'
+});
+
 var serviceAccount = require("./parcelwalaa-47f46-firebase-adminsdk-byjcf-613f1c6e19.json");
 
 
@@ -43,50 +53,13 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
 
-// PUSH NOTIFICATION
-const notification_options = {
-  priority: "high",
-  timeToLive: 60 * 60 * 24,
-};
-
-app.get("/notification", async (req, res) => {
-  // const registrationToken = req.body.registrationToken;
-  // const message = req.body.message;
-  // const options = notification_options;
-  // .sendToDevice(registrationToken, message, options)
-
-
-  const user = await userModel.findOne({ number: 9179175597 });
-  const message = {
-    notification: {
-      title: '$FooCorp up 1.43% on the day',
-      body: '$FooCorp gained 11.80 points to close at 835.67, up 1.43% on the day.'
-    },
-    token: user.fmc_token,
-
-  };
-  admin
-    .messaging().send(message)
-    .then((response) => {
-      res.status(200).send({
-        status: "sucess",
-        msg: "Notification send sucessfully",
-      });
-    })
-    .catch((error) => {
-      res.status(400).send({
-        status: "fail",
-        message: error,
-      });
-    });
-});
 
 
 app.set("emmiter", timerEventEmitter);
 //middleware use
 app.use(express.json());
 app.use((err, req, res, next) => {
-  res.status(500).send({
+  return res.status(500).send({
     message: err.message,
   });
 });
@@ -110,22 +83,6 @@ app.use("/uploads", express.static("uploads"));
 const fs = require('fs')
 const stream = require('stream')
 app.get("/file/:image", (req, res) => {
-
-  // res.sendFile('image-1657089228800.png', { root: __dirname + "/uploads" });
-  // const r = fs.createReadStream(__dirname + '/uploads/' + 'image-1657089228800.png') // or any other way to get a readable stream
-  // const ps = new stream.PassThrough() // <---- this makes a trick with stream error handling
-  // stream.pipeline(
-  //   r,
-  //   ps, // <---- this makes a trick with stream error handling
-  //   (err) => {
-  //     if (err) {
-  //       console.log(err) // No such file or any other kind of error
-  //       return res.sendStatus(400);
-  //     }
-  //   })
-  // ps.pipe(res)
-
-  //read the image using fs and send the image content back in the response
   try {
     const image = req.params.image;
     fs.readFile(__dirname + '/uploads/' + image, function (err, content) {
@@ -136,18 +93,35 @@ app.get("/file/:image", (req, res) => {
       } else {
         //specify the content type in the response will be an image
         res.writeHead(200, { 'Content-type': 'image/jpg' });
-        res.end(content);
+        return res.end(content);
       }
     });
   } catch (error) {
-    res.status(400).send({
+    return res.status(400).send({
       status: "fail",
       error
     });
 
   }
 }
+
 );
+const multerMod = require("./middleware/multerMod");
+
+// app.post("/file", multerMod.single("image"), async (req, res) => {
+//   try {
+//     const result = await cloudinary.uploader.upload(req.file.path);
+//     res.send(result)
+//   } catch (error) {
+//     return res.status(400).send({
+//       status: "fail",
+//       error
+//     });
+
+//   }
+// }
+
+// );
 
 
 // exporting server

@@ -1,4 +1,5 @@
 const bannerModel = require("../model/banner");
+const cloudinary = require('cloudinary').v2;
 
 
 
@@ -6,7 +7,7 @@ const bannerModel = require("../model/banner");
 exports.addBanner = async (req, res) => {
   try {
     const bannerData = ({ openType, isActive } = req.body);
-    bannerData["image"] = req.file.filename;
+
 
     if (!openType || !isActive) {
       return res.status(400).send({
@@ -15,6 +16,8 @@ exports.addBanner = async (req, res) => {
       });
     }
 
+    const result = await cloudinary.uploader.upload(req.file.path);
+    bannerData["image"] = result["url"];
     const banner = await bannerModel.create(bannerData);
 
     return res.status(201).send({
@@ -22,9 +25,11 @@ exports.addBanner = async (req, res) => {
       banner,
     });
   } catch (error) {
+    console.log(error)
     return res.status(400).send({
       status: "fail",
       error,
+      "msg": "something went wrong"
     });
   }
 };
