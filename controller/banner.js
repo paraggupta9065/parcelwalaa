@@ -4,64 +4,101 @@ const bannerModel = require("../model/banner");
 
 
 exports.addBanner = async (req, res) => {
-  const bannerData = ({ openType, isActive } = req.body);
-  bannerData["image"] = req.file.filename;
+  try {
+    const bannerData = ({ openType, isActive } = req.body);
+    bannerData["image"] = req.file.filename;
 
-  if (!openType || !isActive) {
+    if (!openType || !isActive) {
+      return res.status(400).send({
+        status: "fail",
+        msg: "Please provide all the fields",
+      });
+    }
+
+    const banner = await bannerModel.create(bannerData);
+
+    return res.status(201).send({
+      status: "sucess",
+      banner,
+    });
+  } catch (error) {
     return res.status(400).send({
       status: "fail",
-      msg: "Please provide all the fields",
+      error,
     });
   }
-
-  const banner = await bannerModel.create(bannerData);
-
-  return res.status(201).send({
-    status: "sucess",
-    banner,
-  });
 };
 
 exports.deleteBanner = async (req, res) => {
-  const id = req.params.id;
-  await bannerModel.findByIdAndDelete(id);
+  try {
+    const id = req.params.id;
+    await bannerModel.findByIdAndDelete(id);
 
-  return res.status(200).send({
-    status: "sucess",
-    msg: "Banner deleted",
-  });
+    return res.status(200).send({
+      status: "sucess",
+      msg: "Banner deleted",
+    });
+  } catch (error) {
+    return res.status(400).send({
+      status: "fail",
+      error
+    });
+  }
 };
 
 exports.updateBanner = async (req, res) => {
-  const id = req.params.id;
-  const bannerData = req.body;
-  await bannerModel.findOneAndUpdate(id, bannerData);
-  const banner = await bannerModel.findById(id);
+  try {
+    const id = req.params.id;
+    const bannerData = req.body;
+    await bannerModel.findOneAndUpdate(id, bannerData);
+    const banner = await bannerModel.findById(id);
 
-  return res.status(200).send({
-    status: "sucess",
-    msg: "banner Updated",
-    banner,
-  });
+    return res.status(200).send({
+      status: "sucess",
+      msg: "banner Updated",
+      banner,
+    });
+  } catch (error) {
+    return res.status(400).send({
+      status: "fail",
+      error
+    });
+  }
 };
 
 exports.getAllBanner = async (req, res) => {
-  const banner = await bannerModel.find();
+  try {
+    const banner = await bannerModel.find();
 
-  return res.status(200).send({
-    status: "sucess",
-    msg: "All Banner Fetched",
-    banners: banner,
-  });
+    return res.status(200).send({
+      status: "sucess",
+      msg: "All Banner Fetched",
+      banners: banner,
+    });
+  } catch (error) {
+
+    return res.status(400).send({
+      status: "fail",
+      error
+    });
+  }
 };
 
 exports.getBannerById = async (req, res) => {
-  const id = req.params.id;
-  const banner = await bannerModel.findById(id);
+  try {
+    const id = req.params.id;
+    const banner = await bannerModel.findById(id);
 
-  return res.status(200).send({
-    status: "sucess",
-    msg: "Banner Fetched",
-    banner: banner,
-  });
+    return res.status(200).send({
+      status: "sucess",
+      msg: "Banner Fetched",
+      banner: banner,
+    });
+  } catch (error) {
+
+    return res.status(400).send({
+      status: "fail",
+      error
+    });
+  }
 };

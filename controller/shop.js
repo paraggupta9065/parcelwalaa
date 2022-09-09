@@ -122,17 +122,23 @@ exports.getStoresByPincode = async (req, res) => {
     .send({ status: "sucess", msg: "shop fetched successfully", shops });
 };
 exports.isVerified = async (req, res) => {
-  const id = req.user._id;
+  try {
+    const id = req.user._id;
 
-  const shop = await shopModel.findOne({ "user_id": id });
-  if (!shop) {
+    const shop = await shopModel.findOne({ "user_id": id });
+    if (!shop) {
+      res
+        .status(404)
+        .send({ status: "fail", msg: "You are not a vendor", });
+    }
     res
-      .status(404)
-      .send({ status: "fail", msg: "You are not a vendor", });
+      .status(200)
+      .send({ status: "sucess", msg: "Verification status", isVerified: shop.isVerified });
+  } catch (error) {
+    res
+      .status(400)
+      .send({ status: "fail", error });
   }
-  res
-    .status(200)
-    .send({ status: "sucess", msg: "Verification status", isVerified: shop.isVerified });
 };
 exports.verifyShop = async (req, res) => {
   const id = req.params.shop_id;

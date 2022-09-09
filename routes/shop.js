@@ -30,7 +30,7 @@ router.route("/store_status_update").post(isLoggedIn, storeStatusUpdate);
 router.route("/store_admin_status_update").post(isLoggedIn, isAdmin, storeAdminStatusUpdate);
 router.route("/get_stores_by_pincode").post(getStoresByPincode);
 router.route("/verify_shop/:shop_id").get(isLoggedIn, isShop, verifyShop);
-router.route("/is_verified").get(isLoggedIn, isVerified);
+router.route("/is_verified").get(isLoggedIn, isShop, isVerified);
 router.route("/get_orders_report").post(isLoggedIn, getOrdersReport);
 
 module.exports = router;
