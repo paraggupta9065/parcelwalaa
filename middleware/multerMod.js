@@ -10,5 +10,5 @@ const multerStorage = multer.diskStorage({
     },
 });
 
-const multerMod = multer({ dest: 'uploads/', storage: multerStorage, })
+const multerMod = multer({ storage: multerStorage, })
 module.exports = multerMod;
