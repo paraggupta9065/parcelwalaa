@@ -15,7 +15,9 @@ exports.isLoggedIn = async (req, res, next) => {
     const foundUser = await user.findById({ _id: id });
     req.user = foundUser;
   } catch (error) {
-    return res.status(401).send({ status: "fail", msg: "Unauthorized" });
+    return next(
+      res.status(401).send({ status: "Logout", msg: "Unauthorized" })
+    );
   }
-  next();
+  return next();
 };
