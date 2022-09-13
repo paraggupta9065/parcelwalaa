@@ -5,9 +5,7 @@ exports.isLoggedIn = async (req, res, next) => {
   const { token } = req.headers;
   try {
     if (!token) {
-      return next(
-        res.status(404).send({ status: "fail", msg: "Token not found." })
-      );
+      return res.status(404).send({ status: "fail", msg: "Token not found." });
     }
     let decoded;
     decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -15,9 +13,7 @@ exports.isLoggedIn = async (req, res, next) => {
     const foundUser = await user.findById({ _id: id });
     req.user = foundUser;
   } catch (error) {
-    return next(
-      res.status(401).send({ status: "Logout", msg: "Unauthorized" })
-    );
+    return res.status(401).send({ status: "logout", msg: "Unauthorized" });
   }
   return next();
 };
