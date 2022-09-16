@@ -100,7 +100,11 @@ exports.addToCart = async (req, res) => {
   } catch (error) {
     return res.status(400).send({
       status: "fail",
-      error
+      error,
+
+
+      msg: "Something went wrong"
+
     });
   }
 };
@@ -142,7 +146,11 @@ exports.getCart = async (req, res) => {
   } catch (error) {
     return res.status(400).send({
       status: "fail",
-      error
+      error,
+
+
+      msg: "Something went wrong"
+
 
     });
   }
@@ -162,6 +170,9 @@ exports.removeCart = async (req, res) => {
     return res.status(400).send({
       status: "fail",
       error,
+
+      msg: "Something went wrong"
+
     });
   }
 };
@@ -198,7 +209,11 @@ exports.updateCart = async (req, res) => {
   } catch (error) {
     return res.status(200).send({
       status: "sucess",
-      error
+      error,
+
+
+      msg: "Something went wrong"
+
     });
   }
 };
@@ -246,7 +261,10 @@ exports.updateQty = async (req, res) => {
 
     return res.status(400).send({
       status: "fail",
-      error
+      error,
+
+      msg: "Something went wrong"
+
     });
   }
 };

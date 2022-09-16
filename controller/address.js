@@ -59,6 +59,8 @@ exports.addAddress = async (req, res) => {
     return res.status(400).send({
       status: "fail",
       error,
+      msg: "Something went wrong"
+
     });
   }
 };
@@ -134,7 +136,9 @@ exports.updateAddress = async (req, res) => {
   } catch (error) {
     return res.status(400).send({
       status: "fail",
-      error
+      error,
+      msg: "Something went wrong"
+
     });
   }
 };
@@ -151,6 +155,7 @@ exports.removeAddress = async (req, res) => {
   } catch (error) {
     return res.status(400).send({
       status: "fail",
+      msg: "Something went wrong",
       error
     });
   }
@@ -170,7 +175,9 @@ exports.getCustumerAddress = async (req, res) => {
   } catch (error) {
     return res.status(400).send({
       status: "fail",
-      error
+      error,
+      msg: "Something went wrong"
+
     });
   }
 };

@@ -99,7 +99,8 @@ app.get("/file/:image", (req, res) => {
   } catch (error) {
     return res.status(400).send({
       status: "fail",
-      error
+      error,
+      msg: "Something went wrong"
     });
 
   }

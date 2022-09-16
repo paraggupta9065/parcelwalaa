@@ -65,7 +65,7 @@ exports.sucessPayment = async (req, res) => {
       },
       data: {
         "link": "jhjhh"
-        
+
       },
       topic: topic
 
@@ -99,7 +99,13 @@ exports.sucessPayment = async (req, res) => {
 
     return res
       .status(404)
-      .send({ status: "fail", msg: error });
+      .send({
+        status: "fail", msg: error,
+        msg: "Something went wrong"
+
+
+
+      });
   }
 };
 

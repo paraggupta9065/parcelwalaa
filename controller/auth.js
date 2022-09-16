@@ -36,7 +36,9 @@ exports.sendOtp = async (req, res) => {
   } catch (error) {
     return res.status(400).send({
       status: "sucess",
-      error
+      error,
+      msg: "Something went wrong"
+
     });
   }
 };
@@ -125,7 +127,9 @@ exports.verifyOtp = async (req, res) => {
       .status(400)
       .send({
         status: "fail",
-        error
+        error,
+        msg: "Something went wrong"
+
       });
   }
 };
@@ -147,7 +151,9 @@ exports.setToken = async (req, res) => {
   } catch (error) {
     return res.status(400).send({
       status: "fail",
-      error
+      error,
+      msg: "Something went wrong"
+
     });
   }
 

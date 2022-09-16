@@ -46,7 +46,10 @@ exports.deleteBanner = async (req, res) => {
   } catch (error) {
     return res.status(400).send({
       status: "fail",
-      error
+      error,
+
+      msg: "Something went wrong"
+
     });
   }
 };
@@ -66,7 +69,10 @@ exports.updateBanner = async (req, res) => {
   } catch (error) {
     return res.status(400).send({
       status: "fail",
-      error
+      error,
+
+      msg: "Something went wrong"
+
     });
   }
 };
@@ -84,7 +90,10 @@ exports.getAllBanner = async (req, res) => {
 
     return res.status(400).send({
       status: "fail",
-      error
+      error,
+
+      msg: "Something went wrong"
+
     });
   }
 };
@@ -103,7 +112,10 @@ exports.getBannerById = async (req, res) => {
 
     return res.status(400).send({
       status: "fail",
-      error
+      error,
+
+      msg: "Something went wrong"
+
     });
   }
 };

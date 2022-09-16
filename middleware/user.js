@@ -13,7 +13,7 @@ exports.isLoggedIn = async (req, res, next) => {
     const id = decoded.id;
     req.user = await user.findById({ _id: id });
   } catch (error) {
-    return res.status(401).send({ status: "logout", msg: "Unauthorized" });
+    return res.status(401).send({ status: "logout", msg: "Unauthorized", });
   }
   return next();
 };
