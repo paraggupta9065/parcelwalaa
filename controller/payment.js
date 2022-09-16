@@ -56,6 +56,7 @@ exports.sucessPayment = async (req, res) => {
     const shop = await shopModel.findById(cart.shop_id);
     const vendor = await userModel.findOne({ number: shop.number });
     // message to vendor
+    const topic = shop._id;
 
     const message = {
       notification: {
@@ -64,14 +65,13 @@ exports.sucessPayment = async (req, res) => {
       },
       data: {
         "link": "jhjhh"
+        
       },
-      token: vendor.fmc_token,
+      topic: topic
 
     };
     const vendorResp = await admin
       .messaging().send(message);
-    console.log(req.user.fmc_toke);
-
     //message to vendor
     // message to customer
 

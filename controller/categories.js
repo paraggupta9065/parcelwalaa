@@ -5,7 +5,6 @@ const cloudinary = require('cloudinary').v2;
 exports.addCategories = async (req, res) => {
   const categoriesData = req.body;
 
-  categoriesData["image"] = result["url"];
   if (!categoriesData["name"]) {
     return res.status(400).send({
       status: "fail",
