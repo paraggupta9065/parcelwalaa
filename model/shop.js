@@ -45,10 +45,7 @@ const shopSchema = mongoose.Schema({
     type: Number,
     required: [true, "Please enter pincode "],
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
+
   delivery_charges: {
     type: Number,
     required: [true, "Please enter delivery charges "],

@@ -2,12 +2,14 @@ const orderModel = require("../model/order");
 const otpModel = require("../model/otp");
 const shopModel = require("../model/shop");
 const userModel = require("../model/user");
+const cloudinary = require('cloudinary').v2;
+
 
 exports.addShops = async (req, res) => {
-  const image = "adf";
-  const banner = "dfsdf";
+
   // const { otpCode,number, store_name, email, address_line1, admin_commission_rate,city,pincode, state, fssai ,deliveryCharges} = req.body;
   const shopData = req.body;
+  console.log(shopData)
   const { number, store_name, otpCode } = shopData;
   //Verify Otp
   if (!number) {
@@ -33,6 +35,9 @@ exports.addShops = async (req, res) => {
       .status(404)
       .send({ status: "fail", msg: "Please send shop info to create shop" });
   }
+  const result = await cloudinary.uploader.upload(req.file.path);
+  const image = result["url"];
+  const banner = "dfsdf";
   const userCreated = await userModel.create({
     name: store_name,
     number: number,
