@@ -6,5 +6,5 @@ const router = express.Router();
 router.route("/get_orders").get(isLoggedIn, getOrders);
 router.route("/get_orders/:id").get(isLoggedIn, isShop, getOrdersShops);
 router.route("/get_orders_by_shop/:id").get(isLoggedIn, isShop, getOrdersShops);
-router.route("/update_status/:id").get(isLoggedIn, isShop, updateStatus);
+router.route("/update_status/:id").post(isLoggedIn, isShop, updateStatus);
 module.exports = router;
