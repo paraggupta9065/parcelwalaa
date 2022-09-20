@@ -119,3 +119,25 @@ exports.getBannerById = async (req, res) => {
     });
   }
 };
+
+exports.getBannerByPlacement = async (req, res) => {
+  try {
+    const placement = req.params.placement;
+    const banner = await bannerModel.find({ placement });
+
+    return res.status(200).send({
+      status: "sucess",
+      msg: "All Banner Fetched",
+      banners: banner,
+    });
+  } catch (error) {
+
+    return res.status(400).send({
+      status: "fail",
+      error,
+
+      msg: "Something went wrong"
+
+    });
+  }
+};

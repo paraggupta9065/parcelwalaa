@@ -1,5 +1,7 @@
 
 const shopModel = require("../model/shop");
+const admin = require("firebase-admin");
+
 const ordersModel = require("../model/order");
 
 exports.getOrdersShops = async (req, res) => {
@@ -43,6 +45,23 @@ exports.updateStatus = async (req, res) => {
             msg: "order not found",
         });
     }
+    // message to customer
+
+    const messageCustomer = {
+        notification: {
+            title: `Your Order Is ${status}`,
+            body: `Order ${status}`,
+        },
+        data: {
+            "status": status,
+        },
+        token: req.user.fmc_token,
+
+    };
+    const customerPesp = await admin
+        .messaging().send(message);
+
+    //message to customer
 
     return res.status(200).send({
         status: "sucess",
