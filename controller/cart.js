@@ -42,7 +42,7 @@ exports.addToCart = async (req, res) => {
         delivery_address_id,
         cart_inventory: [
           {
-            quantity: 0,
+            quantity: 1,
             product: productId,
           },
         ],
@@ -71,7 +71,7 @@ exports.addToCart = async (req, res) => {
       net_amt +
       (inventory_total_amt + delivery_total_amt - discount_amt + total_gst);
     cart_inventory.push({
-      quantity: 0,
+      quantity: 1,
       product: productId,
     });
 

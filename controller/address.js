@@ -12,7 +12,6 @@ exports.addAddress = async (req, res) => {
       contact_no,
       state,
       city,
-      delivery_note,
       type,
     } = req.body;
 

@@ -101,10 +101,8 @@ exports.sucessPayment = async (req, res) => {
       .status(404)
       .send({
         status: "fail", msg: error,
-        msg: "Something went wrong"
-
-
-
+        msg: "Something went wrong",
+        error
       });
   }
 };
