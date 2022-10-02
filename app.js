@@ -88,7 +88,6 @@ app.get("/file/:image", (req, res) => {
     fs.readFile(__dirname + '/uploads/' + image, function (err, content) {
       if (err) {
         res.writeHead(400, { 'Content-type': 'text/html' })
-        console.log(err);
         res.send("No such image");
       } else {
         //specify the content type in the response will be an image

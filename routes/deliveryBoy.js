@@ -8,7 +8,9 @@ const {
   deliveryBoyAdminStatusUpdate,
   verifyDriver,
   isVerified,
-  getUnverifiedDriver
+  getUnverifiedDriver,
+  deliveryBoyStatus,
+  setLocation
 } = require("../controller/deliveryBoy");
 const { isLoggedIn } = require("../middleware/user");
 const { isAdmin } = require("../middleware/isAdmin");
@@ -24,13 +26,18 @@ router
   .delete(isLoggedIn, isAdmin, deleteDeliveryBoy);
 router.route("/get_delivery_boy").get(isLoggedIn, isAdmin, getDeliveryBoy);
 router
-  .route("/delivery_boy_status_update")
+  .route("/get_delivery_boy_status_update")
   .post(isLoggedIn, isDeliveryBoy, deliveryBoyStatusUpdate);
+
+router
+  .route("/delivery_boy_status")
+  .get(isLoggedIn, isDeliveryBoy, deliveryBoyStatus);
 router
   .route("/delivery_boy_admin_status_update")
   .post(isLoggedIn, isAdmin, deliveryBoyAdminStatusUpdate);
 router.route("/verify_driver/:id").get(isLoggedIn, isAdmin, verifyDriver);
 router.route("/is_verified").get(isLoggedIn, isVerified);
 router.route("/get_unverified_driver").get(isLoggedIn, isAdmin, getUnverifiedDriver);
+router.route("/set_location").post(isLoggedIn, isDeliveryBoy, setLocation);
 
 module.exports = router;

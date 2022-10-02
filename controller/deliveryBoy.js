@@ -1,4 +1,5 @@
 const deliveryBoyModel = require("../model/deliveryBoy");
+const driverLocationModel = require("../model/driverLocation");
 const otpModel = require("../model/otp");
 const userModel = require("../model/user");
 
@@ -147,6 +148,17 @@ exports.deliveryBoyStatusUpdate = async (req, res) => {
     deliveryBoy: deliveryBoy,
   });
 };
+exports.deliveryBoyStatus = async (req, res) => {
+  const number = req.user.number;
+
+
+  const deliveryBoy = await deliveryBoyModel.findOne({ number: number });
+  return res.status(200).send({
+    status: "sucess",
+    msg: "delivery boy found",
+    isOnline: deliveryBoy.isOnline,
+  });
+};
 
 exports.deliveryBoyAdminStatusUpdate = async (req, res) => {
   const { isActive, number } = req.body;
@@ -200,4 +212,21 @@ exports.getUnverifiedDriver = async (req, res) => {
   res
     .status(200)
     .send({ status: "sucess", msg: "driver Fecthed", drivers });
+};
+
+
+exports.setLocation = async (req, res) => {
+  const userId = req.user._id;
+  const lat = req.body.lat;
+  const long = req.body.long;
+  const location = { lat, long };
+  let driverLocation = await driverLocationModel.findOneAndUpdate({ user_id: userId }, { $push: { locations: [location] } });
+  if (!driverLocation) {
+    driverLocation = await driverLocationModel.create({ user_id: userId, locations: [location] },)
+
+  }
+  return res
+    .status(200)
+    .send({ status: "sucess", msg: "driver location added" });
+
 };

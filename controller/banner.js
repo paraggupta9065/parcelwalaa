@@ -25,7 +25,6 @@ exports.addBanner = async (req, res) => {
       banner,
     });
   } catch (error) {
-    console.log(error)
     return res.status(400).send({
       status: "fail",
       error,

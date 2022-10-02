@@ -9,8 +9,6 @@ const admin = require("firebase-admin");
 
 
 exports.initPayment = async (req, res) => {
-
-
   const cart = await cartModel.findOne({ 'number': req.user.number });
   if (!cart) {
     return res.status(200).send({ status: "fail", msg: "Cart not found !" });
@@ -19,44 +17,62 @@ exports.initPayment = async (req, res) => {
   return res.status(200).send({ status: "sucess", cart, payment_response: { merchentKey: "8319905007@apl", } });
 
 };
-
-
 exports.sucessPayment = async (req, res) => {
-
   try {
     const { order_note, transaction_id, amount_paid, payment_method_id } =
       req.body;
 
-    const cart = await cartModel.findOne({ number: req.user.number });
+    const cart = await cartModel.findOne({ user_id: req.user._id });
     if (!cart) {
       return res.status(200).send({ status: "fail", msg: "Cart not found !" });
     }
+    let order = await orderModel.findOne({ user_id: cart.user_id, });
+    if (!order) {
 
-    let order = await orderModel.create({
-      order_note,
-      order_inventory: cart.cart_inventory,
-      delivery_address_id: cart.delivery_address_id,
-      coupon_code_id: cart.coupon_code_id,
-      total_gst: cart.total_gst,
-      net_amt: cart.net_amt,
-      discount_amt: cart.discount_amt,
-      inventory_total_amt: cart.inventory_total_amt,
-      delivery_total_amt: cart.delivery_total_amt,
-      shop_id: cart.shop_id,
-      user_id: cart.user_id,
-      transaction_id,
-      amount_paid,
-      payment_method_id,
-    });
+      order = await orderModel.create({
+        order_note,
+        order_inventory: cart.cart_inventory,
+        delivery_address_id: cart.delivery_address_id,
+        coupon_code_id: cart.coupon_code_id,
+        total_gst: cart.total_gst,
+        net_amt: cart.net_amt,
+        discount_amt: cart.discount_amt,
+        inventory_total_amt: cart.inventory_total_amt,
+        delivery_total_amt: cart.delivery_total_amt,
+        shop_id: cart.shop_id,
+        user_id: req.user._id,
+        transaction_id,
+        amount_paid,
+        payment_method_id,
+      });
+    }
+    else {
+      order = await orderModel.findByIdAndUpdate(order._id, {
+        order_note,
+        order_inventory: cart.cart_inventory,
+        delivery_address_id: cart.delivery_address_id,
+        coupon_code_id: cart.coupon_code_id,
+        total_gst: cart.total_gst,
+        net_amt: cart.net_amt,
+        discount_amt: cart.discount_amt,
+        inventory_total_amt: cart.inventory_total_amt,
+        delivery_total_amt: cart.delivery_total_amt,
+        shop_id: cart.shop_id,
+        user_id: req.user._id,
+        transaction_id,
+        amount_paid,
+        payment_method_id,
+      });
+    }
 
-    order = await orderModel.findOne({ user_id: cart.user_id, }).populate("order_inventory.product");
-    const timerEventEmitter = req.app.get('emmiter');
-    timerEventEmitter.emit('order_recived', order._id);
+
+
+    order = await orderModel.findOne({ user_id: cart.user_id, });
     //send notification
     const shop = await shopModel.findById(cart.shop_id);
     const vendor = await userModel.findOne({ number: shop.number });
     // message to vendor
-    const topic = shop._id;
+    const topic = shop._id.toString();
 
     const message = {
       notification: {
@@ -87,7 +103,7 @@ exports.sucessPayment = async (req, res) => {
 
     };
     const customerPesp = await admin
-      .messaging().send(message);
+      .messaging().send(messageCustomer);
 
     //message to customer
     return res

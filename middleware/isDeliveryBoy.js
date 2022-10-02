@@ -11,12 +11,13 @@ exports.isDeliveryBoy = async (req, res, next) => {
     });
   }
 
-  if (user.role !== "delivey boy") {
+  if (user.role != "deliveryBoy") {
     return res.status(400).send({
       status: "fail",
       msg: "Only Delivey boy has access to this route.",
     });
   }
+
 
   next();
 };

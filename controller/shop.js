@@ -10,7 +10,6 @@ exports.addShops = async (req, res) => {
 
     // const { otpCode,number, store_name, email, address_line1, admin_commission_rate,city,pincode, state, fssai ,deliveryCharges} = req.body;
     const shopData = req.body;
-    console.log(shopData)
     const { number, store_name, otpCode } = shopData;
     //Verify Otp
     if (!number) {

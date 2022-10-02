@@ -14,6 +14,14 @@ const shopSchema = mongoose.Schema({
     type: String,
     required: [true, "Please send banner"],
   },
+
+  lat: {
+    type: String,
+    // required: [true, "Please send lat"],
+  }, long: {
+    type: String,
+    // required: [true, "Please send long"],
+  },
   number: {
     type: Number,
     required: [true, "Please enter number"],

@@ -111,32 +111,22 @@ exports.addToCart = async (req, res) => {
 
 exports.getCart = async (req, res) => {
   try {
-    const id = req.user._id;
-    let cart = await cartModel.findOne({ user: id });
-    let cartInventory = [];
-    cartInventory = cart.cart_inventory;
-
-    let products = [];
-
-
-
-    for (let element in cartInventory) {
-
-      const product = await productModel.findById(cartInventory[element]['product']);
-
-      products.push(product);
-    }
-
-
-
-
+    let cart = await cartModel.findOne({ user_id: req.user._id });
     if (!cart) {
       return res.status(404).send({
         status: "fail",
         msg: "Cart not found",
       });
     }
+    let cartInventory = [];
+    cartInventory = cart.cart_inventory;
+    let products = [];
+    for (let element in cartInventory) {
 
+      const product = await productModel.findById(cartInventory[element]['product']);
+
+      products.push(product);
+    }
     return res.status(200).send({
       status: "sucess",
       cart,
@@ -147,11 +137,7 @@ exports.getCart = async (req, res) => {
     return res.status(400).send({
       status: "fail",
       error,
-
-
       msg: "Something went wrong"
-
-
     });
   }
 };
@@ -249,7 +235,6 @@ exports.updateQty = async (req, res) => {
       quantity: quantity,
       product: productId,
     };
-    console.log(inventoryUpdate)
 
     await cartModel.findByIdAndUpdate(cart._id, { cart_inventory: inventoryUpdate });
 

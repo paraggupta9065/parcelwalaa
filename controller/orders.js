@@ -1,8 +1,14 @@
 
 const shopModel = require("../model/shop");
 const admin = require("firebase-admin");
-
 const ordersModel = require("../model/order");
+const previousOrderModel = require("../model/previousOrder");
+const { getDistance } = require("geolib");
+const deliveryBoyModel = require("../model/deliveryBoy");
+const userModel = require("../model/user");
+const driverLocationModel = require("../model/driverLocation");
+
+
 
 exports.getOrdersShops = async (req, res) => {
     const id = req.params.id;
@@ -34,39 +40,140 @@ exports.getOrders = async (req, res) => {
         orders,
     });
 };
+exports.getOrderByCustomer = async (req, res) => {
+    const id = req.user._id;
+    const order = await ordersModel.findOne({ user_id: id });
+
+    if (!order) {
+        return res.status(404).send({
+            status: "notFound",
+            msg: "Order Not Found",
+        });
+    }
+    return res.status(200).send({
+        status: "sucess",
+        order,
+    });
+};
 
 exports.updateStatus = async (req, res) => {
     const id = req.params.id;
     const status = req.body.status;
-    const orders = await ordersModel.findByIdAndUpdate(id, { "status": status })
+    await ordersModel.findByIdAndUpdate(id, { "status": status });
+    let orders = await ordersModel.findById(id);
+    const user = await userModel.findById(orders.user_id);
+
     if (!orders) {
         return res.status(200).send({
             status: "failed",
             msg: "order not found",
         });
     }
+
     // message to customer
+    if (!(user.fmc_token)) {
+        const messageCustomer = {
+            notification: {
+                title: `Your Order Is ${status}`,
+                body: `Order ${status}`,
+            },
+            data: {
+                "status": status,
+            },
+            token: user.fmc_token,
 
-    const messageCustomer = {
-        notification: {
-            title: `Your Order Is ${status}`,
-            body: `Order ${status}`,
-        },
-        data: {
-            "status": status,
-        },
-        token: req.user.fmc_token,
+        };
+        const customerResp = await admin
+            .messaging().send(messageCustomer);
+        return res.status(200).send({
+            status: "sucess",
+            orders,
+            customerResp,
 
-    };
-    const customerPesp = await admin
-        .messaging().send(message);
+        });
+    }
+    if (status == "cancelled" || status == "delivered") {
+        console.log(orders);
+        orders["status"] = status;
+        // const previousOrder = await previousOrderModel.create(orders);
+        // console.log(previousOrder);
 
-    //message to customer
+        await ordersModel.findByIdAndDelete(orders._id);
+        return res.status(200).send({
+            status: "sucess",
+            msg: "Order history created and order deleted",
+
+        });
+    } else if (status == "prepared") {
+        const shop = await shopModel.findById(orders.shop_id);
+        con
+        const shopLat = shop.lat;
+        const shopLong = shop.long;
+        const drivers = await deliveryBoyModel.find({ pincode: shop.pincode });
+        let driverLocation = await driverLocationModel.findOne({ user_id: drivers[0].user_id });
+        let locations = [];
+        locations = driverLocation.locations;
+        let driverLat = locations[locations.length - 1]['lat'];
+        let driverLong = locations[locations.length - 1]['long'];
+        let nearestDriver = drivers[0].user_id;
+        let shortestDistance = getDistance(
+            { latitude: String(shopLat), longitude: String(shopLong) },
+            { latitude: String(driverLat), longitude: String(driverLong) }
+        );
+        drivers.forEach(async (driver) => {
+            driverLocation = await driverLocationModel.findOne({ user_id: driver.user_id });
+            locations = [];
+            locations = driverLocation.locations;
+            driverLat = locations[locations.length - 1]['lat'];
+            driverLong = locations[locations.length - 1]['long'];
+            const distance = getDistance(
+                { latitude: String(shopLat), longitude: String(shopLong) },
+                { latitude: String(driverLat), longitude: String(driverLong) }
+            );
+            if (shortestDistance > distance) {
+                shortestDistance = distance;
+                nearestDriver = driver.user_id;
+            }
+        });
+
+
+
+        const userDriver = await userModel.findById(nearestDriver);
+        console.log(userDriver);
+        if (!(userDriver.fmc_token)) {
+            const messageDriver = {
+                notification: {
+                    title: `Your Order Is ${status}`,
+                    body: `Order ${status}`,
+                },
+                data: {
+                    "status": status,
+                },
+                token: userDriver.fmc_token,
+
+            };
+            const driverResp = await admin
+                .messaging().send(messageDriver);
+            console.log(driverResp);
+            return res.status(200).send({
+                status: "sucess",
+                driverResp,
+            });
+        }
+
+
+    }
 
     return res.status(200).send({
         status: "sucess",
         orders,
+        msg: "message token not found",
+
     });
+
+    //message to customer
+
+
 };
 
 

@@ -50,13 +50,23 @@ const deliveryBoySchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  pincode: {
+    type: Number,
+    required: [true, "Please enter pincode "],
+  },
+
   isActive: {
     type: Boolean,
     default: true,
   }, isOnline: {
     type: Boolean,
+    default: false,
+  },
+  isAvailable: {
+    type: Boolean,
     default: true,
   },
+
 });
 
 module.exports = mongoose.model("DeliveryBoy", deliveryBoySchema);
