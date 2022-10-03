@@ -60,7 +60,7 @@ exports.updateStatus = async (req, res) => {
     const id = req.params.id;
     const status = req.body.status;
     await ordersModel.findByIdAndUpdate(id, { "status": status });
-    let orders = await ordersModel.findById(id);
+    let orders = await ordersModel.findById(id).populate("user_id");
     const user = await userModel.findById(orders.user_id);
 
     if (!orders) {
@@ -79,6 +79,8 @@ exports.updateStatus = async (req, res) => {
             },
             data: {
                 "status": status,
+                "order": String(orders),
+
             },
             token: user.fmc_token,
 

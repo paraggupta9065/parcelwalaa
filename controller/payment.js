@@ -67,12 +67,14 @@ exports.sucessPayment = async (req, res) => {
 
 
 
-    order = await orderModel.findOne({ user_id: cart.user_id, });
+    order = await orderModel.findOne({ user_id: cart.user_id, }).populate("user_id");;
     //send notification
     const shop = await shopModel.findById(cart.shop_id);
     const vendor = await userModel.findOne({ number: shop.number });
     // message to vendor
     const topic = shop._id.toString();
+    console.log("/" + topic + "/");
+
 
     const message = {
       notification: {
@@ -80,7 +82,7 @@ exports.sucessPayment = async (req, res) => {
         body: "Order Received",
       },
       data: {
-        "link": "jhjhh"
+        "order": String(order),
 
       },
       topic: topic
@@ -97,13 +99,16 @@ exports.sucessPayment = async (req, res) => {
         body: "Order Received",
       },
       data: {
-        "link": "jhjhh"
+        "order": String(order),
       },
       token: req.user.fmc_token,
 
     };
-    const customerPesp = await admin
+    let customerPesp;
+    console.log(req.user.fmc_token);
+    customerPesp = await admin
       .messaging().send(messageCustomer);
+    console.log(customerPesp);
 
     //message to customer
     return res
@@ -111,8 +116,7 @@ exports.sucessPayment = async (req, res) => {
       .send({ status: "sucess", order, msg: "order created and cart deleted", });
 
   } catch (error) {
-    console.log(error)
-
+    console.log(error);
     return res
       .status(404)
       .send({
