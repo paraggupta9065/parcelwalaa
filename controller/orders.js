@@ -61,7 +61,6 @@ exports.updateStatus = async (req, res) => {
     const status = req.body.status;
     await ordersModel.findByIdAndUpdate(id, { "status": status });
     let orders = await ordersModel.findById(id).populate("user_id");
-    const user = await userModel.findById(orders.user_id);
 
     if (!orders) {
         return res.status(200).send({
@@ -71,6 +70,7 @@ exports.updateStatus = async (req, res) => {
     }
 
     // message to customer
+    console.log(!(user.fmc_token));
     if (!(user.fmc_token)) {
         const messageCustomer = {
             notification: {
