@@ -23,7 +23,7 @@ const multerMod = require("../middleware/multerMod");
 router.route("/add_product").post(multerMod.single("image"), isLoggedIn, isShop, addProduct);
 router.route("/update_product").post(isLoggedIn, isShop, updateProduct);
 router.route("/delete_product/:id").delete(isLoggedIn, isShop, deleteProduct);
-router.route("/get_product/:id").delete(isLoggedIn, isShop, getProduct);
+router.route("/get_product/:id").get(isLoggedIn, isShop, getProduct);
 router.route("/get_products").get(isLoggedIn, getProducts);
 router.route("/search_products").get(isLoggedIn, searchProducts);
 router.route("/filter_products").get(isLoggedIn, filterProducts);
