@@ -1,67 +1,68 @@
 const addressModel = require("../model/address");
 
 exports.addAddress = async (req, res) => {
-  try {
-    const id = req.user._id;
+  // try {
+  const id = req.user._id;
 
-    const {
-      name,
-      line1,
-      landmark,
-      pincode,
-      contact_no,
-      state,
-      city,
-      type,
-    } = req.body;
+  const {
+    name,
+    line1,
+    landmark,
+    pincode,
+    contact_no,
+    state,
+    city,
+    type,
+    delivery_note,
+  } = req.body;
 
-    if (
-      !name ||
-      !line1 ||
-      !landmark ||
-      !pincode ||
-      !contact_no ||
-      !state ||
-      !city ||
-      !type
-    ) {
-      return res.status(400).send({
-        status: "fail",
-        msg: "Please provide all the fields",
-      });
-    }
-
-    if (!delivery_note) {
-      delivery_note = "";
-    }
-
-    const addressData = {
-      name,
-      line1,
-      landmark,
-      pincode,
-      user_id: id,
-      contact_no,
-      state,
-      city,
-      delivery_note,
-      type,
-    };
-
-    const address = await addressModel.create(addressData);
-
-    return res.status(201).send({
-      status: "sucess",
-      address,
-    });
-  } catch (error) {
+  if (
+    !name ||
+    !line1 ||
+    !landmark ||
+    !pincode ||
+    !contact_no ||
+    !state ||
+    !city ||
+    !type
+  ) {
     return res.status(400).send({
       status: "fail",
-      error,
-      msg: "Something went wrong"
-
+      msg: "Please provide all the fields",
     });
   }
+
+  if (!delivery_note) {
+    delivery_note = "";
+  }
+
+  const addressData = {
+    name,
+    line1,
+    landmark,
+    pincode,
+    user_id: id,
+    contact_no,
+    state,
+    city,
+    delivery_note,
+    type,
+  };
+
+  const address = await addressModel.create(addressData);
+
+  return res.status(201).send({
+    status: "sucess",
+    address,
+  });
+  // } catch (error) {
+  //   return res.status(400).send({
+  //     status: "fail",
+  //     error,
+  //     msg: "Something went wrong"
+
+  //   });
+  // }
 };
 
 exports.updateAddress = async (req, res) => {

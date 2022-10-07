@@ -97,8 +97,7 @@ exports.updateStatus = async (req, res) => {
     if (status == "cancelled" || status == "delivered") {
         console.log(orders);
         orders["status"] = status;
-        // const previousOrder = await previousOrderModel.create(orders);
-        // console.log(previousOrder);
+        const previousOrder = await previousOrderModel.create(orders);
 
         await ordersModel.findByIdAndDelete(orders._id);
         return res.status(200).send({
@@ -177,6 +176,23 @@ exports.updateStatus = async (req, res) => {
 
 
 };
+
+exports.getPreviousOrders = async (req, res) => {
+    const id = req.user._id;
+
+    const orders = await previousOrderModel.find({ user_id: id });
+    if (orders.length == 0) {
+        return res.status(404).send({
+            status: "fail",
+            msg: "Order Not Found",
+        });
+    }
+    return res.status(200).send({
+        status: "sucess",
+        orders,
+    });
+};
+
 
 
 // exports.removeCart = async (req, res) => {

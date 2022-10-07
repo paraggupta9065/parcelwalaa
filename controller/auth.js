@@ -35,7 +35,7 @@ exports.sendOtp = async (req, res) => {
     });
   } catch (error) {
     return res.status(400).send({
-      status: "sucess",
+      status: "fail",
       error,
       msg: "Something went wrong"
 
@@ -122,6 +122,8 @@ exports.verifyOtp = async (req, res) => {
         role: userFound.role,
         msg: "Login succesfuly",
         token: token,
+        user: userFound,
+
       });
   } catch (error) {
     return res
@@ -130,7 +132,6 @@ exports.verifyOtp = async (req, res) => {
         status: "fail",
         error,
         msg: "Something went wrong"
-
       });
   }
 };

@@ -165,7 +165,7 @@ exports.getProductByShop = async (req, res) => {
 
 
 
-  return res.status(200).send({ status: "sucess", msg: "shops fetched.", products });
+  return res.status(200).send({ status: "sucess", msg: "shops product fetched.", products });
 };
 
 exports.getProduct = async (req, res) => {
@@ -179,4 +179,18 @@ exports.getProduct = async (req, res) => {
 
 
   return res.status(200).send({ status: "sucess", msg: "shops fetched.", product });
+};
+
+exports.getSearchProduct = async (req, res) => {
+  const { key } = req.params;
+  if (!key || key.length < 5) {
+    return res.status(404).send({ status: "fail", msg: "Minimum 5 words required" });
+  }
+
+  const product = await productModel.find({ name: { "$regex": key, "$options": "i" } });
+  if (product.length == 0) {
+    return res.status(404).send({ status: "fail", msg: "No Product Found." });
+  }
+
+  return res.status(200).send({ status: "sucess", msg: "product fetched.", product });
 };
