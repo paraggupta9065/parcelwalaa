@@ -109,7 +109,7 @@ exports.updateStatus = async (req, res) => {
         });
     } else if (status == "prepared") {
         const shop = await shopModel.findById(orders.shop_id);
-        con
+
         const shopLat = shop.lat;
         const shopLong = shop.long;
         const drivers = await deliveryBoyModel.find({ pincode: shop.pincode });
