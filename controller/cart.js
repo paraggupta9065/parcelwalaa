@@ -5,6 +5,7 @@ const couponModel = require("../model/coupon");
 
 exports.addToCart = async (req, res) => {
   try {
+
     const { productId, delivery_address_id, coupon_code_id } = req.body;
     let inventory_total_amt = 0;
     let delivery_total_amt = 0;
@@ -12,7 +13,11 @@ exports.addToCart = async (req, res) => {
     let net_amt = 0;
     let cart_inventory = [];
     let total_gst = 0;
-    let cart = await cartModel.findOne({ user: req.user._id });
+    let cart = await cartModel.findOne({ user_id: req.user._id });
+    console.log(cart);
+    console.log(req.user._id);
+
+
     const product = await productModel.findById(productId);
     const shop_id = product.shop_id;
 
