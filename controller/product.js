@@ -17,7 +17,7 @@ exports.addProduct = async (req, res) => {
     price,
     regular_price,
     weight,
-    // categories,
+    categories,
     tags,
   } = req.body;
   // const images = req.file.filename;
@@ -32,7 +32,7 @@ exports.addProduct = async (req, res) => {
     !veg_type ||
     !price ||
     !regular_price ||
-    !weight
+    !weight || !categories
   ) {
     return res.status(400).send({
       status: "fail",
@@ -48,10 +48,9 @@ exports.addProduct = async (req, res) => {
     price,
     regular_price,
     weight,
-    categories: [{ "hisir": "byesir" },],
+    categories: categories,
     tags: [],
     images,
-    variations: "",
     shop_id: shop._id,
     pincode: shop.pincode,
   };

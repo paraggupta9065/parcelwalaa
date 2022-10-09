@@ -51,9 +51,11 @@ const ProductSchema = mongoose.Schema({
     default: 0,
   },
   reviews: [String],
-  categories: [
-    Object
-  ],
+  categories: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Categories",
+    required: true,
+  },
   tags: [String],
   images: {
     type: String,
