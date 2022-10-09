@@ -90,6 +90,10 @@ const OrderSchema = mongoose.Schema({
     enum: ["recived", "accepted", "prepared", "assigned", "cancelled", "delivered"],
     default: "recived",
   },
+  driver: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "DeliveryBoy",
+  },
 });
 
 module.exports = mongoose.model("Order", OrderSchema);

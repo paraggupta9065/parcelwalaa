@@ -35,6 +35,7 @@ exports.getOrders = async (req, res) => {
             msg: "Order Not Found",
         });
     }
+
     return res.status(200).send({
         status: "sucess",
         orders,
@@ -45,6 +46,14 @@ exports.getOrderByCustomer = async (req, res) => {
     const order = await ordersModel.findOne({ user_id: id });
 
     if (!order) {
+        return res.status(404).send({
+            status: "notFound",
+            msg: "Order Not Found",
+        });
+    }
+
+    if (order.status == 'prepared' || order.status == 'assigned' || order.status == 'delivered') {
+        const driver = await deliveryBoyModel
         return res.status(404).send({
             status: "notFound",
             msg: "Order Not Found",
@@ -132,12 +141,15 @@ exports.updateStatus = async (req, res) => {
                 if (shortestDistance > distance) {
                     shortestDistance = distance;
                     nearestDriver = driver.user_id;
+                    await ordersModel.findByIdAndUpdate(id, { "driver": driver._id });
+
                 }
             });
 
 
 
             const userDriver = await userModel.findById(nearestDriver);
+
 
             if (user.fmc_token) {
                 const messageCustomer = {
