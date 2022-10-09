@@ -141,7 +141,29 @@ exports.updateStatus = async (req, res) => {
 
 
         const userDriver = await userModel.findById(nearestDriver);
-        console.log(userDriver);
+        if (user.fmc_token) {
+            const messageCustomer = {
+                notification: {
+                    title: `Your Order Is ${status}`,
+                    body: `Order ${status}`,
+                },
+                data: {
+                    "status": status,
+                    "order": String(orders),
+
+                },
+                token: user.fmc_token,
+
+            };
+            const customerResp = await admin
+                .messaging().send(messageCustomer);
+            return res.status(200).send({
+                status: "sucess",
+                driver: userDriver,
+                customerResp,
+
+            });
+        }
         if (!(userDriver.fmc_token)) {
             const messageDriver = {
                 notification: {
