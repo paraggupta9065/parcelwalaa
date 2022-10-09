@@ -149,7 +149,7 @@ exports.updateStatus = async (req, res) => {
                 },
                 data: {
                     "status": status,
-                    "order": String(orders),
+                    "driver": userDriver,
 
                 },
                 token: user.fmc_token,
@@ -157,12 +157,7 @@ exports.updateStatus = async (req, res) => {
             };
             const customerResp = await admin
                 .messaging().send(messageCustomer);
-            return res.status(200).send({
-                status: "sucess",
-                driver: userDriver,
-                customerResp,
 
-            });
         }
         if (!(userDriver.fmc_token)) {
             const messageDriver = {
