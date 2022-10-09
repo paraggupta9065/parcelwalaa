@@ -115,6 +115,7 @@ exports.updateStatus = async (req, res) => {
 
             });
         } else if (status == "prepared") {
+
             const shop = await shopModel.findById(orders.shop_id);
             const shopLat = shop.lat;
             const shopLong = shop.long;
