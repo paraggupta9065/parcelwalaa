@@ -72,8 +72,7 @@ exports.updateStatus = async (req, res) => {
     }
 
     // message to customer
-    console.log(!(user.fmc_token));
-    if (!(user.fmc_token)) {
+    if (user.fmc_token) {
         const messageCustomer = {
             notification: {
                 title: `Your Order Is ${status}`,
