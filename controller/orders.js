@@ -72,7 +72,7 @@ exports.updateStatus = async (req, res) => {
 
         const id = req.params.id;
         const status = req.body.status;
-        await ordersModel.findByIdAndUpdate(id, { "status": status });
+
         let orders = await ordersModel.findById(id).populate("user_id");
         const user = await userModel.findById(orders.user_id);
 
@@ -106,8 +106,9 @@ exports.updateStatus = async (req, res) => {
         if (status == "cancelled" || status == "delivered") {
             orders["status"] = status;
             const previousOrder = await previousOrderModel.create(orders);
-
+            await ordersModel.findByIdAndUpdate(id, { "status": status });
             await ordersModel.findByIdAndDelete(orders._id);
+
             return res.status(200).send({
                 status: "sucess",
                 msg: "Order history created and order deleted",
