@@ -70,7 +70,7 @@ exports.updateStatus = async (req, res) => {
         const id = req.params.id;
         const status = req.body.status;
 
-        let orders = await ordersModel.findById(id).populate("user_id");
+        let orders = await ordersModel.findById(id).populate("user_id").populate('shop_id');
         const user = await userModel.findById(orders.user_id);
 
 
@@ -182,6 +182,8 @@ exports.updateStatus = async (req, res) => {
 
             }
             if ((userDriver.fmc_token)) {
+
+                orders
                 const messageDriver = {
                     notification: {
                         title: `Your Order Is ${status}`,
@@ -189,6 +191,7 @@ exports.updateStatus = async (req, res) => {
                     },
                     data: {
                         "status": status,
+                        "order": orders,
                     },
                     token: userDriver.fmc_token,
 
