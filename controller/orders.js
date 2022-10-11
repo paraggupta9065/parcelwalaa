@@ -183,7 +183,6 @@ exports.updateStatus = async (req, res) => {
             }
             if ((userDriver.fmc_token)) {
 
-                orders
                 const messageDriver = {
                     notification: {
                         title: `Your Order Is ${status}`,
@@ -191,11 +190,13 @@ exports.updateStatus = async (req, res) => {
                     },
                     data: {
                         "status": status,
-                        "order": orders,
+                        "order": String(orders),
                     },
                     token: userDriver.fmc_token,
 
                 };
+                console.log(userDriver.fmc_token);
+
                 const driverResp = await admin
                     .messaging().send(messageDriver);
                 console.log(driverResp);
