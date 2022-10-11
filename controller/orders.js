@@ -183,6 +183,12 @@ exports.updateStatus = async (req, res) => {
             }
             if ((userDriver.fmc_token)) {
 
+                let sendOrder = orders;
+                let changeId = sendOrder['_id'];
+                sendOrder['_id'] = undefined;
+                sendOrder['id'] = changeId;
+
+
                 const messageDriver = {
                     notification: {
                         title: `Your Order Is ${status}`,
