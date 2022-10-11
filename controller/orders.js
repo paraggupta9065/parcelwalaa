@@ -118,13 +118,14 @@ exports.updateStatus = async (req, res) => {
             });
             await ordersModel.findByIdAndDelete(orders._id);
 
+
             return res.status(200).send({
                 status: "sucess",
                 msg: "Order history created and order deleted",
 
             });
         } else if (status == "prepared") {
-
+            await ordersModel.findByIdAndUpdate(orders._id, { status });
             const shop = await shopModel.findById(orders.shop_id);
             const shopLat = shop.lat;
             const shopLong = shop.long;
