@@ -66,10 +66,7 @@ exports.getOrderByCustomer = async (req, res) => {
 };
 
 exports.updateStatus = async (req, res) => {
-
     try {
-
-
         const id = req.params.id;
         const status = req.body.status;
 
@@ -85,28 +82,40 @@ exports.updateStatus = async (req, res) => {
         }
 
         // message to customer
-        if (user.fmc_token) {
-            const messageCustomer = {
-                notification: {
-                    title: `Your Order Is ${status}`,
-                    body: `Order ${status}`,
-                },
-                data: {
-                    "status": status,
-                    "order": String(orders),
+        try {
+            if (user.fmc_token) {
+                const messageCustomer = {
+                    notification: {
+                        title: `Your Order Is ${status}`,
+                        body: `Order ${status}`,
+                    },
+                    data: {
+                        "status": status,
+                        "order": String(orders),
 
-                },
-                token: user.fmc_token,
+                    },
+                    token: user.fmc_token,
 
-            };
-            const customerResp = await admin
-                .messaging().send(messageCustomer);
+                };
+                const customerResp = await admin
+                    .messaging().send(messageCustomer);
 
+            }
+        } catch (error) {
+            console.log(error);
         }
         if (status == "cancelled" || status == "delivered") {
             orders["status"] = status;
-            const previousOrder = await previousOrderModel.create(orders);
-            await ordersModel.findByIdAndUpdate(id, { "status": status });
+
+            const previousOrder = await previousOrderModel.create({
+                "order_note": orders.order_note,
+                "order_inventory": orders.order_inventory,
+                "shop_id": orders.shop_id,
+                "user_id": orders.user_id,
+                "transaction_id": orders.transaction_id,
+                "amount_paid": orders.amount_paid,
+                "status": status,
+            });
             await ordersModel.findByIdAndDelete(orders._id);
 
             return res.status(200).send({
@@ -196,17 +205,16 @@ exports.updateStatus = async (req, res) => {
         }
 
         return res.status(200).send({
-            status: "sucess",
-            orders,
+            status: "fail",
             msg: "message token not found",
 
         });
 
-        //message to customer
+        // message to customer
 
     } catch (error) {
         return res.status(200).send({
-            status: "sucess",
+            status: "fail",
             error,
             msg: "Something went wrong"
 
