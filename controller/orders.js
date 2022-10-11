@@ -25,6 +25,20 @@ exports.getOrdersShops = async (req, res) => {
         orders,
     });
 };
+exports.getOrder = async (req, res) => {
+    const id = req.params.id;
+    const orders = await ordersModel.findById(id);
+    if (!orders) {
+        return res.status(404).send({
+            status: "fail",
+            msg: "Order Not Found",
+        });
+    }
+    return res.status(200).send({
+        status: "sucess",
+        orders,
+    });
+};
 
 exports.getOrders = async (req, res) => {
 
