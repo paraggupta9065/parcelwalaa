@@ -86,6 +86,8 @@ exports.updateStatus = async (req, res) => {
 
         let orders = await ordersModel.findById(id).populate("user_id").populate('shop_id');
         const user = await userModel.findById(orders.user_id);
+        await ordersModel.findByIdAndUpdate(orders._id, { status });
+
 
 
         if (!orders) {
@@ -139,7 +141,6 @@ exports.updateStatus = async (req, res) => {
 
             });
         } else if (status == "prepared") {
-            await ordersModel.findByIdAndUpdate(orders._id, { status });
             const shop = await shopModel.findById(orders.shop_id);
             const shopLat = shop.lat;
             const shopLong = shop.long;
@@ -216,6 +217,9 @@ exports.updateStatus = async (req, res) => {
                     .messaging().send(messageCustomer);
 
             }
+        }
+        else if (status == "accepted") {
+
         }
 
         return res.status(200).send({
