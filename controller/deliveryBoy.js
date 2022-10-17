@@ -215,5 +215,3 @@ exports.getUnverifiedDriver = async (req, res) => {
 };
 
 
-
-
