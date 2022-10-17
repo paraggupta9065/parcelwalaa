@@ -16,6 +16,7 @@ const OrderSchema = mongoose.Schema({
       product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
+        autopopulate: true,
         required: true,
       },
     },
@@ -95,5 +96,8 @@ const OrderSchema = mongoose.Schema({
     ref: "DeliveryBoy",
   },
 });
+
+OrderSchema.plugin(require('mongoose-autopopulate'));
+
 
 module.exports = mongoose.model("Order", OrderSchema);
