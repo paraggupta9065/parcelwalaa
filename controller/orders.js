@@ -105,7 +105,7 @@ exports.updateStatus = async (req, res) => {
                     },
                     data: {
                         "status": status,
-                        "order": String(orders),
+                        "order": JSON.stringify(orders),
 
                     },
                     token: user.fmc_token,
@@ -206,7 +206,7 @@ exports.updateStatus = async (req, res) => {
                     },
                     data: {
                         "status": status,
-                        "driver": String(userDriver),
+                        "driver": JsonWebTokenError.stringify(userDriver),
 
                     },
                     token: user.fmc_token,

@@ -68,7 +68,7 @@ exports.sucessPayment = async (req, res) => {
 
 
 
-    order = await orderModel.findOne({ user_id: cart.user_id, }).populate("user_id");;
+    order = await orderModel.findOne({ user_id: cart.user_id, }).populate("user_id").populate({ path: 'order_inventory' });;
     //send notification
     const shop = await shopModel.findById(cart.shop_id);
     const vendor = await userModel.findOne({ number: shop.number });
