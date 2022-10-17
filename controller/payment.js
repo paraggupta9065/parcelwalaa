@@ -83,8 +83,7 @@ exports.sucessPayment = async (req, res) => {
         body: "Order Received",
       },
       data: {
-        "order": String(order),
-
+        "order": JSON.stringify(order),
       },
       topic: topic
 
