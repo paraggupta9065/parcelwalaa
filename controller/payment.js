@@ -4,6 +4,7 @@ const userModel = require("../model/user");
 const shopModel = require("../model/shop");
 const user = require("../model/user");
 const admin = require("firebase-admin");
+const { json } = require("express");
 
 
 
@@ -99,7 +100,7 @@ exports.sucessPayment = async (req, res) => {
         body: "Order Received",
       },
       data: {
-        "order": String(order),
+        "order": JSON.stringify(order),
       },
       token: req.user.fmc_token,
 

@@ -215,18 +215,5 @@ exports.getUnverifiedDriver = async (req, res) => {
 };
 
 
-exports.setLocation = async (req, res) => {
-  const userId = req.user._id;
-  const lat = req.body.lat;
-  const long = req.body.long;
-  const location = { lat, long };
-  let driverLocation = await driverLocationModel.findOneAndUpdate({ user_id: userId }, { $push: { locations: [location] } });
-  if (!driverLocation) {
-    driverLocation = await driverLocationModel.create({ user_id: userId, locations: [location] },)
 
-  }
-  return res
-    .status(200)
-    .send({ status: "sucess", msg: "driver location added" });
 
-};

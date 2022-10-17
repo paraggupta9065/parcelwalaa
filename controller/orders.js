@@ -171,34 +171,9 @@ exports.updateStatus = async (req, res) => {
 
                 }
             });
-
-
-
             const userDriver = await userModel.findById(nearestDriver);
 
-
-            if (user.fmc_token) {
-                const messageCustomer = {
-                    notification: {
-                        title: `Your Order Is ${status}`,
-                        body: `Order ${status}`,
-                    },
-                    data: {
-                        "status": status,
-                        "driver": String(userDriver),
-
-                    },
-                    token: user.fmc_token,
-
-                };
-                const customerResp = await admin
-                    .messaging().send(messageCustomer);
-
-            }
             if ((userDriver.fmc_token)) {
-
-
-
                 const messageDriver = {
                     notification: {
                         title: `Your Order Is ${status}`,
@@ -221,8 +196,26 @@ exports.updateStatus = async (req, res) => {
                     driverResp,
                 });
             }
+        } else if (status == "assignedAccepted") {
+            const userDriver = await userModel.findById(nearestDriver);
+            if (user.fmc_token) {
+                const messageCustomer = {
+                    notification: {
+                        title: `Your Order Is ${status}`,
+                        body: `Order ${status}`,
+                    },
+                    data: {
+                        "status": status,
+                        "driver": String(userDriver),
 
+                    },
+                    token: user.fmc_token,
 
+                };
+                const customerResp = await admin
+                    .messaging().send(messageCustomer);
+
+            }
         }
 
         return res.status(200).send({
