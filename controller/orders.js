@@ -151,6 +151,7 @@ exports.updateStatus = async (req, res) => {
             let driverLat = locations[locations.length - 1]['lat'];
             let driverLong = locations[locations.length - 1]['long'];
             let nearestDriver = drivers[0].user_id;
+            let driver = drivers;
             let shortestDistance = getDistance(
                 { latitude: String(shopLat), longitude: String(shopLong) },
                 { latitude: String(driverLat), longitude: String(driverLong) }
@@ -168,10 +169,13 @@ exports.updateStatus = async (req, res) => {
                 if (shortestDistance > distance) {
                     shortestDistance = distance;
                     nearestDriver = driver.user_id;
-                    await ordersModel.findByIdAndUpdate(id, { "driver": driver._id });
+                    driver = drivers
+
 
                 }
             });
+            await ordersModel.findByIdAndUpdate(id, { "driver": driver._id });
+
 
             const userDriver = await userModel.findById(nearestDriver);
 
