@@ -244,13 +244,18 @@ exports.setLocation = async (req, res) => {
 
 exports.getAsssignedOrder = async (req, res) => {
   const driver = await deliveryBoyModel.findOne({ "user_id": req.user._id });
-  const order = await orderModel.findOne({ driver: driver._id });
+  console.log(driver._id)
   if (!driver) {
     return res.status(404).send({
       status: "fail",
       msg: "Driver not found"
     });
-  } else if (!order) {
+  }
+
+  const order = await orderModel.findOne({ driver: driver._id });
+  console.log(order)
+
+  if (!order) {
     return res.status(200).send({
       status: "sucess",
       msg: "No order assigned"

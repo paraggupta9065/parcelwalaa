@@ -168,11 +168,10 @@ exports.updateStatus = async (req, res) => {
                 if (shortestDistance > distance) {
                     shortestDistance = distance;
                     nearestDriver = driver.user_id;
-
+                    await ordersModel.findByIdAndUpdate(id, { "driver": driver._id });
 
                 }
             });
-            const ordersDriverUpdate = await ordersModel.findByIdAndUpdate(id, { "driver": nearestDriver });
 
             const userDriver = await userModel.findById(nearestDriver);
 
