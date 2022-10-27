@@ -66,13 +66,13 @@ exports.getOrderByCustomer = async (req, res) => {
         });
     }
 
-    if (order.status == 'prepared' || order.status == 'assigned' || order.status == 'delivered') {
-        const driver = await deliveryBoyModel
-        return res.status(404).send({
-            status: "notFound",
-            msg: "Order Not Found",
-        });
-    }
+    // if (order.status == 'prepared' || order.status == 'assigned' || order.status == 'delivered') {
+    //     const driver = await deliveryBoyModel
+    //     return res.status(404).send({
+    //         status: "notFound",
+    //         msg: "Order Not Found",
+    //     });
+    // }
     return res.status(200).send({
         status: "sucess",
         order,
@@ -173,6 +173,7 @@ exports.updateStatus = async (req, res) => {
                 }
             });
             const userDriver = await userModel.findById(nearestDriver);
+            console.log(userDriver)
 
             if ((userDriver.fmc_token)) {
                 const messageDriver = {
@@ -183,6 +184,7 @@ exports.updateStatus = async (req, res) => {
                     data: {
                         "status": status,
                         "id": String(orders._id),
+                        "type": "order",
                     },
                     token: userDriver.fmc_token,
 
@@ -217,8 +219,19 @@ exports.updateStatus = async (req, res) => {
                     .messaging().send(messageCustomer);
 
             }
+            return res.status(200).send({
+                status: "sucess",
+                msg: "Status Updated",
+
+            });
         }
         else if (status == "accepted") {
+
+            return res.status(200).send({
+                status: "sucess",
+                msg: "Status Updated",
+
+            });
 
         }
 

@@ -21,11 +21,7 @@ exports.sendOtp = async (req, res) => {
       upperCaseAlphabets: false,
       specialChars: false,
     });
-    const checkOtp = await otpModel.findOne({ number: number });
-
-    if (checkOtp) {
-      await otpModel.findOneAndDelete({ number: number });
-    }
+    await otpModel.findOneAndDelete({ number: number });
     await otpModel.create({ otp: otpCode, number: number });
     return res.status(200).send({
       msg: "otp sended successfully",
@@ -59,6 +55,7 @@ exports.verifyOtp = async (req, res) => {
     }
     const isVerified = await otpFound.isValidatedOtp(otpCode);
 
+    console.log(isVerified);
     if (!isVerified) {
       return res.status(400).send({ status: "fail", msg: "Incorrect Otp" });
     }
@@ -102,6 +99,8 @@ exports.verifyOtp = async (req, res) => {
     }
     if (userFound.role == "deliveryBoy") {
       const driver = await deliveryBoyModel.findOne({ user_id: userFound._id });
+
+
 
       return res
         .status(200)

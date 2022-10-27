@@ -6,7 +6,10 @@ const crypto = require('crypto');
 
 
 const otpSchema = mongoose.Schema({
-    number: String,
+    number: {
+        type: Number,
+        unique: [true],
+    },
     otp: String,
     otpExpiry: { type: Date, default: Date.now },
 });

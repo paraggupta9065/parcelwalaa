@@ -34,6 +34,7 @@ const BannerSchema = mongoose.Schema({
     type: Boolean,
     required: [true, "Please enter is active value"],
   },
+
 });
 
 module.exports = mongoose.model("Banner", BannerSchema);

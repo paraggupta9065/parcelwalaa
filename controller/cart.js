@@ -2,116 +2,115 @@ const cartModel = require("../model/cart");
 const productModel = require("../model/product");
 const shopModel = require("../model/shop");
 const couponModel = require("../model/coupon");
+const { default: mongoose } = require("mongoose");
 
 exports.addToCart = async (req, res) => {
-  try {
+  // try {
 
-    const { productId, delivery_address_id, coupon_code_id } = req.body;
-    let inventory_total_amt = 0;
-    let delivery_total_amt = 0;
-    let discount_amt = 0;
-    let net_amt = 0;
-    let cart_inventory = [];
-    let total_gst = 0;
-    let cart = await cartModel.findOne({ user_id: req.user._id });
-    console.log(cart);
-    console.log(req.user._id);
+  const { productId, delivery_address_id, coupon_code_id } = req.body;
+  let inventory_total_amt = 0;
+  let delivery_total_amt = 0;
+  let discount_amt = 0;
+  let net_amt = 0;
 
 
-    const product = await productModel.findById(productId);
-    const shop_id = product.shop_id;
+  let total_gst = 0;
+  let cart = await cartModel.findOne({ user_id: req.user._id });
 
-    const shop = await shopModel.findById(shop_id);
+  const product = await productModel.findById(productId);
+  const shop_id = product.shop_id;
+  const shop = await shopModel.findById(shop_id);
+  if (!cart) {
+    inventory_total_amt = product.price;
 
-    if (!cart) {
-      inventory_total_amt = product.price;
-
-      delivery_total_amt = shop.delivery_charges;
-
-      if (coupon_code_id != "na") {
-        const coupon = await couponModel.findById(coupon_code_id);
-        discount_amt = (product.price / 100) * coupon.percentage_discount;
-      }
-
-      total_gst = ((product.price - discount_amt) / 100) * 5;
-      net_amt =
-        inventory_total_amt + delivery_total_amt - discount_amt + total_gst;
-
-      let newCart = {
-        inventory_total_amt,
-        delivery_total_amt,
-        coupon_code_id,
-        discount_amt,
-        net_amt,
-        shop_id,
-        delivery_address_id,
-        cart_inventory: [
-          {
-            quantity: 1,
-            product: productId,
-          },
-        ],
-        total_gst,
-        user_id: req.user._id,
-      };
-
-      cart = await cartModel.create(newCart);
-
-      return res.status(201).send({
-        status: "sucess",
-        cart,
-      });
-    }
-
-    inventory_total_amt = cart.inventory_total_amt + product.price;
-    delivery_total_amt = delivery_total_amt + shop.delivery_charges;
+    delivery_total_amt = shop.delivery_charges;
 
     if (coupon_code_id != "na") {
       const coupon = await couponModel.findById(coupon_code_id);
       discount_amt = (product.price / 100) * coupon.percentage_discount;
     }
 
-    total_gst = total_gst + ((product.price - discount_amt) / 100) * 5;
+    total_gst = ((product.price - discount_amt) / 100) * 5;
     net_amt =
-      net_amt +
-      (inventory_total_amt + delivery_total_amt - discount_amt + total_gst);
-    cart_inventory.push({
-      quantity: 1,
-      product: productId,
-    });
+      inventory_total_amt + delivery_total_amt - discount_amt + total_gst;
 
-    let updateCart = {
+    let newCart = {
       inventory_total_amt,
       delivery_total_amt,
       coupon_code_id,
-
       discount_amt,
       net_amt,
       shop_id,
       delivery_address_id,
-      cart_inventory: cart_inventory,
+      cart_inventory: [
+        {
+          quantity: 1,
+          product: productId,
+        },
+      ],
       total_gst,
-      user: req.user._id,
+      user_id: req.user._id,
     };
 
-    cart = await cartModel.findByIdAndUpdate(cart._id, updateCart);
+    cart = await cartModel.create(newCart);
 
-    return res.status(200).send({
+    return res.status(201).send({
       status: "sucess",
       msg: "Added To Cart",
       cart,
     });
-
-  } catch (error) {
-    return res.status(400).send({
-      status: "fail",
-      error,
-
-
-      msg: "Something went wrong"
-
-    });
   }
+
+  inventory_total_amt = cart.inventory_total_amt + product.price;
+  delivery_total_amt = delivery_total_amt + shop.delivery_charges;
+
+  if (coupon_code_id != "na") {
+    const coupon = await couponModel.findById(coupon_code_id);
+    discount_amt = (product.price / 100) * coupon.percentage_discount;
+  }
+
+  total_gst = total_gst + ((product.price - discount_amt) / 100) * 5;
+  net_amt =
+    net_amt +
+    (inventory_total_amt + delivery_total_amt - discount_amt + total_gst);
+
+  let cart_inventory = new Array();
+  cart_inventory = cart.cart_inventory;
+  cart_inventory.push({
+    quantity: 1,
+    product: productId,
+  });
+  let updateCart = {
+    inventory_total_amt,
+    delivery_total_amt,
+    coupon_code_id,
+    discount_amt,
+    net_amt,
+    shop_id,
+    delivery_address_id,
+    cart_inventory: cart_inventory,
+    total_gst,
+    user: req.user._id,
+  };
+
+  cart = await cartModel.findByIdAndUpdate(cart._id, updateCart);
+
+  return res.status(200).send({
+    status: "sucess",
+    msg: "Added To Cart",
+    cart,
+  });
+
+  // } catch (error) {
+  //   return res.status(400).send({
+  //     status: "fail",
+  //     error,
+
+
+  //     msg: "Something went wrong"
+
+  //   });
+  // }
 };
 
 exports.getCart = async (req, res) => {
@@ -210,11 +209,33 @@ exports.updateCart = async (req, res) => {
 };
 
 exports.updateQty = async (req, res) => {
+  // const { productId, quantity } = req.body;
+  // const id = req.user._id;
+  // let cart = await cartModel.findOne({ user_id: id });
+  // console.log(productId)
+
+  // await cartModel.findByIdAndUpdate({
+  //   "user_id": id, "cart_inventory.product": mongoose.Types.ObjectId(productId)
+  // },
+  //   {
+  //     '$set': {
+  //       'cart_inventory.$.quantity': quantity,
+  //     }
+  //   }
+  // );
+  // cart = await cartModel.findOne({ user_id: id });
+  //
+  //
+  //
+  //
+  //
+  //end
+
   try {
     const { productId, quantity } = req.body;
     const id = req.user._id;
-    const cart = await cartModel.findOne({ user: id });
-
+    const cart = await cartModel.findOne({ user_id: id });
+    console.log(quantity);
     if (quantity < 1) {
       return res.status(201).send({
         status: "fail",

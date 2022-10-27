@@ -215,3 +215,28 @@ exports.getUnverifiedDriver = async (req, res) => {
 };
 
 
+exports.setLocation = async (req, res) => {
+
+  const data = req.body;
+  data["user_id"] = req.user._id;
+
+
+  const isExist = await driverLocationModel.findOne({ 'user_id': req.user._id });
+
+  if (!isExist) {
+    let map = {};
+    map['user_id'] = req.user._id;
+    map['locations'] = [{ "lat": data['lat'], "long": data['long'] }];
+    await driverLocationModel.create(map);
+  } else {
+    let map = isExist;
+    let locations = map['locations'];
+    locations.push({ "lat": data['lat'], "long": data['long'] });
+    map['locations'] = locations;
+    await driverLocationModel.findOneAndUpdate({ 'user_id': req.user._id }, { 'locations': locations });
+  }
+  return res
+    .status(200)
+    .send({ status: "sucess", msg: "driver location set" });
+};
+
