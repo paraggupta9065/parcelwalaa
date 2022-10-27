@@ -172,7 +172,8 @@ exports.updateStatus = async (req, res) => {
 
                 }
             });
-            await ordersModel.findByIdAndUpdate(id, { "driver": nearestDriver });
+            const ordersDriverUpdate = await ordersModel.findByIdAndUpdate(id, { "driver": nearestDriver });
+
             const userDriver = await userModel.findById(nearestDriver);
 
             if ((userDriver.fmc_token)) {
