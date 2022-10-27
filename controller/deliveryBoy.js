@@ -2,6 +2,7 @@ const deliveryBoyModel = require("../model/deliveryBoy");
 const driverLocationModel = require("../model/driverLocation");
 const otpModel = require("../model/otp");
 const userModel = require("../model/user");
+const orderModel = require("../model/order");
 
 
 // create a delivery boy
@@ -238,5 +239,28 @@ exports.setLocation = async (req, res) => {
   return res
     .status(200)
     .send({ status: "sucess", msg: "driver location set" });
+};
+
+
+exports.getAsssignedOrder = async (req, res) => {
+  const driver = await deliveryBoyModel.findOne({ "user_id": req.user._id });
+  const order = await orderModel.findOne({ driver: driver._id });
+  if (!driver) {
+    return res.status(404).send({
+      status: "fail",
+      msg: "Driver not found"
+    });
+  } else if (!order) {
+    return res.status(200).send({
+      status: "sucess",
+      msg: "No order assigned"
+    });
+  }
+  return res.status(200).send({
+    status: "sucess",
+    msg: "Order and driver send",
+    driver,
+    order,
+  });
 };
 

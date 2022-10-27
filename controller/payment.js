@@ -34,6 +34,7 @@ exports.sucessPayment = async (req, res) => {
         order_note,
         order_inventory: cart.cart_inventory,
         delivery_address_id: cart.delivery_address_id,
+
         coupon_code_id: cart.coupon_code_id,
         total_gst: cart.total_gst,
         net_amt: cart.net_amt,

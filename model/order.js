@@ -28,6 +28,8 @@ const OrderSchema = mongoose.Schema({
   delivery_address_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Address",
+    autopopulate: true,
+
     required: [true, "Please provide delivery address"],
   },
   coupon_code_id: {
@@ -62,11 +64,15 @@ const OrderSchema = mongoose.Schema({
   shop_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Shop",
+    autopopulate: true,
+
     required: [true, "Please provide shop id"],
   },
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
+    autopopulate: true,
+
     required: [true, "Please provide user id"],
   },
   transaction_id: {
@@ -88,7 +94,7 @@ const OrderSchema = mongoose.Schema({
 
   status: {
     type: String,
-    enum: ["recived", "accepted", "prepared", "assigned", "assignedAccepted", "cancelled", "delivered"],
+    enum: ["recived", "accepted", "prepared", "assigned", "assignedAccepted", "arrivedShop", "arrivedCustumer", "cancelled", "delivered"],
     default: "recived",
   },
   driver: {

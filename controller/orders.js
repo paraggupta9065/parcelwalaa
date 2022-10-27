@@ -27,7 +27,7 @@ exports.getOrdersShops = async (req, res) => {
 };
 exports.getOrder = async (req, res) => {
     const id = req.params.id;
-    const orders = await ordersModel.findById(id);
+    const orders = await ordersModel.findById(id).populate("delivery_address_id").populate("user_id").populate("shop_id");
     if (!orders) {
         return res.status(404).send({
             status: "fail",
@@ -168,12 +168,12 @@ exports.updateStatus = async (req, res) => {
                 if (shortestDistance > distance) {
                     shortestDistance = distance;
                     nearestDriver = driver.user_id;
-                    await ordersModel.findByIdAndUpdate(id, { "driver": driver._id });
+
 
                 }
             });
+            await ordersModel.findByIdAndUpdate(id, { "driver": nearestDriver });
             const userDriver = await userModel.findById(nearestDriver);
-            console.log(userDriver)
 
             if ((userDriver.fmc_token)) {
                 const messageDriver = {
@@ -189,11 +189,9 @@ exports.updateStatus = async (req, res) => {
                     token: userDriver.fmc_token,
 
                 };
-                console.log(userDriver.fmc_token);
 
                 const driverResp = await admin
                     .messaging().send(messageDriver);
-                console.log(driverResp);
                 return res.status(200).send({
                     status: "sucess",
                     driverResp,

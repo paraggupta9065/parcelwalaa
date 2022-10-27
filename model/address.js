@@ -37,6 +37,13 @@ const AddressSchema = mongoose.Schema({
   delivery_note: {
     type: String,
   },
+  lat: {
+    type: String,
+    // required: [true, "Please send lat"],
+  }, long: {
+    type: String,
+    // required: [true, "Please send long"],
+  },
   type: {
     type: String,
     enum: ["home", "office", "friendOrFamily"],

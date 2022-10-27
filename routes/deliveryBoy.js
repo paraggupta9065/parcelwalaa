@@ -11,12 +11,12 @@ const {
   getUnverifiedDriver,
   deliveryBoyStatus,
   setLocation,
+  getAsssignedOrder,
 } = require("../controller/deliveryBoy");
 const { isLoggedIn } = require("../middleware/user");
 const { isAdmin } = require("../middleware/isAdmin");
 const { isDeliveryBoy } = require("../middleware/isDeliveryBoy");
 const router = express.Router();
-
 router.route("/add_delivery_boy").post(addDeliveryBoy);
 router
   .route("/update_delivery_boy")
@@ -28,7 +28,6 @@ router.route("/get_delivery_boy").get(isLoggedIn, isAdmin, getDeliveryBoy);
 router
   .route("/get_delivery_boy_status_update")
   .post(isLoggedIn, isDeliveryBoy, deliveryBoyStatusUpdate);
-
 router
   .route("/delivery_boy_status")
   .get(isLoggedIn, isDeliveryBoy, deliveryBoyStatus);
@@ -39,5 +38,6 @@ router.route("/verify_driver/:id").get(isLoggedIn, isAdmin, verifyDriver);
 router.route("/is_verified").get(isLoggedIn, isVerified);
 router.route("/get_unverified_driver").get(isLoggedIn, isAdmin, getUnverifiedDriver);
 router.route("/set_location").post(isLoggedIn, isDeliveryBoy, setLocation);
+router.route("/get_asssigned_order").get(isLoggedIn, isDeliveryBoy, getAsssignedOrder);
 
 module.exports = router;
