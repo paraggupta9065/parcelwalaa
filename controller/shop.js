@@ -6,61 +6,62 @@ const cloudinary = require('cloudinary').v2;
 
 
 exports.addShops = async (req, res) => {
-  try {
+  // try {
 
-    // const { otpCode,number, store_name, email, address_line1, admin_commission_rate,city,pincode, state, fssai ,deliveryCharges} = req.body;
-    const shopData = req.body;
-    const { number, store_name, otpCode } = shopData;
-    //Verify Otp
-    if (!number) {
-      return res.status(404).send({ status: "fail", msg: "Number not found" });
-    }
-    const otpFound = await otpModel.findOne({ number: number });
-
-    if (!otpFound) {
-      return res.status(400).send({ status: "fail", msg: "Otp Not Sended Yet" });
-    }
-    if (otpFound.otpExpiry < Date.now) {
-      return res.status(400).send({ status: "fail", msg: "Otp expired" });
-    }
-    const isVerified = await otpFound.isValidatedOtp(otpCode);
-    if (!isVerified) {
-      return res.status(400).send({ status: "fail", msg: "Incorrect Otp" });
-    }
-    //Otp Verified
-    //Creating User
-
-    if (!store_name) {
-      return res
-        .status(404)
-        .send({ status: "fail", msg: "Please send shop info to create shop" });
-    }
-    const result = await cloudinary.uploader.upload(req.file.path);
-    const image = result["url"];
-    const banner = "dfsdf";
-    const userCreated = await userModel.create({
-      name: store_name,
-      number: number,
-      role: "shop",
-    });
-    //User Created
-    //Creating Shop
-    shopData["user_id"] = userCreated._id;
-    shopData["image"] = image;
-    shopData["banner"] = banner;
-    const shop = await shopModel.create(shopData);
-    const token = await userCreated.getJwtToken();
-    res
-      .status(201)
-      .send({ status: "sucess", msg: "shop added successfully", shop: shop, user: userCreated, token });
-  } catch (error) {
-    return res.status(400).send({
-      status: "fail",
-      error,
-      msg: "Something went wrong"
-
-    });
+  // const { otpCode,number, store_name, email, address_line1, admin_commission_rate,city,pincode, state, fssai ,deliveryCharges} = req.body;
+  const shopData = req.body;
+  const { number, store_name, otpCode } = shopData;
+  //Verify Otp
+  if (!number) {
+    return res.status(404).send({ status: "fail", msg: "Number not found" });
   }
+  const otpFound = await otpModel.findOne({ number: number });
+
+  if (!otpFound) {
+    return res.status(400).send({ status: "fail", msg: "Otp Not Sended Yet" });
+  }
+  if (otpFound.otpExpiry < Date.now) {
+    return res.status(400).send({ status: "fail", msg: "Otp expired" });
+  }
+  const isVerified = otpFound['otp'] == otpCode;
+
+  if (!isVerified) {
+    return res.status(400).send({ status: "fail", msg: "Incorrect Otp" });
+  }
+  //Otp Verified
+  //Creating User
+
+  if (!store_name) {
+    return res
+      .status(404)
+      .send({ status: "fail", msg: "Please send shop info to create shop" });
+  }
+  const result = await cloudinary.uploader.upload(req.file.path);
+  const image = result["url"];
+  const banner = "dfsdf";
+  const userCreated = await userModel.create({
+    name: store_name,
+    number: number,
+    role: "shop",
+  });
+  //User Created
+  //Creating Shop
+  shopData["user_id"] = userCreated._id;
+  shopData["image"] = image;
+  shopData["banner"] = banner;
+  const shop = await shopModel.create(shopData);
+  const token = await userCreated.getJwtToken();
+  res
+    .status(201)
+    .send({ status: "sucess", msg: "shop added successfully", shop: shop, user: userCreated, token });
+  // } catch (error) {
+  //   return res.status(400).send({
+  //     status: "fail",
+  //     error,
+  //     msg: "Something went wrong"
+
+  //   });
+  // }
 };
 
 
@@ -203,4 +204,24 @@ exports.getOrdersReport = async (req, res) => {
   res
     .status(200)
     .send({ status: "sucess", msg: "Order Fetched", orders });
+};
+
+exports.setCategories = async (req, res) => {
+
+  const number = req.user.number;
+
+  const shop = await shopModel.findOne({ number });
+  if (!shop) {
+    res
+      .status(404)
+      .send({ status: "fail", msg: "Shop not found" });
+  }
+
+  await shopModel.findOneAndUpdate({ number }, { categories: req.body.categories });
+
+
+
+  res
+    .status(200)
+    .send({ status: "sucess", msg: "Order Fetched" });
 };

@@ -97,10 +97,7 @@ const OrderSchema = mongoose.Schema({
     enum: ["recived", "accepted", "prepared", "assigned", "assignedAccepted", "arrivedShop", "arrivedCustumer", "cancelled", "delivered"],
     default: "recived",
   },
-  driver: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "DeliveryBoy",
-  },
+ 
 });
 
 OrderSchema.plugin(require('mongoose-autopopulate'));

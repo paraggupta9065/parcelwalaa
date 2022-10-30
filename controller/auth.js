@@ -21,8 +21,15 @@ exports.sendOtp = async (req, res) => {
       upperCaseAlphabets: false,
       specialChars: false,
     });
-    await otpModel.findOneAndDelete({ number: number });
-    await otpModel.create({ otp: otpCode, number: number });
+    const otp = await otpModel.findOne({ number: number });
+    if (!otp) {
+      await otpModel.create({ otp: otpCode, number: number });
+
+    } else {
+      await otpModel.findOneAndUpdate({ number: number }, { otp: otpCode, number: number });
+
+
+    }
     return res.status(200).send({
       msg: "otp sended successfully",
       status: "sucess",
@@ -53,9 +60,10 @@ exports.verifyOtp = async (req, res) => {
     if (otpFound.otpExpiry < Date.now) {
       return res.status(400).send({ status: "fail", msg: "otp expired" });
     }
-    const isVerified = await otpFound.isValidatedOtp(otpCode);
+    // const isVerified = await otpFound.isValidatedOtp(otpCode);
+    const isVerified = otpFound['otp'] == otpCode;
+    console.log(isVerified)
 
-    console.log(isVerified);
     if (!isVerified) {
       return res.status(400).send({ status: "fail", msg: "Incorrect Otp" });
     }

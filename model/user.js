@@ -10,7 +10,7 @@ const UserSchema = mongoose.Schema({
   number: {
     type: Number,
     required: [true, "Please enter number"],
-    unique: true,
+    unique: [true, 'number alredy exist'],
   },
   role: {
     type: String,

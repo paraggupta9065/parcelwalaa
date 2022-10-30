@@ -1,5 +1,5 @@
 const express = require("express");
-const { addShops, updateShops, deleteShops, getShops, storeAdminStatusUpdate, storeStatusUpdate, getStoresByPincode, isVerified, getUnverifiedShop, verifyShop, getShop, getOrdersReport } = require("../controller/shop");
+const { addShops, updateShops, deleteShops, getShops, storeAdminStatusUpdate, storeStatusUpdate, getStoresByPincode, isVerified, getUnverifiedShop, verifyShop, getShop, getOrdersReport, setCategories } = require("../controller/shop");
 const { isAdmin } = require("../middleware/isAdmin");
 const { isShop } = require("../middleware/isShop");
 const { isLoggedIn } = require("../middleware/user");
@@ -22,5 +22,6 @@ router.route("/get_stores_by_pincode").post(getStoresByPincode);
 router.route("/verify_shop/:shop_id").get(isLoggedIn, isShop, verifyShop);
 router.route("/is_verified").get(isLoggedIn, isShop, isVerified);
 router.route("/get_orders_report").post(isLoggedIn, getOrdersReport);
+router.route("/set_categories").post(isLoggedIn, setCategories);
 
 module.exports = router;

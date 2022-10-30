@@ -73,7 +73,19 @@ const shopSchema = mongoose.Schema({
     type: Boolean,
     default: true,
   },
+  categories: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Categories",
+      autopopulate: true,
+
+    },
+  ],
+
 
 });
+
+shopSchema.plugin(require('mongoose-autopopulate'));
+
 
 module.exports = mongoose.model("Shop", shopSchema);
