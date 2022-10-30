@@ -3,6 +3,7 @@ const otpModel = require("../model/otp");
 const shopModel = require("../model/shop");
 const userModel = require("../model/user");
 const cloudinary = require('cloudinary').v2;
+const categoriesModel = require("../model/categories");
 
 
 exports.addShops = async (req, res) => {
@@ -207,21 +208,36 @@ exports.getOrdersReport = async (req, res) => {
 };
 
 exports.setCategories = async (req, res) => {
-
   const number = req.user.number;
-
   const shop = await shopModel.findOne({ number });
   if (!shop) {
     res
       .status(404)
       .send({ status: "fail", msg: "Shop not found" });
   }
-
   await shopModel.findOneAndUpdate({ number }, { categories: req.body.categories });
 
 
 
   res
     .status(200)
-    .send({ status: "sucess", msg: "Order Fetched" });
+    .send({ status: "sucess", msg: "Categories updated" });
+};
+exports.getCategories = async (req, res) => {
+  const number = req.user.number;
+  const categories = await categoriesModel.find().populate();
+  const shop = await shopModel.findOne({ number });
+  if (!shop) {
+    res
+      .status(404)
+      .send({ status: "fail", msg: "Shop not found" });
+  }
+  res
+    .status(200)
+    .send({ status: "sucess", msg: "Order Fetched", "shopCategories": shop.categories, categories });
+};
+exports.getShopByCategories = async (req, res) => {
+  const categoryId = req.body.category_id;
+
+  const shops = shopModel.find({});
 };

@@ -10,10 +10,6 @@ const CategoriesSchema = mongoose.Schema({
     type: String,
     required: [true, "Provide the image of category"],
   },
-  subCategories: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Categories",
-  }],
 });
 
 module.exports = mongoose.model("Categories", CategoriesSchema);

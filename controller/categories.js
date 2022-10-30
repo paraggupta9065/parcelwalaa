@@ -29,19 +29,9 @@ exports.updateCategories = async (req, res) => {
       msg: "Please provide Id",
     });
   }
+  console.log(req.body)
 
-  const oldCategory = await categoriesModel.findById(id);
-
-  const categoriesData = req.body;
-
-  categoriesData["subCategories"] &&
-    categoriesData["subCategories"].map((data) => {
-      oldCategory["subCategories"].push(data);
-    });
-
-  categoriesData["subCategories"] = oldCategory["subCategories"];
-
-  await categoriesModel.findByIdAndUpdate(id, categoriesData);
+  await categoriesModel.findByIdAndUpdate(id, req.body);
 
   const categories = await categoriesModel.findById(id);
 

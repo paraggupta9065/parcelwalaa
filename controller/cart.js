@@ -3,6 +3,7 @@ const productModel = require("../model/product");
 const shopModel = require("../model/shop");
 const couponModel = require("../model/coupon");
 const { default: mongoose } = require("mongoose");
+const { array } = require("../middleware/multerMod");
 
 exports.addToCart = async (req, res) => {
   // try {
@@ -206,7 +207,19 @@ exports.updateCart = async (req, res) => {
 
     });
   }
+
 };
+function removeItemAll(arr, value) {
+  var i = 0;
+  while (i < arr.length) {
+    if (arr[i] === value) {
+      arr.splice(i, 1);
+    } else {
+      ++i;
+    }
+  }
+  return arr;
+}
 
 exports.updateQty = async (req, res) => {
   // const { productId, quantity } = req.body;
@@ -237,11 +250,15 @@ exports.updateQty = async (req, res) => {
     const cart = await cartModel.findOne({ user_id: id });
     console.log(quantity);
     if (quantity < 1) {
-      return res.status(201).send({
-        status: "fail",
-        msg: "Qty should be more then 1",
-      });
 
+      let inventoryUpdate = new Array;
+      inventoryUpdate = cart.cart_inventory;
+      inventoryUpdate.forEach((ele) => {
+        console.log(ele);
+        if (ele.product == productId) {
+          removeItemAll(inventoryUpdate, ele);
+        }
+      });
     }
 
     if (!cart) {
@@ -261,6 +278,13 @@ exports.updateQty = async (req, res) => {
       quantity: quantity,
       product: productId,
     };
+
+    if (inventoryUpdate.length == 0) {
+      await cartModel.findByIdAndDelete(cart._id);
+
+    }
+
+
 
     await cartModel.findByIdAndUpdate(cart._id, { cart_inventory: inventoryUpdate });
 

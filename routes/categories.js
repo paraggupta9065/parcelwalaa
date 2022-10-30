@@ -14,7 +14,7 @@ const multerMod = require("../middleware/multerMod");
 //end
 
 router.route("/add_categories").post(multerMod.single('image'), addCategories);
-router.route("/update_categories/:id").put(updateCategories);
+router.route("/update_categories/:id").post(updateCategories);
 router.route("/delete_categories/:id").delete(deleteCategories);
 router.route("/get_categories/").get(getCategories);
 
