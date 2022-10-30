@@ -75,7 +75,6 @@ exports.sucessPayment = async (req, res) => {
     const vendor = await userModel.findOne({ number: shop.number });
     // message to vendor
     const topic = shop._id.toString();
-    console.log("/" + topic + "/");
 
 
     const message = {

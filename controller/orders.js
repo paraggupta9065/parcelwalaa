@@ -7,6 +7,7 @@ const { getDistance } = require("geolib");
 const deliveryBoyModel = require("../model/deliveryBoy");
 const userModel = require("../model/user");
 const driverLocationModel = require("../model/driverLocation");
+const { use } = require("../routes/coupon");
 
 
 
@@ -110,7 +111,7 @@ exports.updateStatus = async (req, res) => {
                         "order": JSON.stringify(orders),
 
                     },
-                    token: user.fmc_token,
+                    topic: user._id,
 
                 };
                 const customerResp = await admin
@@ -174,9 +175,7 @@ exports.updateStatus = async (req, res) => {
 
                 }
             });
-            await ordersModel.findByIdAndUpdate(id, { "driver": driver._id });
-
-
+            await ordersModel.findOneAndUpdate({ "_id": id }, { "driver": driver._id });
             const userDriver = await userModel.findById(nearestDriver);
 
             if ((userDriver.fmc_token)) {
@@ -190,7 +189,7 @@ exports.updateStatus = async (req, res) => {
                         "id": String(orders._id),
                         "type": "order",
                     },
-                    token: userDriver.fmc_token,
+                    topic: userDriver._id,
 
                 };
 
@@ -214,7 +213,7 @@ exports.updateStatus = async (req, res) => {
                         "driver": JsonWebTokenError.stringify(userDriver),
 
                     },
-                    token: user.fmc_token,
+                    topic: user._id,
 
                 };
                 const customerResp = await admin
