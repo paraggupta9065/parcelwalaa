@@ -4,6 +4,7 @@ const app = express();
 
 // Routes
 const authRoute = require("./routes/auth");
+const adminRoute = require("./routes/admin_get");
 const shopRoute = require("./routes/shop");
 const homeRoute = require("./routes/home");
 const bannerRoute = require("./routes/banner");
@@ -65,6 +66,7 @@ app.use((err, req, res, next) => {
 });
 app.use(express.urlencoded({ extended: true }));
 app.use("/auth", authRoute);
+app.use("/admin", authRoute);
 app.use("/shop", shopRoute);
 app.use("/banner", bannerRoute);
 app.use("/home", homeRoute);

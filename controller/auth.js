@@ -60,9 +60,9 @@ exports.verifyOtp = async (req, res) => {
     if (otpFound.otpExpiry < Date.now) {
       return res.status(400).send({ status: "fail", msg: "otp expired" });
     }
-    // const isVerified = await otpFound.isValidatedOtp(otpCode);
-    const isVerified = otpFound['otp'] == otpCode;
-    console.log(isVerified)
+    const isVerified = await otpFound.isValidatedOtp(otpCode);
+    // const isVerified = otpFound['otp'] == otpCode;
+    console.log(otpFound['otp'])
 
     if (!isVerified) {
       return res.status(400).send({ status: "fail", msg: "Incorrect Otp" });

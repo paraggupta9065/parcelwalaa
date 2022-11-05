@@ -1,5 +1,5 @@
 const express = require("express");
-const { addShops, updateShops, deleteShops, getShops, storeAdminStatusUpdate, storeStatusUpdate, getStoresByPincode, isVerified, getUnverifiedShop, verifyShop, getShop, getOrdersReport, setCategories, getCategories } = require("../controller/shop");
+const { addShops, updateShops, deleteShops, getShops, storeAdminStatusUpdate, storeStatusUpdate, getStoresByPincode, isVerified, getUnverifiedShop, verifyShop, getShop, getOrdersReport, setCategories, getCategories, updateShopsById } = require("../controller/shop");
 const { isAdmin } = require("../middleware/isAdmin");
 const { isShop } = require("../middleware/isShop");
 const { isLoggedIn } = require("../middleware/user");
@@ -11,7 +11,8 @@ const multerMod = require("../middleware/multerMod");
 //end
 
 router.route("/add_shop").post(multerMod.single("image"), addShops);
-router.route("/update_shop").put(isLoggedIn, isAdmin, updateShops);
+router.route("/update_shop").post(isLoggedIn, isAdmin, updateShops);
+router.route("/update_shop/:id").post(isLoggedIn, isAdmin, updateShopsById);
 router.route("/delete_shop").delete(isLoggedIn, isAdmin, deleteShops);
 router.route("/get_shops").get(isLoggedIn, isAdmin, getShops);
 router.route("/get_shop/:id").get(isLoggedIn, getShop);

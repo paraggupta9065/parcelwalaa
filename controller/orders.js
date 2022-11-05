@@ -56,6 +56,23 @@ exports.getOrders = async (req, res) => {
         orders,
     });
 };
+
+
+exports.getOrdersAdmin = async (req, res) => {
+
+    const orders = await ordersModel.find();
+    if (orders.length == 0) {
+        return res.status(404).send({
+            status: "fail",
+            msg: "Order Not Found",
+        });
+    }
+
+    return res.status(200).send({
+        status: "sucess",
+        orders,
+    });
+};
 exports.getOrderByCustomer = async (req, res) => {
     const id = req.user._id;
     const order = await ordersModel.findOne({ user_id: id });
@@ -129,6 +146,7 @@ exports.updateStatus = async (req, res) => {
             "transaction_id": orders.transaction_id,
             "amount_paid": orders.amount_paid,
             "status": status,
+            'delivery_address_id': orders.delivery_address_id,
         });
         await ordersModel.findByIdAndDelete(orders._id);
 

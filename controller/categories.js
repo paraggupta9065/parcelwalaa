@@ -13,6 +13,7 @@ exports.addCategories = async (req, res) => {
   }
   const result = await cloudinary.uploader.upload(req.file.path);
   categoriesData["image"] = result["url"];
+  categoriesData["image_id"] = result["public_id"];
   const categories = await categoriesModel.create(categoriesData);
   return res.status(201).send({
     status: "sucess",
@@ -29,7 +30,6 @@ exports.updateCategories = async (req, res) => {
       msg: "Please provide Id",
     });
   }
-  console.log(req.body)
 
   await categoriesModel.findByIdAndUpdate(id, req.body);
 
@@ -60,6 +60,14 @@ exports.deleteCategories = async (req, res) => {
 };
 
 exports.getCategories = async (req, res) => {
+  const categories = await categoriesModel.find().populate();
+
+  return res.status(200).send({
+    status: "sucess",
+    categories,
+  });
+};
+exports.getCategoriesAdmin = async (req, res) => {
   const categories = await categoriesModel.find().populate();
 
   return res.status(200).send({

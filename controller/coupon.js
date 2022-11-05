@@ -111,16 +111,17 @@ exports.deleteCoupon = async (req, res) => {
 };
 
 exports.getCoupons = async (req, res) => {
-  // const { id } = req.body;
 
-  // const shop = await shopModel.findById(id);
+  const coupons = await couponModel.find();
 
-  // if (!shop) {
-  //   return res.status(404).send({
-  //     status: "Fail",
-  //     msg: "Not found",
-  //   });
-  // }
+  return res.status(200).send({
+    status: "sucess",
+    msg: "Fetched all coupons of a shop",
+    coupons,
+  });
+};
+
+exports.getCouponsAdmin = async (req, res) => {
 
   const coupons = await couponModel.find();
 

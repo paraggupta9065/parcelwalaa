@@ -24,7 +24,8 @@ exports.addShops = async (req, res) => {
   if (otpFound.otpExpiry < Date.now) {
     return res.status(400).send({ status: "fail", msg: "Otp expired" });
   }
-  const isVerified = otpFound['otp'] == otpCode;
+  const isVerified = await otpFound.isValidatedOtp(otpCode);
+
 
   if (!isVerified) {
     return res.status(400).send({ status: "fail", msg: "Incorrect Otp" });
@@ -75,6 +76,15 @@ exports.updateShops = async (req, res) => {
     .send({ status: "sucess", msg: "shop updated successfully", shop: shop });
 };
 
+exports.updateShopsById = async (req, res) => {
+  const shopData = req.body;
+  await shopModel.findOneAndUpdate({ '_id': req.params.id }, shopData);
+  const shop = await shopModel.findOne({ number: shopData["number"] });
+  res
+    .status(200)
+    .send({ status: "sucess", msg: "shop updated successfully", shop: shop });
+};
+
 exports.deleteShops = async (req, res) => {
   const { number } = req.body;
   await shopModel.findOneAndDelete({ number: number });
@@ -83,6 +93,12 @@ exports.deleteShops = async (req, res) => {
 };
 
 exports.getShops = async (req, res) => {
+  const shops = await shopModel.find({ isActive: { $ne: false }, isOnline: { $ne: false } });
+
+  return res.status(200).send({ status: "sucess", msg: "shop successfully", shops });
+};
+
+exports.getShopsAdmin = async (req, res) => {
   const shops = await shopModel.find();
 
   return res.status(200).send({ status: "sucess", msg: "shop successfully", shops });
@@ -90,7 +106,7 @@ exports.getShops = async (req, res) => {
 
 exports.getShop = async (req, res) => {
   const id = req.params.id;
-  const shop = await shopModel.findById(id);
+  const shop = await shopModel.find({ '_id': id },);
   if (!shop) {
     return res.status(404).send({ status: "fail", msg: "Not found" });
   }

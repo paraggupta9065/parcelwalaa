@@ -17,6 +17,7 @@ const PreviousOrderSchema = mongoose.Schema({
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "Product",
                 required: true,
+                autopopulate: true,
             },
         },
     ],
@@ -24,11 +25,13 @@ const PreviousOrderSchema = mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Shop",
         required: [true, "Please provide shop id"],
+        autopopulate: true,
     },
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
         required: [true, "Please provide user id"],
+        autopopulate: true,
     },
     transaction_id: {
         type: String,
@@ -47,6 +50,15 @@ const PreviousOrderSchema = mongoose.Schema({
         enum: ["cancelled", "delivered"],
         default: "delivered",
     },
+    delivery_address_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Address",
+        autopopulate: true,
+        required: [true, "Please provide delivery address"],
+    },
 });
+
+PreviousOrderSchema.plugin(require('mongoose-autopopulate'));
+
 
 module.exports = mongoose.model("PreviousOrder", PreviousOrderSchema);

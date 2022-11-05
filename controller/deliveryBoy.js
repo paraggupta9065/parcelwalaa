@@ -77,7 +77,7 @@ exports.addDeliveryBoy = async (req, res) => {
 
 //get delivery boy
 exports.getDeliveryBoy = async (req, res) => {
-  const deliveryBoys = await deliveryBoyModel.find();
+  const deliveryBoys = await deliveryBoyModel.find({ isActive: { $ne: false }, isOnline: { $ne: false } });
   return res.status(200).send({
     status: "sucess",
     msg: "delivery boy fetched successfully",

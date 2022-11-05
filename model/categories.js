@@ -10,6 +10,10 @@ const CategoriesSchema = mongoose.Schema({
     type: String,
     required: [true, "Provide the image of category"],
   },
+  image_id: {
+    type: String,
+    required: [true, "Please Send image_id"],
+  },
 });
 
 module.exports = mongoose.model("Categories", CategoriesSchema);

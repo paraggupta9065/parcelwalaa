@@ -99,6 +99,10 @@ exports.getProducts = async (req, res) => {
   const products = await productModel.find();
   return res.status(200).send({ status: "sucess", products });
 };
+exports.getProductsAdmin = async (req, res) => {
+  const products = await productModel.find();
+  return res.status(200).send({ status: "sucess", products });
+};
 
 // search products using name
 exports.searchProducts = async (req, res) => {

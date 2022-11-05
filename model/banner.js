@@ -5,6 +5,15 @@ const BannerSchema = mongoose.Schema({
     type: String,
     required: [true, "Please Send Image"],
   },
+  image_id: {
+    type: String,
+    required: [true, "Please Send image_id"],
+  },
+
+  pincode: {
+    type: String,
+    required: [true, "Please Send Pincode"],
+  },
   openType: {
     type: String,
     enum: ["product", "categories", "shop"],
@@ -33,6 +42,7 @@ const BannerSchema = mongoose.Schema({
   isActive: {
     type: Boolean,
     required: [true, "Please enter is active value"],
+
   },
 
 });
