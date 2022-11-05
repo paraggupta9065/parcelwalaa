@@ -66,7 +66,7 @@ app.use((err, req, res, next) => {
 });
 app.use(express.urlencoded({ extended: true }));
 app.use("/auth", authRoute);
-app.use("/admin", authRoute);
+app.use("/admin", adminRoute);
 app.use("/shop", shopRoute);
 app.use("/banner", bannerRoute);
 app.use("/home", homeRoute);
