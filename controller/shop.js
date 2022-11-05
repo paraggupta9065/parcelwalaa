@@ -106,7 +106,7 @@ exports.getShopsAdmin = async (req, res) => {
 
 exports.getShop = async (req, res) => {
   const id = req.params.id;
-  const shop = await shopModel.find({ '_id': id },);
+  const shop = await shopModel.findOne({ '_id': id },);
   if (!shop) {
     return res.status(404).send({ status: "fail", msg: "Not found" });
   }
