@@ -22,24 +22,38 @@ exports.addCategories = async (req, res) => {
 };
 
 exports.updateCategories = async (req, res) => {
-  const id = req.params.id;
-
-  if (!id) {
+  try {
+    const id = req.params.id;
+    console.log(id);
+    console.log(req.file.path);
+    const categoriesData = req.body;
+    if (!id) {
+      return res.status(400).send({
+        status: "fail",
+        msg: "Please provide Id",
+      });
+    }
+    const categorie = await categoriesModel.findById(id);
+    await cloudinary.uploader.destroy(categorie.image_id);
+    const result = await cloudinary.uploader.upload(req.file.path);
+    categoriesData["image"] = result["url"];
+    categoriesData["image_id"] = result["public_id"];
+    await categoriesModel.findByIdAndUpdate(id, categoriesData);
+    const categories = await categoriesModel.findById(id);
+    return res.status(200).send({
+      status: "sucess",
+      categories,
+    });
+  } catch (error) {
+    console.log(error);
     return res.status(400).send({
       status: "fail",
-      msg: "Please provide Id",
+      error,
+      msg: "Something went wrong"
     });
   }
-
-  await categoriesModel.findByIdAndUpdate(id, req.body);
-
-  const categories = await categoriesModel.findById(id);
-
-  return res.status(200).send({
-    status: "sucess",
-    categories,
-  });
 };
+
 
 exports.deleteCategories = async (req, res) => {
   const id = req.params.id;
