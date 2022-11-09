@@ -13,6 +13,6 @@ router.route("/delete_banner/:id").delete(isLoggedIn, isAdmin, deleteBanner);
 router.route("/update_banner/:id").put(isLoggedIn, isAdmin, updateBanner);
 router.route("/get_all_banner").get(isLoggedIn, getAllBanner);
 router.route("/get_banner/:id").get(isLoggedIn, getBannerById);
-router.route("/get_banner_by_placement/:placement").get(isLoggedIn, getBannerByPlacement);
+router.route("/get_banner_by_placement/:placement").post(isLoggedIn, getBannerByPlacement);
 
 module.exports = router;

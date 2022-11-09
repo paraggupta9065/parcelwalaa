@@ -146,7 +146,13 @@ exports.getBannerById = async (req, res) => {
 exports.getBannerByPlacement = async (req, res) => {
   try {
     const placement = req.params.placement;
-    const banner = await bannerModel.find({ placement });
+    const pincode = req.body.pincode;
+    console.log(pincode)
+    const banner = await bannerModel.find({
+      placement,
+      "pincode": pincode
+    });
+
 
     return res.status(200).send({
       status: "sucess",
@@ -158,9 +164,7 @@ exports.getBannerByPlacement = async (req, res) => {
     return res.status(400).send({
       status: "fail",
       error,
-
       msg: "Something went wrong"
-
     });
   }
 };
