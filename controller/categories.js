@@ -24,8 +24,6 @@ exports.addCategories = async (req, res) => {
 exports.updateCategories = async (req, res) => {
   try {
     const id = req.params.id;
-    console.log(id);
-    console.log(req.file.path);
     const categoriesData = req.body;
     if (!id) {
       return res.status(400).send({
@@ -36,6 +34,7 @@ exports.updateCategories = async (req, res) => {
     const categorie = await categoriesModel.findById(id);
     await cloudinary.uploader.destroy(categorie.image_id);
     const result = await cloudinary.uploader.upload(req.file.path);
+    console.log(result)
     categoriesData["image"] = result["url"];
     categoriesData["image_id"] = result["public_id"];
     await categoriesModel.findByIdAndUpdate(id, categoriesData);
