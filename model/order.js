@@ -61,6 +61,11 @@ const OrderSchema = mongoose.Schema({
     default: 0,
     required: [true, "Please provide delivery total amount"],
   },
+  order_type: {
+    type: String,
+    enum: ["takeaway", "delivery"],
+    required: [true, "Please enter product type"],
+  },
   shop_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Shop",
@@ -97,7 +102,7 @@ const OrderSchema = mongoose.Schema({
     enum: ["recived", "accepted", "prepared", "assigned", "assignedAccepted", "arrivedShop", "arrivedCustumer", "cancelled", "delivered"],
     default: "recived",
   },
- 
+
 });
 
 OrderSchema.plugin(require('mongoose-autopopulate'));

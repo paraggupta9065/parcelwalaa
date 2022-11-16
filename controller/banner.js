@@ -147,13 +147,10 @@ exports.getBannerByPlacement = async (req, res) => {
   try {
     const placement = req.params.placement;
     const pincode = req.body.pincode;
-    console.log(pincode)
     const banner = await bannerModel.find({
       placement,
       "pincode": pincode
     });
-
-
     return res.status(200).send({
       status: "sucess",
       msg: "All Banner Fetched",

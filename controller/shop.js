@@ -137,18 +137,10 @@ exports.storeAdminStatusUpdate = async (req, res) => {
 };
 exports.getStoresByPincode = async (req, res) => {
   const { pincode } = req.body;
-  if (!pincode) {
-    res
-      .status(404)
-      .send({ status: "fail", msg: "pincode not found" });
-  }
+
   const shops = await shopModel.find({ "pincode": pincode });
-  if (shops.length == 0) {
-    res
-      .status(404)
-      .send({ status: "fail", msg: "no shops found" });
-  }
-  res
+
+  return res
     .status(200)
     .send({ status: "sucess", msg: "shop fetched successfully", shops });
 };
@@ -248,12 +240,19 @@ exports.getCategories = async (req, res) => {
       .status(404)
       .send({ status: "fail", msg: "Shop not found" });
   }
-  res
+  return res
     .status(200)
     .send({ status: "sucess", msg: "Order Fetched", "shopCategories": shop.categories, categories });
 };
 exports.getShopByCategories = async (req, res) => {
-  const categoryId = req.body.category_id;
 
-  const shops = shopModel.find({});
+  let body = req.body;
+  body['isActive'] = { $ne: false };
+  body['isOnline'] = { $ne: false };
+  console.log(body);
+
+  const shops = await shopModel.find(req.body);
+  return res
+    .status(200)
+    .send({ status: "sucess", msg: "Shop Fetched", shops });
 };

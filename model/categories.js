@@ -4,7 +4,7 @@ const CategoriesSchema = mongoose.Schema({
   name: {
     type: String,
     required: [true, "Provide the name of category"],
-    unique: true,
+
   },
   image: {
     type: String,
@@ -14,6 +14,7 @@ const CategoriesSchema = mongoose.Schema({
     type: String,
     required: [true, "Please Send image_id"],
   },
+
 });
 
 module.exports = mongoose.model("Categories", CategoriesSchema);

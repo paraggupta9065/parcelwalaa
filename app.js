@@ -17,6 +17,7 @@ const couponRoute = require("./routes/coupon");
 const tripRoute = require("./routes/trip");
 const ordersRoute = require("./routes/orders");
 const categoriesRoute = require("./routes/categories");
+const brandRoute = require("./routes/brand");
 const admin = require("firebase-admin");
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
@@ -38,7 +39,7 @@ connectToDb();
 app.get("/", (req, res) => {
   const timerEventEmitter = req.app.get('emmiter');
   timerEventEmitter.emit('order_recived', "ghgh");
-  res.send({ status: "sucess", msg: "Server Up And Running" })
+  return res.send({ status: "sucess", msg: "Server Up And Running" })
 });
 
 cloudinary.config({
@@ -79,6 +80,7 @@ app.use("/coupon", couponRoute);
 app.use("/trip", tripRoute);
 app.use("/orders", ordersRoute);
 app.use("/categories", categoriesRoute);
+app.use("/brands", brandRoute);
 app.use("/api_docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc));
 app.use("/uploads", express.static("uploads"));
 //middleware use
@@ -90,7 +92,7 @@ app.get("/file/:image", (req, res) => {
     fs.readFile(__dirname + '/uploads/' + image, function (err, content) {
       if (err) {
         res.writeHead(400, { 'Content-type': 'text/html' })
-        res.send("No such image");
+        return res.send("No such image");
       } else {
         //specify the content type in the response will be an image
         res.writeHead(200, { 'Content-type': 'image/jpg' });

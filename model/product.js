@@ -25,6 +25,7 @@ const ProductSchema = mongoose.Schema({
     required: [true, "Please enter featured status"],
     default: false,
   },
+
   description: {
     type: String,
     required: [true, "Please enter product description"],
@@ -54,9 +55,15 @@ const ProductSchema = mongoose.Schema({
   categories: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Categories",
-    required: true,
   },
-  tags: [String],
+  categoriesStudents: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "CategoriesStudents",
+  },
+  brand: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "brand",
+  },
   images: {
     type: String,
     required: true,

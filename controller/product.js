@@ -9,53 +9,34 @@ exports.addProduct = async (req, res) => {
 
   const shop = await shopModel.findOne({ number });
 
-  const {
-    name,
-    type,
-    description,
-    veg_type,
-    price,
-    regular_price,
-    weight,
-    categories,
-    tags,
-  } = req.body;
+  let map = req.body;
   // const images = req.file.filename;
   const result = await cloudinary.uploader.upload(req.file.path);
   const images = result["url"];
 
 
-  if (
-    !name ||
-    !type ||
-    !description ||
-    !veg_type ||
-    !price ||
-    !regular_price ||
-    !weight || !categories
-  ) {
-    return res.status(400).send({
-      status: "fail",
-      msg: "Please provide all feilds",
-    });
-  }
+  // if (
+  //   !name ||
+  //   !type ||
+  //   !description ||
+  //   !veg_type ||
+  //   !price ||
+  //   !regular_price ||
+  //   !weight 
+  // ) {
+  //   return res.status(400).send({
+  //     status: "fail",
+  //     msg: "Please provide all feilds",
+  //   });
+  // }
 
-  const productData = {
-    name,
-    type,
-    description,
-    veg_type,
-    price,
-    regular_price,
-    weight,
-    categories: categories,
-    tags: [],
-    images,
-    shop_id: shop._id,
-    pincode: shop.pincode,
-  };
 
-  const product = await productModel.create(productData);
+  map['shop_id'] = shop._id;
+  map['pincode'] = shop.pincode;
+  map['images'] = images;
+
+
+  const product = await productModel.create(map);
 
   return res.status(201).send({ status: "sucess", product });
 };
@@ -202,4 +183,13 @@ exports.getSearchProduct = async (req, res) => {
   }
 
   return res.status(200).send({ status: "sucess", msg: "product fetched.", product });
+};
+
+
+exports.getTags = async (req, res) => {
+  const product = await productModel.distinct("tags").find();
+
+  product.forEach((value) => { console.log(value) });
+  return res.status(200).send({ status: "sucess", msg: "product fetched.", product });
+
 };

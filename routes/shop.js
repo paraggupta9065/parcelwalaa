@@ -1,5 +1,5 @@
 const express = require("express");
-const { addShops, updateShops, deleteShops, getShops, storeAdminStatusUpdate, storeStatusUpdate, getStoresByPincode, isVerified, getUnverifiedShop, verifyShop, getShop, getOrdersReport, setCategories, getCategories, updateShopsById } = require("../controller/shop");
+const { addShops, updateShops, deleteShops, getShops, storeAdminStatusUpdate, storeStatusUpdate, getStoresByPincode, isVerified, getUnverifiedShop, verifyShop, getShop, getOrdersReport, setCategories, getCategories, updateShopsById, } = require("../controller/shop");
 const { isAdmin } = require("../middleware/isAdmin");
 const { isShop } = require("../middleware/isShop");
 const { isLoggedIn } = require("../middleware/user");

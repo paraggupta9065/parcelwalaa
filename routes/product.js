@@ -9,7 +9,8 @@ const {
   getProductByLocation,
   getProductByShop,
   getProduct,
-  getSearchProduct
+  getSearchProduct,
+  getTags
 } = require("../controller/product");
 const { isLoggedIn } = require("../middleware/user");
 const { isAdmin } = require("../middleware/isAdmin");
