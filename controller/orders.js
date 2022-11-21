@@ -196,7 +196,6 @@ exports.updateStatus = async (req, res) => {
 
             });
         }
-        console.log(driver)
 
 
         drivers.forEach(async (driverEle) => {
@@ -208,7 +207,6 @@ exports.updateStatus = async (req, res) => {
                 { latitude: String(shopLat), longitude: String(shopLong) },
                 { latitude: String(driverLat), longitude: String(driverLong) }
             );
-            console.log(distance)
             if (shortestDistance > distance) {
                 shortestDistance = distance;
                 nearestDriver = driverEle.user_id;
@@ -217,7 +215,6 @@ exports.updateStatus = async (req, res) => {
 
         });
         await ordersModel.findOneAndUpdate({ "_id": id }, { driver_id: driver._id, "order_note": "updated" }).catch((err) => console.log(err));
-        const userDriver = await userModel.findById(nearestDriver);
         const messageDriver = {
             notification: {
                 title: `Your Order Is ${status}`,
@@ -228,7 +225,7 @@ exports.updateStatus = async (req, res) => {
                 "id": String(orders._id),
                 "type": "order",
             },
-            topic: userDriver._id.toString(),
+            topic: driver._id.toString(),
 
         };
 
@@ -239,7 +236,7 @@ exports.updateStatus = async (req, res) => {
             driverResp,
         });
     } else if (status == "assignedAccepted") {
-        const userDriver = await deliveryBoyModel.findOne({ user_id: nearestDriver });
+        const userDriver = await deliveryBoyModel.findOne({ user_id: req.user._id });
         const messageCustomer = {
             notification: {
                 title: `Your Order Is ${status}`,
@@ -247,7 +244,7 @@ exports.updateStatus = async (req, res) => {
             },
             data: {
                 "status": status,
-                "driver": JsonWebTokenError.stringify(userDriver),
+                "driver": String(userDriver),
 
 
             },

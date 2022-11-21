@@ -245,3 +245,20 @@ exports.getAsssignedOrder = async (req, res) => {
   });
 };
 
+
+
+exports.setLocation = async (req, res) => {
+  const id = req.user._id;
+
+
+  const driver = await deliveryBoyModel.findOneAndUpdate({ user_id: id }, req.body);
+  if (!driver) {
+    res
+      .status(404)
+      .send({ status: "fail", msg: "All driver Are Verified", });
+  }
+  console.log(driver);
+  res
+    .status(200)
+    .send({ status: "sucess", msg: "driver Fecthed", driver });
+};

@@ -11,22 +11,24 @@ const PreviousOrderSchema = mongoose.Schema({
         {
             quantity: {
                 type: Number,
-                default: 0,
+                default: 1,
             },
             product: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "Product",
-                required: true,
                 autopopulate: true,
+
+                required: true,
+            },
+            shop_id: {
+                ref: "Shop",
+                type: mongoose.Schema.Types.ObjectId,
+                autopopulate: true,
+                required: [true, "Please provide pickup address."],
             },
         },
     ],
-    shop_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Shop",
-        required: [true, "Please provide shop id"],
-        autopopulate: true,
-    },
+
     user_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",

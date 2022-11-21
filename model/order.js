@@ -101,13 +101,11 @@ const OrderSchema = mongoose.Schema({
     type: String,
     required: [true, "Please provide payment method id"],
   },
-
   status: {
     type: String,
-    enum: ["recived", "accepted", "prepared", "assigned", "assignedAccepted", "arrivedShop", "arrivedCustumer", "cancelled", "delivered"],
+    enum: ["recived", "accepted", "prepared", "assigned", "assignedAccepted", "arrivedShop", "pickedUp", "arrivedCustumer", "cancelled", "delivered"],
     default: "recived",
   },
-
 });
 
 OrderSchema.plugin(require('mongoose-autopopulate'));
