@@ -6,7 +6,6 @@ const previousOrderModel = require("../model/previousOrder");
 const { getDistance } = require("geolib");
 const deliveryBoyModel = require("../model/deliveryBoy");
 const userModel = require("../model/user");
-const driverLocationModel = require("../model/driverLocation");
 const { use } = require("../routes/coupon");
 
 
@@ -14,7 +13,7 @@ const { use } = require("../routes/coupon");
 exports.getOrdersShops = async (req, res) => {
     const id = req.params.id;
 
-    const orders = await ordersModel.find({ shop_id: id });
+    const orders = await ordersModel.find({ "order_inventory.shop_id": id });
     if (orders.length == 0) {
         return res.status(404).send({
             status: "fail",
@@ -28,7 +27,7 @@ exports.getOrdersShops = async (req, res) => {
 };
 exports.getOrder = async (req, res) => {
     const id = req.params.id;
-    const orders = await ordersModel.findById(id).populate("delivery_address_id").populate("user_id").populate("shop_id");
+    const orders = await ordersModel.findById(id).populate("delivery_address_id").populate("user_id");
     if (!orders) {
         return res.status(404).send({
             status: "fail",
@@ -102,7 +101,7 @@ exports.updateStatus = async (req, res) => {
     const id = req.params.id;
     const status = req.body.status;
 
-    let orders = await ordersModel.findById(id).populate("user_id").populate('shop_id');
+    let orders = await ordersModel.findById(id).populate("user_id");
     const user = await userModel.findById(orders.user_id);
     await ordersModel.findByIdAndUpdate(orders._id, { status });
 
@@ -124,7 +123,7 @@ exports.updateStatus = async (req, res) => {
             },
             data: {
                 "status": status,
-                "order": JSON.stringify(orders),
+                "order": String(orders),
 
             },
             topic: user._id.toString(),
@@ -157,42 +156,68 @@ exports.updateStatus = async (req, res) => {
 
         });
     } else if (status == "prepared") {
-        const shop = await shopModel.findById(orders.shop_id);
+        if (orders.order_type == 'takeaway') {
+            const messageCustomer = {
+                notification: {
+                    title: `Your Order ${status}`,
+                    body: `Your Order ${status} Is Ready For Pickup`,
+                },
+                data: {
+                },
+                topic: user._id.toString(),
+
+            };
+            const customerResp = await admin
+                .messaging().send(messageCustomer);
+            return res.status(200).send({
+                status: "sucess",
+                msg: "Status Updated",
+                customerResp,
+
+            });
+        }
+        const shop = await shopModel.findById(orders.order_inventory[0].shop_id._id);
         const shopLat = shop.lat;
         const shopLong = shop.long;
-        const drivers = await deliveryBoyModel.find({ pincode: shop.pincode });
-        let driverLocation = await driverLocationModel.findOne({ user_id: drivers[0].user_id });
-        let locations = [];
-        locations = driverLocation.locations;
-        let driverLat = locations[locations.length - 1]['lat'];
-        let driverLong = locations[locations.length - 1]['long'];
+        const drivers = await deliveryBoyModel.find({ pincode: shop.pincode, isActive: true, isOnline: true });
+
+        let driverLat = drivers[0].lat;
+        let driverLong = drivers[0].long;
         let nearestDriver = drivers[0].user_id;
-        let driver = drivers;
+        let driver = drivers[0];
         let shortestDistance = getDistance(
             { latitude: String(shopLat), longitude: String(shopLong) },
             { latitude: String(driverLat), longitude: String(driverLong) }
         );
-        drivers.forEach(async (driver) => {
-            driverLocation = await driverLocationModel.findOne({ user_id: driver.user_id });
-            locations = [];
-            locations = driverLocation.locations;
-            driverLat = locations[locations.length - 1]['lat'];
-            driverLong = locations[locations.length - 1]['long'];
+        if (!drivers) {
+            return res.status(404).send({
+                status: "fail",
+                msg: "No driver nearby found",
+
+            });
+        }
+        console.log(driver)
+
+
+        drivers.forEach(async (driverEle) => {
+            driverLat = driverEle.lat;
+            driverLong = driverEle.long;
+
+
             const distance = getDistance(
                 { latitude: String(shopLat), longitude: String(shopLong) },
                 { latitude: String(driverLat), longitude: String(driverLong) }
             );
+            console.log(distance)
             if (shortestDistance > distance) {
                 shortestDistance = distance;
-                nearestDriver = driver.user_id;
-                driver = drivers
-
-
+                nearestDriver = driverEle.user_id;
+                driver = driverEle;
             }
-        });
-        await ordersModel.findOneAndUpdate({ "_id": id }, { "driver": driver._id });
-        const userDriver = await userModel.findById(nearestDriver);
 
+        });
+        await ordersModel.findOneAndUpdate({ "_id": id }, { driver_id: driver._id, "order_note": "updated" }).catch((err) => console.log(err));
+        const userDriver = await userModel.findById(nearestDriver);
         const messageDriver = {
             notification: {
                 title: `Your Order Is ${status}`,
@@ -209,14 +234,12 @@ exports.updateStatus = async (req, res) => {
 
         const driverResp = await admin
             .messaging().send(messageDriver);
-
-
         return res.status(200).send({
             status: "sucess",
             driverResp,
         });
     } else if (status == "assignedAccepted") {
-        const userDriver = await userModel.findById(nearestDriver);
+        const userDriver = await deliveryBoyModel.findOne({ user_id: nearestDriver });
         const messageCustomer = {
             notification: {
                 title: `Your Order Is ${status}`,
@@ -225,6 +248,7 @@ exports.updateStatus = async (req, res) => {
             data: {
                 "status": status,
                 "driver": JsonWebTokenError.stringify(userDriver),
+
 
             },
             topic: user._id.toString(),

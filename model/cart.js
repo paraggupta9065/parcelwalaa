@@ -24,12 +24,7 @@ const CartModel = mongoose.Schema({
     default: 0,
     required: [true, "Please provide the total amount to be paid."],
   },
-  shop_id: {
-    ref: "Shop",
-    type: mongoose.Schema.Types.ObjectId,
-    type: String,
-    required: [true, "Please provide pickup address."],
-  },
+
   pickup_address_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Address",
@@ -51,6 +46,13 @@ const CartModel = mongoose.Schema({
         ref: "Product",
         required: true,
       },
+      shop_id: {
+        ref: "Shop",
+        type: mongoose.Schema.Types.ObjectId,
+        autopopulate: true,
+
+        required: [true, "Please provide pickup address."],
+      },
     },
   ],
   total_gst: {
@@ -64,5 +66,7 @@ const CartModel = mongoose.Schema({
     required: true,
   },
 });
+CartModel.plugin(require('mongoose-autopopulate'));
+
 
 module.exports = mongoose.model("Cart", CartModel);

@@ -6,6 +6,13 @@ const deliveryBoySchema = mongoose.Schema({
     ref: "User",
     required: [true, "Please send user_id"],
   },
+  lat: {
+    type: String,
+    // required: [true, "Please send lat"],
+  }, long: {
+    type: String,
+    // required: [true, "Please send long"],
+  },
   name: {
     type: String,
     required: [true, "Please send name"],

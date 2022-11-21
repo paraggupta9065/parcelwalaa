@@ -20,7 +20,7 @@ exports.initPayment = async (req, res) => {
 };
 exports.sucessPayment = async (req, res) => {
   try {
-    const { order_note, transaction_id, amount_paid, payment_method_id } =
+    const { order_note, transaction_id, amount_paid, payment_method_id, order_type } =
       req.body;
 
     const cart = await cartModel.findOne({ user_id: req.user._id });
@@ -31,10 +31,11 @@ exports.sucessPayment = async (req, res) => {
     if (!order) {
 
       order = await orderModel.create({
+
         order_note,
         order_inventory: cart.cart_inventory,
         delivery_address_id: cart.delivery_address_id,
-
+        order_type,
         coupon_code_id: cart.coupon_code_id,
         total_gst: cart.total_gst,
         net_amt: cart.net_amt,
@@ -71,25 +72,41 @@ exports.sucessPayment = async (req, res) => {
 
     order = await orderModel.findOne({ user_id: cart.user_id, }).populate("user_id").populate({ path: 'order_inventory' });;
     //send notification
-    const shop = await shopModel.findById(cart.shop_id);
-    const vendor = await userModel.findOne({ number: shop.number });
-    // message to vendor
-    const topic = shop._id.toString();
 
 
-    const message = {
-      notification: {
-        title: "New Order Received",
-        body: "Order Received",
-      },
-      data: {
-        "order": JSON.stringify(order),
-      },
-      topic: topic
 
-    };
-    const vendorResp = await admin
-      .messaging().send(message);
+    for (const element in order.order_inventory) {
+      // const vendor = await userModel.findOne({ number: shop.number });
+      // message to vendor
+      const topic = String(element['shop_id']);
+
+
+      const message = {
+        notification: {
+          title: "New Order Received",
+          body: "Order Received",
+        },
+        data: {
+          "order": JSON.stringify(order),
+        },
+        topic: topic
+
+      };
+
+
+      try {
+        const vendorResp = await admin
+          .messaging().send(message);
+        console.log(vendorResp)
+      } catch (error) {
+
+      }
+
+    }
+
+
+
+
     //message to vendor
     // message to customer
 
@@ -105,10 +122,14 @@ exports.sucessPayment = async (req, res) => {
 
     };
     let customerPesp;
-    console.log(req.user.fmc_token);
-    customerPesp = await admin
-      .messaging().send(messageCustomer);
-    console.log(customerPesp);
+    try {
+      customerPesp = await admin
+        .messaging().send(messageCustomer);
+    } catch (error) {
+      return res
+        .status(200)
+        .send({ status: "sucess", order, msg: "order created and Notification not send", });
+    }
 
     //message to customer
     return res

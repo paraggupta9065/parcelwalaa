@@ -10,7 +10,7 @@ const {
   isVerified,
   getUnverifiedDriver,
   deliveryBoyStatus,
-  setLocation,
+
   getAsssignedOrder,
 } = require("../controller/deliveryBoy");
 const { isLoggedIn } = require("../middleware/user");
@@ -37,7 +37,6 @@ router
 router.route("/verify_driver/:id").get(isLoggedIn, isAdmin, verifyDriver);
 router.route("/is_verified").get(isLoggedIn, isVerified);
 router.route("/get_unverified_driver").get(isLoggedIn, isAdmin, getUnverifiedDriver);
-router.route("/set_location").post(isLoggedIn, isDeliveryBoy, setLocation);
 router.route("/get_asssigned_order").get(isLoggedIn, isDeliveryBoy, getAsssignedOrder);
 
 module.exports = router;

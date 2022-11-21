@@ -11,13 +11,20 @@ const OrderSchema = mongoose.Schema({
     {
       quantity: {
         type: Number,
-        default: 0,
+        default: 1,
       },
       product: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Product",
         autopopulate: true,
+
         required: true,
+      },
+      shop_id: {
+        ref: "Shop",
+        type: mongoose.Schema.Types.ObjectId,
+        autopopulate: true,
+        required: [true, "Please provide pickup address."],
       },
     },
   ],
@@ -29,8 +36,12 @@ const OrderSchema = mongoose.Schema({
     type: mongoose.Schema.Types.ObjectId,
     ref: "Address",
     autopopulate: true,
-
     required: [true, "Please provide delivery address"],
+  },
+  driver_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "DeliveryBoy",
+    autopopulate: true,
   },
   coupon_code_id: {
     type: String,
@@ -64,14 +75,8 @@ const OrderSchema = mongoose.Schema({
   order_type: {
     type: String,
     enum: ["takeaway", "delivery"],
-    required: [true, "Please enter product type"],
-  },
-  shop_id: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Shop",
-    autopopulate: true,
+    default: "delivery",
 
-    required: [true, "Please provide shop id"],
   },
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
