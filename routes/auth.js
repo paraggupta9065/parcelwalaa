@@ -5,6 +5,6 @@ const router = express.Router();
 
 router.route("/send_otp").post(sendOtp);
 router.route("/verify_otp").post(verifyOtp);
-router.route("/set_token/:token").post(isLoggedIn, setToken);
+router.route("/set_token").post(isLoggedIn, setToken);
 
 module.exports = router;

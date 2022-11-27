@@ -17,6 +17,12 @@ const UserSchema = mongoose.Schema({
     enum: ["deliveryBoy", "user", "admin", "shop"],
     default: "user",
   },
+  tokens: [
+    {
+      deviceId: String,
+      token: String,
+    },
+  ],
   fmc_token: {
     type: String,
     default: "null",

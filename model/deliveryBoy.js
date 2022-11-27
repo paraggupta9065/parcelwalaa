@@ -74,6 +74,9 @@ const deliveryBoySchema = mongoose.Schema({
     default: true,
   },
 
+
+
+
 });
 
 module.exports = mongoose.model("DeliveryBoy", deliveryBoySchema);

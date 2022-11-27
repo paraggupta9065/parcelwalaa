@@ -21,14 +21,17 @@ exports.sendOtp = async (req, res) => {
       upperCaseAlphabets: false,
       specialChars: false,
     });
+
     const otp = await otpModel.findOne({ number: number });
+    console.log(otp)
     if (!otp) {
+      console.log(otpCode)
+      console.log(number)
+
       await otpModel.create({ otp: otpCode, number: number });
 
     } else {
       await otpModel.findOneAndUpdate({ number: number }, { otp: otpCode, number: number });
-
-
     }
     return res.status(200).send({
       msg: "otp sended successfully",
@@ -37,6 +40,7 @@ exports.sendOtp = async (req, res) => {
       code: otpCode,
     });
   } catch (error) {
+    console.log(error);
     return res.status(400).send({
       status: "fail",
       error,
@@ -61,11 +65,15 @@ exports.verifyOtp = async (req, res) => {
       return res.status(400).send({ status: "fail", msg: "otp expired" });
     }
     const isVerified = await otpFound.isValidatedOtp(otpCode);
+
     // const isVerified = otpFound['otp'] == otpCode;
     console.log(otpFound['otp'])
 
     if (!isVerified) {
-      return res.status(400).send({ status: "fail", msg: "Incorrect Otp" });
+      const isVerifiedPlain = otpFound.otp == otpCode;
+      if (!isVerifiedPlain) {
+        return res.status(400).send({ status: "fail", msg: "Incorrect Otp" });
+      }
     }
     const userFound = await userModel.findOne({ number: number });
     if (!userFound) {
@@ -146,16 +154,18 @@ exports.verifyOtp = async (req, res) => {
 
 exports.setToken = async (req, res) => {
   try {
-    const fmc_token = req.params.token;
+    const fmc_token = req.body.fmc_token;
+    const device_id = req.body.device_id;
     const user_id = req.user._id;
-    await userModel.findByIdAndUpdate(user_id, { fmc_token });
-
-    const user = await userModel.findById(user_id);
+    const deviceExist = await userModel.findOne({ _id: user_id, 'tokens.deviceId': device_id });
+    if (!deviceExist) {
+      await userModel.findOneAndUpdate({ _id: user_id, }, { $push: { tokens: { deviceId: device_id, token: fmc_token } } });
+    }
+    await userModel.findOneAndUpdate({ _id: user_id, 'tokens.deviceId': device_id, }, { $set: { 'tokens.$': { deviceId: device_id, token: fmc_token } } });
 
     return res.status(200).send({
       status: "sucess",
       msg: "Token set succesfuly",
-      user,
     });
   } catch (error) {
     return res.status(400).send({

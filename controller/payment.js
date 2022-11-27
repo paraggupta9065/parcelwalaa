@@ -75,32 +75,32 @@ exports.sucessPayment = async (req, res) => {
 
 
 
-    for (const element in order.order_inventory) {
-      // const vendor = await userModel.findOne({ number: shop.number });
+    for (const index in order.order_inventory) {
+
+      const element = order.order_inventory[index];
+
+      const vendor = await userModel.findOne({ number: element.shop_id.number });
       // message to vendor
-      const topic = String(element['shop_id']);
 
+      for (const token of vendor.tokens) {
+        const message = {
+          notification: {
+            title: "New Order Received",
+            body: "Order Received",
+          },
+          data: {
+            "order": JSON.stringify(order),
+          },
+          token: token.token,
 
-      const message = {
-        notification: {
-          title: "New Order Received",
-          body: "Order Received",
-        },
-        data: {
-          "order": JSON.stringify(order),
-        },
-        topic: topic
-
-      };
-
-
-      try {
+        };
         const vendorResp = await admin
           .messaging().send(message);
         console.log(vendorResp)
-      } catch (error) {
+        console.log('\n')
 
       }
+
 
     }
 

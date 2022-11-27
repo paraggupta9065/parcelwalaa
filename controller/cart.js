@@ -104,10 +104,8 @@ exports.addToCart = async (req, res) => {
       }
     );
     await cartModel.findByIdAndUpdate(cart._id, updateCart);
-    console.log("1")
 
   } else {
-    console.log("0")
     await cartModel.findByIdAndUpdate(cart._id, updateCart);
     await cartModel.findByIdAndUpdate(cart._id, {
       $push: {

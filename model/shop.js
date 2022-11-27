@@ -91,6 +91,8 @@ const shopSchema = mongoose.Schema({
   ],
 
 
+
+
 });
 
 shopSchema.plugin(require('mongoose-autopopulate'));

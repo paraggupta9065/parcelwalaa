@@ -100,39 +100,38 @@ exports.updateStatus = async (req, res) => {
     // try {
     const id = req.params.id;
     const status = req.body.status;
-
     let orders = await ordersModel.findById(id).populate("user_id");
     const user = await userModel.findById(orders.user_id);
     await ordersModel.findByIdAndUpdate(orders._id, { status });
-
-
-
     if (!orders) {
         return res.status(200).send({
             status: "failed",
             msg: "order not found",
         });
     }
-
     // message to customer
-    try {
-        const messageCustomer = {
-            notification: {
-                title: `Your Order Is ${status}`,
-                body: `Order ${status}`,
-            },
-            data: {
-                "status": status,
-                "order": String(orders),
+    if (!(user.tokens)) {
+        for (const element in user.tokens) {
+            try {
+                const messageCustomer = {
+                    notification: {
+                        title: `Your Order Is ${status}`,
+                        body: `Order ${status}`,
+                    },
+                    data: {
+                        "status": status,
+                        "order": String(orders),
 
-            },
-            topic: user._id.toString(),
+                    },
+                    topic: element.token,
 
-        };
-        const customerResp = await admin
-            .messaging().send(messageCustomer);
-    } catch (error) {
-        console.log(error);
+                };
+                const customerResp = await admin
+                    .messaging().send(messageCustomer);
+            } catch (error) {
+                console.log(error);
+            }
+        }
     }
     if (status == "cancelled" || status == "delivered") {
         orders["status"] = status;
@@ -157,34 +156,52 @@ exports.updateStatus = async (req, res) => {
         });
     } else if (status == "prepared") {
         if (orders.order_type == 'takeaway') {
-            const messageCustomer = {
-                notification: {
-                    title: `Your Order ${status}`,
-                    body: `Your Order ${status} Is Ready For Pickup`,
-                },
-                data: {
-                },
-                topic: user._id.toString(),
 
-            };
-            const customerResp = await admin
-                .messaging().send(messageCustomer);
+
+            if (!(user.tokens)) {
+                for (const element in user.tokens) {
+                    try {
+                        const messageCustomer = {
+                            notification: {
+                                title: `Your Order ${status}`,
+                                body: `Your Order ${status} Is Ready For Pickup`,
+                            },
+                            data: {
+                            },
+                            topic: element.token,
+
+                        };
+                        const customerResp = await admin
+                            .messaging().send(messageCustomer);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+            }
             return res.status(200).send({
                 status: "sucess",
                 msg: "Status Updated",
                 customerResp,
 
             });
+
+
         }
         const shop = await shopModel.findById(orders.order_inventory[0].shop_id._id);
         const shopLat = shop.lat;
         const shopLong = shop.long;
-        const drivers = await deliveryBoyModel.find({ pincode: shop.pincode, isActive: true, isOnline: true });
-
+        const drivers = await deliveryBoyModel.find({ pincode: shop.pincode, isActive: true, isOnline: true, isAvailable: true, });
+        if (!drivers) {
+            return res.status(404).send({
+                status: "fail",
+                msg: "No driver nearby found",
+            });
+        }
         let driverLat = drivers[0].lat;
         let driverLong = drivers[0].long;
         let nearestDriver = drivers[0].user_id;
         let driver = drivers[0];
+        console.log(driver)
         let shortestDistance = getDistance(
             { latitude: String(shopLat), longitude: String(shopLong) },
             { latitude: String(driverLat), longitude: String(driverLong) }
@@ -193,16 +210,11 @@ exports.updateStatus = async (req, res) => {
             return res.status(404).send({
                 status: "fail",
                 msg: "No driver nearby found",
-
             });
         }
-
-
         drivers.forEach(async (driverEle) => {
             driverLat = driverEle.lat;
             driverLong = driverEle.long;
-
-
             const distance = getDistance(
                 { latitude: String(shopLat), longitude: String(shopLong) },
                 { latitude: String(driverLat), longitude: String(driverLong) }
@@ -212,47 +224,133 @@ exports.updateStatus = async (req, res) => {
                 nearestDriver = driverEle.user_id;
                 driver = driverEle;
             }
-
         });
-        await ordersModel.findOneAndUpdate({ "_id": id }, { driver_id: driver._id, "order_note": "updated" }).catch((err) => console.log(err));
-        const messageDriver = {
-            notification: {
-                title: `Your Order Is ${status}`,
-                body: `Order ${status}`,
-            },
-            data: {
-                "status": status,
-                "id": String(orders._id),
-                "type": "order",
-            },
-            topic: driver._id.toString(),
+        await ordersModel.findOneAndUpdate({ "_id": id }, { driver_id: driver._id }).catch((err) => console.log(err));
+        const userDriver = await deliveryBoyModel.findOne({ user_id: driver.user_id });
 
-        };
 
-        const driverResp = await admin
-            .messaging().send(messageDriver);
+        // const messageDriver = {
+        //     notification: {
+        //         title: `Your Order Is ${status}`,
+        //         body: `Order ${status}`,
+        //     },
+        //     data: {
+        //         "status": status,
+        //         "id": String(orders._id),
+        //         "type": "order",
+        //     },
+        //     topic: driver._id.toString(),
+
+        // };
+
+        // const driverResp = await admin
+        //     .messaging().send(messageDriver);
+
+
+        if (!(userDriver.tokens)) {
+            for (const element in userDriver.tokens) {
+                try {
+                    const messageCustomer = {
+                        notification: {
+                            title: `Your Order Is ${status}`,
+                            body: `Order ${status}`,
+                        },
+                        data: {
+                            "status": status,
+                            "id": String(orders._id),
+                            "type": "order",
+                        },
+                        topic: element.token,
+
+                    };
+                    const driverResp = await admin
+                        .messaging().send(messageDriver);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        }
+
+
         return res.status(200).send({
             status: "sucess",
-            driverResp,
         });
     } else if (status == "assignedAccepted") {
+
         const userDriver = await deliveryBoyModel.findOne({ user_id: req.user._id });
-        const messageCustomer = {
-            notification: {
-                title: `Your Order Is ${status}`,
-                body: `Order ${status}`,
-            },
-            data: {
-                "status": status,
-                "driver": String(userDriver),
+        await deliveryBoyModel.findOneAndUpdate({ "_id": userDriver._id }, { isAvailable: false }).catch((err) => console.log(err));
 
 
-            },
-            topic: user._id.toString(),
 
-        };
-        const customerResp = await admin
-            .messaging().send(messageCustomer);
+        if (!(user.tokens)) {
+            for (const element in user.tokens) {
+                try {
+                    const messageCustomer = {
+                        notification: {
+                            title: `Your Order Is ${status}`,
+                            body: `Order ${status}`,
+                        },
+                        data: {
+                            "status": status,
+                            "driver": String(userDriver),
+                        },
+                        topic: element.token,
+
+                    };
+                    const customerResp = await admin
+                        .messaging().send(messageCustomer);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        }
+        return res.status(200).send({
+            status: "sucess",
+            msg: "Status Updated",
+            customerResp,
+        });
+    }
+    else if (status == "pickedUp" || status == "arrivedCustumer") {
+
+        let messageCustomer = {};
+        if (status == "pickedUp") {
+            messageCustomer = {
+                notification: {
+                    title: `Your Order Is Picked Up`,
+                    body: `Order Picked Up`,
+                },
+                data: {
+                    "status": status,
+                },
+                topic: user._id.toString(),
+            };
+        } else if (status == "arrivedCustumer") {
+            if (!(user.tokens)) {
+                for (const element in user.tokens) {
+                    try {
+                        const messageCustomer = {
+                            notification: {
+                                title: `Your Order Is At Your Door Step`,
+                                body: `Delivery Boy At Your Door Step`,
+                            },
+                            data: {
+                                "status": status,
+                            },
+                            topic: element.token,
+
+                        };
+                        const customerResp = await admin
+                            .messaging().send(messageCustomer);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+            }
+
+
+
+        }
+
         return res.status(200).send({
             status: "sucess",
             msg: "Status Updated",
@@ -260,19 +358,15 @@ exports.updateStatus = async (req, res) => {
         });
     }
     else if (status == "accepted") {
-
         return res.status(200).send({
             status: "sucess",
-            msg: "Status Updated",
-
+            msg: "Status Updated"
         });
 
     }
-
     return res.status(200).send({
         status: "fail",
-        msg: "message token not found",
-
+        msg: "message token not found"
     });
 
     // message to customer
@@ -307,9 +401,7 @@ exports.getPreviousOrders = async (req, res) => {
 
 // exports.removeCart = async (req, res) => {
 //     const id = req.user._id;
-
 //     await cartModel.findOneAndDelete({ user: id });
-
 //      return res.status(200).send({
 //         status: "sucess",
 //         msg: "cartModel deleted.",
