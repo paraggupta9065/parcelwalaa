@@ -66,6 +66,10 @@ const shopSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+  isCanteen: {
+    type: Boolean,
+    default: false,
+  },
   takeaway: {
     type: Boolean,
     default: false,

@@ -21,18 +21,15 @@ exports.sendOtp = async (req, res) => {
       upperCaseAlphabets: false,
       specialChars: false,
     });
+    console.log(otpCode);
 
     const otp = await otpModel.findOne({ number: number });
-    console.log(otp)
     if (!otp) {
-      console.log(otpCode)
-      console.log(number)
-
       await otpModel.create({ otp: otpCode, number: number });
-
     } else {
       await otpModel.findOneAndUpdate({ number: number }, { otp: otpCode, number: number });
     }
+    console.log('every thing done');
     return res.status(200).send({
       msg: "otp sended successfully",
       status: "sucess",
@@ -40,12 +37,10 @@ exports.sendOtp = async (req, res) => {
       code: otpCode,
     });
   } catch (error) {
-    console.log(error);
     return res.status(400).send({
       status: "fail",
       error,
       msg: "Something went wrong"
-
     });
   }
 };

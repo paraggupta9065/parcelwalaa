@@ -96,8 +96,7 @@ exports.sucessPayment = async (req, res) => {
         };
         const vendorResp = await admin
           .messaging().send(message);
-        console.log(vendorResp)
-        console.log('\n')
+
 
       }
 

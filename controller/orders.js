@@ -111,6 +111,7 @@ exports.updateStatus = async (req, res) => {
     }
     // message to customer
     if (!(user.tokens)) {
+        console.log(user.tokens)
         for (const element in user.tokens) {
             try {
                 const messageCustomer = {
@@ -123,7 +124,7 @@ exports.updateStatus = async (req, res) => {
                         "order": String(orders),
 
                     },
-                    topic: element.token,
+                    token: element.token,
 
                 };
                 const customerResp = await admin
@@ -168,7 +169,7 @@ exports.updateStatus = async (req, res) => {
                             },
                             data: {
                             },
-                            topic: element.token,
+                            token: element.token,
 
                         };
                         const customerResp = await admin
@@ -191,12 +192,13 @@ exports.updateStatus = async (req, res) => {
         const shopLat = shop.lat;
         const shopLong = shop.long;
         const drivers = await deliveryBoyModel.find({ pincode: shop.pincode, isActive: true, isOnline: true, isAvailable: true, });
-        if (!drivers) {
+        if (drivers.length == 0) {
             return res.status(404).send({
                 status: "fail",
                 msg: "No driver nearby found",
             });
         }
+        console.log(drivers)
         let driverLat = drivers[0].lat;
         let driverLong = drivers[0].long;
         let nearestDriver = drivers[0].user_id;
@@ -260,7 +262,7 @@ exports.updateStatus = async (req, res) => {
                             "id": String(orders._id),
                             "type": "order",
                         },
-                        topic: element.token,
+                        token: element.token,
 
                     };
                     const driverResp = await admin
@@ -294,7 +296,7 @@ exports.updateStatus = async (req, res) => {
                             "status": status,
                             "driver": String(userDriver),
                         },
-                        topic: element.token,
+                        token: element.token,
 
                     };
                     const customerResp = await admin
@@ -312,18 +314,31 @@ exports.updateStatus = async (req, res) => {
     }
     else if (status == "pickedUp" || status == "arrivedCustumer") {
 
-        let messageCustomer = {};
         if (status == "pickedUp") {
-            messageCustomer = {
-                notification: {
-                    title: `Your Order Is Picked Up`,
-                    body: `Order Picked Up`,
-                },
-                data: {
-                    "status": status,
-                },
-                topic: user._id.toString(),
-            };
+
+
+            if (!(user.tokens)) {
+                for (const element in user.tokens) {
+                    try {
+                        const messageCustomer = {
+                            notification: {
+                                title: `Your Order Is At Your Door Step`,
+                                body: `Delivery Boy At Your Door Step`,
+                            },
+                            data: {
+                                "status": status,
+                            },
+                            token: element.token,
+
+                        };
+                        const customerResp = await admin
+                            .messaging().send(messageCustomer);
+                    } catch (error) {
+                        console.log(error);
+                    }
+                }
+            }
+
         } else if (status == "arrivedCustumer") {
             if (!(user.tokens)) {
                 for (const element in user.tokens) {
@@ -336,7 +351,7 @@ exports.updateStatus = async (req, res) => {
                             data: {
                                 "status": status,
                             },
-                            topic: element.token,
+                            token: element.token,
 
                         };
                         const customerResp = await admin
