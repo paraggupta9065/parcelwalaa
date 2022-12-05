@@ -21,7 +21,7 @@ const brandRoute = require("./routes/brand");
 const admin = require("firebase-admin");
 const swaggerUi = require("swagger-ui-express");
 const YAML = require("yamljs");
-const swaggerJsDoc = YAML.load("./swagger.yaml");
+// const swaggerJsDoc = YAML.load("./swagger.yaml");
 require("dotenv").config();
 const { EventEmitter } = require("events");
 const userModel = require("./model/user");
@@ -81,7 +81,7 @@ app.use("/trip", tripRoute);
 app.use("/orders", ordersRoute);
 app.use("/categories", categoriesRoute);
 app.use("/brands", brandRoute);
-app.use("/api_docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc));
+// app.use("/api_docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc));
 app.use("/uploads", express.static("uploads"));
 //middleware use
 const fs = require('fs')

@@ -57,7 +57,6 @@ exports.updateCategories = async (req, res) => {
     const categorie = await categoriesModel.findById(id);
     await cloudinary.uploader.destroy(categorie.image_id);
     const result = await cloudinary.uploader.upload(req.file.path);
-    console.log(result)
     categoriesData["image"] = result["url"];
     categoriesData["image_id"] = result["public_id"];
     await categoriesModel.findByIdAndUpdate(id, categoriesData);
@@ -91,7 +90,6 @@ exports.updateCategorieStudents = async (req, res) => {
     const categorie = await categoriesStudentsModel.findById(id);
     await cloudinary.uploader.destroy(categorie.image_id);
     const result = await cloudinary.uploader.upload(req.file.path);
-    console.log(result)
     categoriesData["image"] = result["url"];
     categoriesData["image_id"] = result["public_id"];
     await categoriesStudentsModel.findByIdAndUpdate(id, categoriesData);

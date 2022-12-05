@@ -220,7 +220,6 @@ exports.getUnverifiedDriver = async (req, res) => {
 
 exports.getAsssignedOrder = async (req, res) => {
   const driver = await deliveryBoyModel.findOne({ "user_id": req.user._id });
-  console.log(driver._id)
   if (!driver) {
     return res.status(404).send({
       status: "fail",
@@ -229,7 +228,6 @@ exports.getAsssignedOrder = async (req, res) => {
   }
 
   const order = await orderModel.findOne({ driver: driver._id });
-  console.log(order)
 
   if (!order) {
     return res.status(200).send({
@@ -257,7 +255,6 @@ exports.setLocation = async (req, res) => {
       .status(404)
       .send({ status: "fail", msg: "All driver Are Verified", });
   }
-  console.log(driver);
   res
     .status(200)
     .send({ status: "sucess", msg: "driver Fecthed", driver });

@@ -7,6 +7,7 @@ const { getDistance } = require("geolib");
 const deliveryBoyModel = require("../model/deliveryBoy");
 const userModel = require("../model/user");
 const { use } = require("../routes/coupon");
+const { json } = require("express");
 
 
 
@@ -100,9 +101,10 @@ exports.updateStatus = async (req, res) => {
     // try {
     const id = req.params.id;
     const status = req.body.status;
-    let orders = await ordersModel.findById(id).populate("user_id");
+    let orders = await ordersModel.findById(id);
     const user = await userModel.findById(orders.user_id);
     await ordersModel.findByIdAndUpdate(orders._id, { status });
+    console.log(status)
     if (!orders) {
         return res.status(200).send({
             status: "failed",
@@ -110,9 +112,10 @@ exports.updateStatus = async (req, res) => {
         });
     }
     // message to customer
-    if (!(user.tokens)) {
-        console.log(user.tokens)
-        for (const element in user.tokens) {
+    if (user.tokens) {
+        user.tokens.forEach(async (element) => {
+
+
             try {
                 const messageCustomer = {
                     notification: {
@@ -121,21 +124,25 @@ exports.updateStatus = async (req, res) => {
                     },
                     data: {
                         "status": status,
-                        "order": String(orders),
+                        "id": String(orders._id),
 
                     },
                     token: element.token,
 
                 };
-                const customerResp = await admin
+                await admin
                     .messaging().send(messageCustomer);
             } catch (error) {
                 console.log(error);
             }
-        }
+        });
+
     }
     if (status == "cancelled" || status == "delivered") {
         orders["status"] = status;
+        if (orders['driver_id'] != null) {
+            await deliveryBoyModel.findByIdAndUpdate(orders['driver_id'], { 'isAvailable': true })
+        }
 
         const previousOrder = await previousOrderModel.create({
             "order_note": orders.order_note,
@@ -157,10 +164,8 @@ exports.updateStatus = async (req, res) => {
         });
     } else if (status == "prepared") {
         if (orders.order_type == 'takeaway') {
-
-
-            if (!(user.tokens)) {
-                for (const element in user.tokens) {
+            if ((user.tokens)) {
+                user.tokens.forEach(async (element) => {
                     try {
                         const messageCustomer = {
                             notification: {
@@ -177,7 +182,7 @@ exports.updateStatus = async (req, res) => {
                     } catch (error) {
                         console.log(error);
                     }
-                }
+                })
             }
             return res.status(200).send({
                 status: "sucess",
@@ -185,25 +190,23 @@ exports.updateStatus = async (req, res) => {
                 customerResp,
 
             });
-
-
         }
         const shop = await shopModel.findById(orders.order_inventory[0].shop_id._id);
         const shopLat = shop.lat;
         const shopLong = shop.long;
-        const drivers = await deliveryBoyModel.find({ pincode: shop.pincode, isActive: true, isOnline: true, isAvailable: true, });
+        const drivers = await deliveryBoyModel.find({ pincode: shop.pincode, isActive: true, isOnline: true, isAvailable: true });
+
+
         if (drivers.length == 0) {
             return res.status(404).send({
                 status: "fail",
                 msg: "No driver nearby found",
             });
         }
-        console.log(drivers)
         let driverLat = drivers[0].lat;
         let driverLong = drivers[0].long;
         let nearestDriver = drivers[0].user_id;
         let driver = drivers[0];
-        console.log(driver)
         let shortestDistance = getDistance(
             { latitude: String(shopLat), longitude: String(shopLong) },
             { latitude: String(driverLat), longitude: String(driverLong) }
@@ -228,49 +231,30 @@ exports.updateStatus = async (req, res) => {
             }
         });
         await ordersModel.findOneAndUpdate({ "_id": id }, { driver_id: driver._id }).catch((err) => console.log(err));
-        const userDriver = await deliveryBoyModel.findOne({ user_id: driver.user_id });
 
-
-        // const messageDriver = {
-        //     notification: {
-        //         title: `Your Order Is ${status}`,
-        //         body: `Order ${status}`,
-        //     },
-        //     data: {
-        //         "status": status,
-        //         "id": String(orders._id),
-        //         "type": "order",
-        //     },
-        //     topic: driver._id.toString(),
-
-        // };
-
-        // const driverResp = await admin
-        //     .messaging().send(messageDriver);
-
-
-        if (!(userDriver.tokens)) {
-            for (const element in userDriver.tokens) {
+        const userDriver = await userModel.findOne({ _id: driver.user_id });
+        if ((userDriver.tokens)) {
+            userDriver.tokens.forEach(async (element) => {
                 try {
-                    const messageCustomer = {
+                    const messageDriver = {
                         notification: {
                             title: `Your Order Is ${status}`,
                             body: `Order ${status}`,
                         },
                         data: {
                             "status": status,
-                            "id": String(orders._id),
+                            "order": String(orders._id),
                             "type": "order",
                         },
                         token: element.token,
 
                     };
-                    const driverResp = await admin
+                    await admin
                         .messaging().send(messageDriver);
                 } catch (error) {
                     console.log(error);
                 }
-            }
+            })
         }
 
 
@@ -278,14 +262,10 @@ exports.updateStatus = async (req, res) => {
             status: "sucess",
         });
     } else if (status == "assignedAccepted") {
-
         const userDriver = await deliveryBoyModel.findOne({ user_id: req.user._id });
         await deliveryBoyModel.findOneAndUpdate({ "_id": userDriver._id }, { isAvailable: false }).catch((err) => console.log(err));
-
-
-
-        if (!(user.tokens)) {
-            for (const element in user.tokens) {
+        if ((user.tokens)) {
+            user.tokens.forEach(async (element) => {
                 try {
                     const messageCustomer = {
                         notification: {
@@ -304,7 +284,7 @@ exports.updateStatus = async (req, res) => {
                 } catch (error) {
                     console.log(error);
                 }
-            }
+            })
         }
         return res.status(200).send({
             status: "sucess",
@@ -317,8 +297,9 @@ exports.updateStatus = async (req, res) => {
         if (status == "pickedUp") {
 
 
-            if (!(user.tokens)) {
-                for (const element in user.tokens) {
+            if ((user.tokens)) {
+                user.tokens.forEach(async (element) => {
+
                     try {
                         const messageCustomer = {
                             notification: {
@@ -336,12 +317,13 @@ exports.updateStatus = async (req, res) => {
                     } catch (error) {
                         console.log(error);
                     }
-                }
+                })
             }
 
         } else if (status == "arrivedCustumer") {
-            if (!(user.tokens)) {
-                for (const element in user.tokens) {
+            if ((user.tokens)) {
+                user.tokens.forEach(async (element) => {
+
                     try {
                         const messageCustomer = {
                             notification: {
@@ -359,7 +341,7 @@ exports.updateStatus = async (req, res) => {
                     } catch (error) {
                         console.log(error);
                     }
-                }
+                })
             }
 
 

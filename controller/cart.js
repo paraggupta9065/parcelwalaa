@@ -9,7 +9,6 @@ exports.addToCart = async (req, res) => {
   // try {
 
   const { productId, delivery_address_id, coupon_code_id } = req.body;
-  console.log(req.body);
   let inventory_total_amt = 0;
   let delivery_total_amt = 0;
   let discount_amt = 0;
@@ -91,7 +90,6 @@ exports.addToCart = async (req, res) => {
       }
     }
   });
-  console.log(findedProduct)
   if (!findedProduct) {
     await cartModel.findOneAndUpdate({
       "_id": cart._id,

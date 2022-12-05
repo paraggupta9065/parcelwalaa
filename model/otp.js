@@ -14,9 +14,9 @@ const otpSchema = mongoose.Schema({
     otpExpiry: { type: Date, default: Date.now },
 });
 //otp encrypt
-otpSchema.pre('save', function (next) {
-    this.otp = bcrypt.hash(this.otp, 1);
-});
+// otpSchema.pre('save', function (next) {
+//     this.otp = bcrypt.hash(this.otp, 1);
+// });
 otpSchema.methods.isValidatedOtp = async function (userSendedOtp) {
     return await bcrypt.compare(userSendedOtp, this.otp);
 }

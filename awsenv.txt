@@ -1,0 +1,24 @@
+DB_URL='mongodb+srv://admin:admin@cluster0.c8vehv0.mongodb.net/test'
+JWT_SECRET='qwertyuiop'
+PORT='3000'
+JWT_EXPIRY='365d'
+fcm_token='AAAAN07B9mw:APA91bGXiJOaIP8K4LEyuX3Bqj8VKOTGExSkh9udHaQGrWcFxlo8kaxfgSX2Z3ebNGuTX9GsG6uorXFZ2aWMsRuz1_RqRROKYbO00DgM16AzvcQ2eQhVfzpbZaRIjbgVAJMrNqCBy265'
+
+
+
+[Unit]
+Description=parcelwalaa
+After=multi-user.target
+
+[Service]
+ExecStart=/usr/bin/node /home/ubuntu/parcelwalaa/index.js
+Restart=always
+RestartSec=10
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=parcelwalaa
+User=ubuntu
+EnvironmentFile=/home/ubuntu/parcelwalaa/app.env
+
+[Install]
+WantedBy=multi-user.target

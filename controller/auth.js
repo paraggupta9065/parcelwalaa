@@ -21,15 +21,18 @@ exports.sendOtp = async (req, res) => {
       upperCaseAlphabets: false,
       specialChars: false,
     });
-    console.log(otpCode);
+
 
     const otp = await otpModel.findOne({ number: number });
+    console.log(!otp)
+
     if (!otp) {
-      await otpModel.create({ otp: otpCode, number: number });
+      const model = await otpModel.create({ otp: otpCode, number: number });
+      console.log(model)
+
     } else {
       await otpModel.findOneAndUpdate({ number: number }, { otp: otpCode, number: number });
     }
-    console.log('every thing done');
     return res.status(200).send({
       msg: "otp sended successfully",
       status: "sucess",
@@ -62,7 +65,6 @@ exports.verifyOtp = async (req, res) => {
     const isVerified = await otpFound.isValidatedOtp(otpCode);
 
     // const isVerified = otpFound['otp'] == otpCode;
-    console.log(otpFound['otp'])
 
     if (!isVerified) {
       const isVerifiedPlain = otpFound.otp == otpCode;

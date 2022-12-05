@@ -17,7 +17,6 @@ exports.addBanner = async (req, res) => {
     }
 
     const result = await cloudinary.uploader.upload(req.file.path);
-    console.log(result)
     bannerData["image"] = result["url"];
     bannerData["image_id"] = result["public_id"];
     const banner = await bannerModel.create(bannerData);
@@ -59,7 +58,6 @@ exports.updateBanner = async (req, res) => {
   try {
     const id = req.params.id;
     const bannerData = req.body;
-    console.log(bannerData)
     await bannerModel.findOneAndUpdate({ '_id': id }, bannerData);
     const banner = await bannerModel.findById(id);
 
