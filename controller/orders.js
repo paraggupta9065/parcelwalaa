@@ -114,8 +114,6 @@ exports.updateStatus = async (req, res) => {
     // message to customer
     if (user.tokens) {
         user.tokens.forEach(async (element) => {
-
-
             try {
                 const messageCustomer = {
                     notification: {
@@ -135,7 +133,7 @@ exports.updateStatus = async (req, res) => {
             } catch (error) {
                 console.log(error);
             }
-        });
+        },);
 
     }
     if (status == "cancelled" || status == "delivered") {
@@ -279,7 +277,7 @@ exports.updateStatus = async (req, res) => {
                         token: element.token,
 
                     };
-                    const customerResp = await admin
+                    await admin
                         .messaging().send(messageCustomer);
                 } catch (error) {
                     console.log(error);
@@ -289,7 +287,6 @@ exports.updateStatus = async (req, res) => {
         return res.status(200).send({
             status: "sucess",
             msg: "Status Updated",
-            customerResp,
         });
     }
     else if (status == "pickedUp" || status == "arrivedCustumer") {
