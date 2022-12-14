@@ -8,6 +8,8 @@ const deliveryBoyModel = require("../model/deliveryBoy");
 const userModel = require("../model/user");
 const { use } = require("../routes/coupon");
 const { json } = require("express");
+const distance = require("google-distance-matrix");
+const deliveryBoyEarning = require("../model/deliveryBoyEarning");
 
 
 
@@ -104,7 +106,7 @@ exports.updateStatus = async (req, res) => {
     let orders = await ordersModel.findById(id);
     const user = await userModel.findById(orders.user_id);
     await ordersModel.findByIdAndUpdate(orders._id, { status });
-    console.log(status)
+
     if (!orders) {
         return res.status(200).send({
             status: "failed",
@@ -138,9 +140,17 @@ exports.updateStatus = async (req, res) => {
     }
     if (status == "cancelled" || status == "delivered") {
         orders["status"] = status;
-        if (orders['driver_id'] != null) {
-            await deliveryBoyModel.findByIdAndUpdate(orders['driver_id'], { 'isAvailable': true })
+        if (status == "cancelled" && orders['driver_id'] != null) {
+            const earning = (orders['distance'] / 1000) * orders.driver_id.perKm;
+            await deliveryBoyEarning.create({
+                distanceCover: orders['distance'],
+                earning: earning,
+            }
+            );
+            await deliveryBoyModel.findByIdAndUpdate(orders['driver_id'], { 'isAvailable': true });
         }
+
+
 
         const previousOrder = await previousOrderModel.create({
             "order_note": orders.order_note,
@@ -160,6 +170,9 @@ exports.updateStatus = async (req, res) => {
             msg: "Order history created and order deleted",
 
         });
+
+
+
     } else if (status == "prepared") {
         if (orders.order_type == 'takeaway') {
             if ((user.tokens)) {
@@ -228,8 +241,40 @@ exports.updateStatus = async (req, res) => {
                 driver = driverEle;
             }
         });
-        await ordersModel.findOneAndUpdate({ "_id": id }, { driver_id: driver._id }).catch((err) => console.log(err));
 
+        //distance calculation 
+        let distanceCal = 0;
+
+
+
+
+        var origins = [`${driver.lat},${driver.long}`];
+        var destinations = [];
+
+        orders.order_inventory.forEach((element) => {
+            const latShop = element.shop_id.lat;
+            const longShop = element.shop_id.long;
+            destinations.push(`${latShop},${longShop}`)
+        });
+
+        destinations.push(`${orders.delivery_address_id.lat},${orders.delivery_address_id.long}`)
+
+
+
+        distance.key('AIzaSyBlUJ62u91twMqphn4XG7PC__h6CkpvTZs');
+
+        let distanceResponse;
+        distance.matrix(origins, destinations, function (err, distances) {
+            if (!err)
+                // console.log(distances['rows'][0]['elements']);
+                distanceResponse = distances['rows'][0]['elements'];
+
+        });
+        await sleep(1000);
+        distanceResponse.forEach((element) => {
+            distanceCal += element['distance']['value'];
+        });
+        await ordersModel.findOneAndUpdate({ "_id": id }, { driver_id: driver._id, distance: distanceCal }).catch((err) => console.log(err));
         const userDriver = await userModel.findOne({ _id: driver.user_id });
         if ((userDriver.tokens)) {
             userDriver.tokens.forEach(async (element) => {
@@ -401,3 +446,6 @@ exports.getPreviousOrders = async (req, res) => {
 //         msg: "cartModel deleted.",
 //     });
 // };
+function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}

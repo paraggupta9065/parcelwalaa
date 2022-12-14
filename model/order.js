@@ -103,8 +103,11 @@ const OrderSchema = mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["recived", "accepted", "prepared", "assigned", "assignedAccepted", "arrivedShop", "pickedUp", "arrivedCustumer", "cancelled", "delivered"],
+    enum: ["recived", "accepted", "prepared", "assigned", "assignedAccepted", "pickedUp", "cancelled", "delivered"],
     default: "recived",
+  },
+  distance: {
+    type: Number,
   },
 });
 

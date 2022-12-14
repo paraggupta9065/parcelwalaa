@@ -73,10 +73,10 @@ const deliveryBoySchema = mongoose.Schema({
     type: Boolean,
     default: true,
   },
-
-
-
-
+  perKm: {
+    type: Number,
+    default: 5,
+  },
 });
 
 module.exports = mongoose.model("DeliveryBoy", deliveryBoySchema);

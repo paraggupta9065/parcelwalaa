@@ -2,11 +2,11 @@ const mongoose = require("mongoose");
 
 const deliveryBoyEarningSchema = mongoose.Schema({
     earning: {
-        type: number,
+        type: Number,
         required: [true, "Please send earning"],
     },
     distanceCover: {
-        type: number,
+        type: Number,
         required: [true, "Please send distance"],
     },
     date_created: {
