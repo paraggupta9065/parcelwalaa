@@ -39,7 +39,7 @@ connectToDb();
 app.get("/", (req, res) => {
   const timerEventEmitter = req.app.get('emmiter');
   timerEventEmitter.emit('order_recived', "ghgh");
-  return res.send({ status: "sucess", msg: "Server Up And Running" })
+  return res.send({ status: "sucess", msg: "Server Up And Running", version: 1.1 })
 });
 
 cloudinary.config({
@@ -110,7 +110,7 @@ app.get("/file/:image", (req, res) => {
 }
 
 );
-const multerMod = require("./middleware/multerMod");
+// const multerMod = require("./middleware/multerMod");
 
 // app.post("/file", multerMod.single("image"), async (req, res) => {
 //   try {

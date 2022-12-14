@@ -140,10 +140,11 @@ exports.updateStatus = async (req, res) => {
     }
     if (status == "cancelled" || status == "delivered") {
         orders["status"] = status;
-        if (status == "cancelled" && orders['driver_id'] != null) {
+        if (status == "cancelled" && orders.driver_id != null) {
             const earning = (orders['distance'] / 1000) * orders.driver_id.perKm;
             await deliveryBoyEarning.create({
-                distanceCover: orders['distance'],
+                distanceCover: orders.distance,
+                user_id: orders.driver_id.user_id,
                 earning: earning,
             }
             );
