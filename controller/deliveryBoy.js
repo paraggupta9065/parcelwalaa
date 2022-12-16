@@ -2,6 +2,7 @@ const deliveryBoyModel = require("../model/deliveryBoy");
 const otpModel = require("../model/otp");
 const userModel = require("../model/user");
 const orderModel = require("../model/order");
+const deliveryBoyEarning = require("../model/deliveryBoyEarning");
 
 
 // create a delivery boy
@@ -259,3 +260,35 @@ exports.setLocation = async (req, res) => {
     .status(200)
     .send({ status: "sucess", msg: "driver Fecthed", driver });
 };
+
+
+
+
+exports.getDriverEarning = async (req, res) => {
+
+  const id = req.user._id;
+
+
+  const driverEarnings = await deliveryBoyEarning.find({ user_id: id });
+  const driverEarning = await deliveryBoyEarning.aggregate([
+    {
+      $group:
+      {
+        "_id": "$user_id",
+
+        earning: { $sum: '$earning' },
+
+      }
+    }
+  ])
+
+  if (driverEarnings.length == 0) {
+    return res
+      .status(404)
+      .send({ status: "fail", msg: "No Earning Found", });
+  }
+  return res
+    .status(200)
+    .send({ status: "sucess", msg: "driver Fecthed", driverEarnings, driverEarning });
+
+}
