@@ -11,7 +11,7 @@ const router = express.Router();
 
 router.route("/add_address").post(isLoggedIn, addAddress);
 router.route("/update_address").put(isLoggedIn, updateAddress);
-router.route("/remove_address").delete(isLoggedIn, removeAddress);
+router.route("/remove_address/:id").get(isLoggedIn, removeAddress);
 router.route("/get_address").get(isLoggedIn, getCustumerAddress);
 
 module.exports = router;

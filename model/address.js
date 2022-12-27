@@ -11,7 +11,7 @@ const AddressSchema = mongoose.Schema({
   },
   landmark: {
     type: String,
-    required: [true, "Please provide landmark"],
+
   },
   pincode: {
     type: Number,

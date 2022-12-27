@@ -278,6 +278,8 @@ exports.updateQty = async (req, res) => {
     const { productId, quantity } = req.body;
     const id = req.user._id;
     const cart = await cartModel.findOne({ user_id: id });
+    const product = await productModel.findOne(productId);
+
     if (quantity < 1) {
 
       let inventoryUpdate = new Array;
@@ -305,6 +307,8 @@ exports.updateQty = async (req, res) => {
     inventoryUpdate[inventory_index] = {
       quantity: quantity,
       product: productId,
+      shop_id: product.shop_id,
+
     };
 
     if (inventoryUpdate.length == 0) {

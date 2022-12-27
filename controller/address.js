@@ -4,52 +4,10 @@ exports.addAddress = async (req, res) => {
   try {
     const id = req.user._id;
 
-    const {
-      name,
-      line1,
-      landmark,
-      pincode,
-      contact_no,
-      state,
-      city,
-      type,
-      delivery_note,
-    } = req.body;
+    let data = req.body;
+    data['user_id'] = id;
 
-    if (
-      !name ||
-      !line1 ||
-      !landmark ||
-      !pincode ||
-      !contact_no ||
-      !state ||
-      !city ||
-      !type
-    ) {
-      return res.status(400).send({
-        status: "fail",
-        msg: "Please provide all the fields",
-      });
-    }
-
-    if (!delivery_note) {
-      delivery_note = "";
-    }
-
-    const addressData = {
-      name,
-      line1,
-      landmark,
-      pincode,
-      user_id: id,
-      contact_no,
-      state,
-      city,
-      delivery_note,
-      type,
-    };
-
-    const address = await addressModel.create(addressData);
+    const address = await addressModel.create(data);
 
     return res.status(201).send({
       status: "sucess",
@@ -145,8 +103,9 @@ exports.updateAddress = async (req, res) => {
 
 exports.removeAddress = async (req, res) => {
   try {
-    const id = req.user._id;
-    await addressModel.findOneAndDelete({ user_id: id });
+    const id = req.params.id;
+
+    await addressModel.findByIdAndDelete(id);
 
     return res.status(200).send({
       status: "sucess",
@@ -166,6 +125,7 @@ exports.getCustumerAddress = async (req, res) => {
   try {
     const id = req.user._id;
     const addressList = await addressModel.find({ user_id: id });
+
 
     return res.status(200).send({
       status: "sucess",
