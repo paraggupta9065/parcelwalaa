@@ -26,11 +26,14 @@ exports.addShops = async (req, res) => {
   }
   const isVerified = await otpFound.isValidatedOtp(otpCode);
 
+  // const isVerified = otpFound['otp'] == otpCode;
 
   if (!isVerified) {
-    return res.status(400).send({ status: "fail", msg: "Incorrect Otp" });
+    const isVerifiedPlain = otpFound.otp == otpCode;
+    if (!isVerifiedPlain) {
+      return res.status(400).send({ status: "fail", msg: "Incorrect Otp" });
+    }
   }
-  //Otp Verified
   //Creating User
 
   if (!store_name) {

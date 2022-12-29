@@ -39,7 +39,7 @@ connectToDb();
 app.get("/", (req, res) => {
   const timerEventEmitter = req.app.get('emmiter');
   timerEventEmitter.emit('order_recived', "ghgh");
-  return res.send({ status: "sucess", msg: "Server Up And Running", version: 1.2 })
+  return res.send({ status: "sucess", msg: "Server Up And Running", version: 1.3 })
 });
 
 cloudinary.config({
