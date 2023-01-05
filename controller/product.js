@@ -6,38 +6,13 @@ const cloudinary = require('cloudinary').v2;
 // create the product
 exports.addProduct = async (req, res) => {
   const number = req.user.number;
-
   const shop = await shopModel.findOne({ number });
-
+  console.log(req.body)
   let map = req.body;
-  // const images = req.file.filename;
-  const result = await cloudinary.uploader.upload(req.file.path);
-  const images = result["url"];
-
-
-  // if (
-  //   !name ||
-  //   !type ||
-  //   !description ||
-  //   !veg_type ||
-  //   !price ||
-  //   !regular_price ||
-  //   !weight 
-  // ) {
-  //   return res.status(400).send({
-  //     status: "fail",
-  //     msg: "Please provide all feilds",
-  //   });
-  // }
-
-
   map['shop_id'] = shop._id;
   map['pincode'] = shop.pincode;
-  map['images'] = images;
-
-
+  console.log(map)
   const product = await productModel.create(map);
-
   return res.status(201).send({ status: "sucess", product });
 };
 
@@ -62,7 +37,7 @@ exports.updateProduct = async (req, res) => {
 // delete product using req.params.id
 exports.deleteProduct = async (req, res) => {
   const id = req.params.id;
-
+  await cloudinary.uploader.destroy(await productModel.findById(id).image_id);
   const product = await productModel.findByIdAndDelete(id);
 
   if (!product) {

@@ -3,7 +3,7 @@ const productModel = require("../model/product");
 const shopModel = require("../model/shop");
 const couponModel = require("../model/coupon");
 const { default: mongoose } = require("mongoose");
-const { array } = require("../middleware/multerMod");
+
 
 exports.addToCart = async (req, res) => {
   // try {

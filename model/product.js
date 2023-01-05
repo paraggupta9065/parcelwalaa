@@ -68,6 +68,11 @@ const ProductSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+
+  image_id: {
+    type: String,
+    required: [true, "Please Send image_id"],
+  },
   variations: {
     type: String,
   },

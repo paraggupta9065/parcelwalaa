@@ -27,8 +27,7 @@ const { EventEmitter } = require("events");
 const userModel = require("./model/user");
 const timerEventEmitter = new EventEmitter();
 const cloudinary = require('cloudinary');
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
-const multer = require("multer");
+
 
 
 
@@ -59,6 +58,8 @@ admin.initializeApp({
 
 app.set("emmiter", timerEventEmitter);
 //middleware use
+app.use(express.static(__dirname + "/public"));
+app.use("/uploads", express.static("uploads"));
 app.use(express.json());
 app.use((err, req, res, next) => {
   return res.status(500).send({

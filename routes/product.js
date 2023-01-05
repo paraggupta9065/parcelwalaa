@@ -9,19 +9,19 @@ const {
   getProductByLocation,
   getProductByShop,
   getProduct,
-  getSearchProduct,
-  getTags
+  getSearchProduct
 } = require("../controller/product");
 const { isLoggedIn } = require("../middleware/user");
 const { isAdmin } = require("../middleware/isAdmin");
 const { isShop } = require("../middleware/isShop");
 const router = express.Router();
+
 //file upload
 const multerMod = require("../middleware/multerMod");
 
 //end
 
-router.route("/add_product").post(multerMod.single("image"), isLoggedIn, isShop, addProduct);
+router.route("/add_product").post(isLoggedIn, isShop, addProduct);
 router.route("/update_product").post(isLoggedIn, isShop, updateProduct);
 router.route("/delete_product/:id").delete(isLoggedIn, isShop, deleteProduct);
 router.route("/get_product/:id").get(isLoggedIn, isShop, getProduct);

@@ -29,7 +29,9 @@ exports.getAllBrand = async (req, res) => {
 
 exports.deleteBrand = async (req, res) => {
     const brand_id = req.params.id;
+    await cloudinary.uploader.destroy(await brandModel.findById(brand_id).image_id);
     await brandModel.findByIdAndDelete(brand_id);
+
     return res
         .status(200)
         .send({ status: "sucess", msg: "brands deleted" });
