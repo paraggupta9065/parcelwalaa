@@ -6,9 +6,7 @@ const multerStorage = multer.diskStorage({
         const ext = file.mimetype.split("/")[1];
         cb(null, `${file.fieldname}-${Date.now()}.${"png"}`);
     },
-    destination: function (req, file, cb) {
-        cb(null, "./uploads");
-    },
+
     // limits: { fieldSize: 25 * 1024 * 1024 }
 });
 
