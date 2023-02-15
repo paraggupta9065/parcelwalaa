@@ -265,6 +265,9 @@ exports.updateStatus = async (req, res) => {
         distance.key('AIzaSyBlUJ62u91twMqphn4XG7PC__h6CkpvTZs');
 
         let distanceResponse;
+        console.log(origins);
+        console.log(destinations);
+
         distance.matrix(origins, destinations, function (err, distances) {
             if (!err)
                 // console.log(distances['rows'][0]['elements']);
@@ -273,6 +276,7 @@ exports.updateStatus = async (req, res) => {
         });
         await sleep(1000);
         distanceResponse.forEach((element) => {
+            console.log(element);
             distanceCal += element['distance']['value'];
         });
         await ordersModel.findOneAndUpdate({ "_id": id }, { driver_id: driver._id, distance: distanceCal }).catch((err) => console.log(err));
@@ -280,6 +284,7 @@ exports.updateStatus = async (req, res) => {
         if ((userDriver.tokens)) {
             userDriver.tokens.forEach(async (element) => {
                 try {
+                    console.log(element.token);
                     const messageDriver = {
                         notification: {
                             title: `Your Order Is ${status}`,

@@ -234,7 +234,7 @@ exports.getAsssignedOrder = async (req, res) => {
     });
   }
 
-  const order = await orderModel.findOne({ driver: driver._id });
+  const order = await orderModel.findOne({ driver_id: driver._id });
 
   if (!order) {
     return res.status(200).send({
