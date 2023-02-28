@@ -1,166 +1,154 @@
-const bannerModel = require("../model/banner");
-const cloudinary = require('cloudinary').v2;
-
-
-
+const bannerModel = require('../model/banner')
+const cloudinary = require('cloudinary').v2
 
 exports.addBanner = async (req, res) => {
   // try {
-  const bannerData = { openType, isActive } = req.body;
-
+  const bannerData = ({ openType, isActive } = req.body)
 
   if (!openType || !isActive) {
-    return res.status(400).send({
-      status: "fail",
-      msg: "Please provide all the fields",
-    });
+    return res.status(400).json({
+      status: 'fail',
+      msg: 'Please provide all the fields'
+    })
   }
 
-  const result = await cloudinary.uploader.upload(req.file.path).catch((err) => console.log(err));
+  const result = await cloudinary.uploader
+    .upload(req.file.path)
+    .catch(err => console.log(err))
 
-  bannerData["image"] = result["url"];
-  bannerData["image_id"] = result["public_id"];
-  const banner = await bannerModel.create(bannerData);
+  bannerData['image'] = result['url']
+  bannerData['image_id'] = result['public_id']
+  const banner = await bannerModel.create(bannerData)
 
-  return res.status(201).send({
-    status: "sucess",
-    banner,
-  });
+  return res.status(201).json({
+    status: 'sucess',
+    banner: banner
+  })
   // } catch (error) {
-  //   return res.status(400).send({
+  //   return res.status(400).json({
   //     status: "fail",
   //     error,
   //     "msg": "something went wrong"
   //   });
   // }
-};
+}
 
 exports.deleteBanner = async (req, res) => {
   try {
-    const id = req.params.id;
-    await bannerModel.findByIdAndDelete(id);
+    const id = req.params.id
+    await bannerModel.findByIdAndDelete(id)
 
-    return res.status(200).send({
-      status: "sucess",
-      msg: "Banner deleted",
-    });
+    return res.status(200).json({
+      status: 'sucess',
+      msg: 'Banner deleted'
+    })
   } catch (error) {
-    return res.status(400).send({
-      status: "fail",
-      error,
+    return res.status(400).json({
+      status: 'fail',
+      error: error,
 
-      msg: "Something went wrong"
-
-    });
+      msg: 'Something went wrong'
+    })
   }
-};
+}
 
 exports.updateBanner = async (req, res) => {
   try {
-    const id = req.params.id;
-    const bannerData = req.body;
-    await bannerModel.findOneAndUpdate({ '_id': id }, bannerData);
-    const banner = await bannerModel.findById(id);
+    const id = req.params.id
+    const bannerData = req.body
+    await bannerModel.findOneAndUpdate({ _id: id }, bannerData)
+    const banner = await bannerModel.findById(id)
 
-
-    return res.status(200).send({
-      status: "sucess",
-      msg: "banner Updated",
-      banner,
-    });
+    return res.status(200).json({
+      status: 'sucess',
+      msg: 'banner Updated',
+      banner: banner
+    })
   } catch (error) {
-    return res.status(400).send({
-      status: "fail",
-      error,
+    return res.status(400).json({
+      status: 'fail',
+      error: error,
 
-      msg: "Something went wrong"
-
-    });
+      msg: 'Something went wrong'
+    })
   }
-};
+}
 
 exports.getAllBanner = async (req, res) => {
   try {
-    const banner = await bannerModel.find({ isActive: { $ne: false } });
+    const banner = await bannerModel.find({ isActive: { $ne: false } })
 
-    return res.status(200).send({
-      status: "sucess",
-      msg: "All Banner Fetched",
-      banners: banner,
-    });
+    return res.status(200).json({
+      status: 'sucess',
+      msg: 'All Banner Fetched',
+      banners: banner
+    })
   } catch (error) {
+    return res.status(400).json({
+      status: 'fail',
+      error: error,
 
-    return res.status(400).send({
-      status: "fail",
-      error,
-
-      msg: "Something went wrong"
-
-    });
+      msg: 'Something went wrong'
+    })
   }
-};
+}
 exports.getBannersAdmin = async (req, res) => {
   try {
-    const banner = await bannerModel.find();
+    const banner = await bannerModel.find()
 
-    return res.status(200).send({
-      status: "sucess",
-      msg: "All Banner Fetched",
-      banners: banner,
-    });
+    return res.status(200).json({
+      status: 'sucess',
+      msg: 'All Banner Fetched',
+      banners: banner
+    })
   } catch (error) {
+    return res.status(400).json({
+      status: 'fail',
+      error: error,
 
-    return res.status(400).send({
-      status: "fail",
-      error,
-
-      msg: "Something went wrong"
-
-    });
+      msg: 'Something went wrong'
+    })
   }
-};
+}
 
 exports.getBannerById = async (req, res) => {
   try {
-    const id = req.params.id;
-    const banner = await bannerModel.findById(id);
+    const id = req.params.id
+    const banner = await bannerModel.findById(id)
 
-    return res.status(200).send({
-      status: "sucess",
-      msg: "Banner Fetched",
-      banner: banner,
-    });
+    return res.status(200).json({
+      status: 'sucess',
+      msg: 'Banner Fetched',
+      banner: banner
+    })
   } catch (error) {
+    return res.status(400).json({
+      status: 'fail',
+      error: error,
 
-    return res.status(400).send({
-      status: "fail",
-      error,
-
-      msg: "Something went wrong"
-
-    });
+      msg: 'Something went wrong'
+    })
   }
-};
+}
 
 exports.getBannerByPlacement = async (req, res) => {
   try {
-    const placement = req.params.placement;
-    const pincode = req.body.pincode;
+    const placement = req.params.placement
+    const pincode = req.body.pincode
     const banner = await bannerModel.find({
       placement,
-      "pincode": pincode
-    });
-    return res.status(200).send({
-      status: "sucess",
-      msg: "All Banner Fetched",
-      banners: banner,
-    });
+      pincode: pincode
+    })
+    return res.status(200).json({
+      status: 'sucess',
+      msg: 'All Banner Fetched',
+      banners: banner
+    })
   } catch (error) {
-
-    return res.status(400).send({
-      status: "fail",
-      error,
-      msg: "Something went wrong"
-    });
+    return res.status(400).json({
+      status: 'fail',
+      error: error,
+      msg: 'Something went wrong'
+    })
   }
-};
+}

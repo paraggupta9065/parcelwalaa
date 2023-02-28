@@ -15,12 +15,12 @@ exports.getOrdersShops = async (req, res) => {
 
   const orders = await ordersModel.find({ 'order_inventory.shop_id': id })
   if (orders.length == 0) {
-    return res.status(404).send({
+    return res.status(404).json({
       status: 'fail',
       msg: 'Order Not Found'
     })
   }
-  return res.status(200).send({
+  return res.status(200).json({
     status: 'sucess',
     orders
   })
@@ -32,12 +32,12 @@ exports.getOrder = async (req, res) => {
     .populate('delivery_address_id')
     .populate('user_id')
   if (!orders) {
-    return res.status(404).send({
+    return res.status(404).json({
       status: 'fail',
       msg: 'Order Not Found'
     })
   }
-  return res.status(200).send({
+  return res.status(200).json({
     status: 'sucess',
     orders
   })
@@ -46,13 +46,13 @@ exports.getOrder = async (req, res) => {
 exports.getOrders = async (req, res) => {
   const orders = await ordersModel.find()
   if (orders.length == 0) {
-    return res.status(404).send({
+    return res.status(404).json({
       status: 'fail',
       msg: 'Order Not Found'
     })
   }
 
-  return res.status(200).send({
+  return res.status(200).json({
     status: 'sucess',
     orders
   })
@@ -61,13 +61,13 @@ exports.getOrders = async (req, res) => {
 exports.getOrdersAdmin = async (req, res) => {
   const orders = await ordersModel.find()
   if (orders.length == 0) {
-    return res.status(404).send({
+    return res.status(404).json({
       status: 'fail',
       msg: 'Order Not Found'
     })
   }
 
-  return res.status(200).send({
+  return res.status(200).json({
     status: 'sucess',
     orders
   })
@@ -77,7 +77,7 @@ exports.getOrderByCustomer = async (req, res) => {
   const order = await ordersModel.findOne({ user_id: id })
 
   if (!order) {
-    return res.status(404).send({
+    return res.status(404).json({
       status: 'notFound',
       msg: 'Order Not Found'
     })
@@ -85,12 +85,12 @@ exports.getOrderByCustomer = async (req, res) => {
 
   // if (order.status == 'prepared' || order.status == 'assigned' || order.status == 'delivered') {
   //     const driver = await deliveryBoyModel
-  //     return res.status(404).send({
+  //     return res.status(404).json({
   //         status: "notFound",
   //         msg: "Order Not Found",
   //     });
   // }
-  return res.status(200).send({
+  return res.status(200).json({
     status: 'sucess',
     order
   })
@@ -105,7 +105,7 @@ exports.updateStatus = async (req, res) => {
   await ordersModel.findByIdAndUpdate(orders._id, { status })
 
   if (!orders) {
-    return res.status(200).send({
+    return res.status(200).json({
       status: 'failed',
       msg: 'order not found'
     })
@@ -125,7 +125,7 @@ exports.updateStatus = async (req, res) => {
           },
           token: element.token
         }
-        await admin.messaging().send(messageCustomer)
+        await admin.messaging().json(messageCustomer)
       } catch (error) {
         console.log(error)
       }
@@ -161,7 +161,7 @@ exports.updateStatus = async (req, res) => {
       isAvailable: true
     })
 
-    return res.status(200).send({
+    return res.status(200).json({
       status: 'sucess',
       msg: 'Order history created and order deleted'
     })
@@ -178,13 +178,13 @@ exports.updateStatus = async (req, res) => {
               data: {},
               token: element.token
             }
-            const customerResp = await admin.messaging().send(messageCustomer)
+            const customerResp = await admin.messaging().json(messageCustomer)
           } catch (error) {
             console.log(error)
           }
         })
       }
-      return res.status(200).send({
+      return res.status(200).json({
         status: 'sucess',
         msg: 'Status Updated',
         customerResp
@@ -201,7 +201,7 @@ exports.updateStatus = async (req, res) => {
     })
 
     if (drivers.length == 0) {
-      return res.status(404).send({
+      return res.status(404).json({
         status: 'fail',
         msg: 'No driver nearby found'
       })
@@ -215,7 +215,7 @@ exports.updateStatus = async (req, res) => {
       { latitude: String(driverLat), longitude: String(driverLong) }
     )
     if (!drivers) {
-      return res.status(404).send({
+      return res.status(404).json({
         status: 'fail',
         msg: 'No driver nearby found'
       })
@@ -289,14 +289,14 @@ exports.updateStatus = async (req, res) => {
             },
             token: element.token
           }
-          await admin.messaging().send(messageDriver)
+          await admin.messaging().json(messageDriver)
         } catch (error) {
           console.log(error)
         }
       })
     }
 
-    return res.status(200).send({
+    return res.status(200).json({
       status: 'sucess'
     })
   } else if (status == 'assignedAccepted') {
@@ -318,13 +318,13 @@ exports.updateStatus = async (req, res) => {
             },
             token: element.token
           }
-          await admin.messaging().send(messageCustomer)
+          await admin.messaging().json(messageCustomer)
         } catch (error) {
           console.log(error)
         }
       })
     }
-    return res.status(200).send({
+    return res.status(200).json({
       status: 'sucess',
       msg: 'Status Updated'
     })
@@ -343,7 +343,7 @@ exports.updateStatus = async (req, res) => {
               },
               token: element.token
             }
-            const customerResp = await admin.messaging().send(messageCustomer)
+            const customerResp = await admin.messaging().json(messageCustomer)
           } catch (error) {
             console.log(error)
           }
@@ -363,7 +363,7 @@ exports.updateStatus = async (req, res) => {
               },
               token: element.token
             }
-            const customerResp = await admin.messaging().send(messageCustomer)
+            const customerResp = await admin.messaging().json(messageCustomer)
           } catch (error) {
             console.log(error)
           }
@@ -371,17 +371,17 @@ exports.updateStatus = async (req, res) => {
       }
     }
 
-    return res.status(200).send({
+    return res.status(200).json({
       status: 'sucess',
       msg: 'Status Updated'
     })
   } else if (status == 'accepted') {
-    return res.status(200).send({
+    return res.status(200).json({
       status: 'sucess',
       msg: 'Status Updated'
     })
   }
-  return res.status(200).send({
+  return res.status(200).json({
     status: 'fail',
     msg: 'message token not found'
   })
@@ -389,7 +389,7 @@ exports.updateStatus = async (req, res) => {
   // message to customer
 
   // } catch (error) {
-  //     return res.status(200).send({
+  //     return res.status(200).json({
   //         status: "fail",
   //         error,
   //         msg: "Something went wrong"
@@ -403,12 +403,12 @@ exports.getPreviousOrders = async (req, res) => {
 
   const orders = await previousOrderModel.find({ user_id: id })
   if (orders.length == 0) {
-    return res.status(404).send({
+    return res.status(404).json({
       status: 'fail',
       msg: 'Order Not Found'
     })
   }
-  return res.status(200).send({
+  return res.status(200).json({
     status: 'sucess',
     orders
   })
@@ -417,7 +417,7 @@ exports.getPreviousOrders = async (req, res) => {
 // exports.removeCart = async (req, res) => {
 //     const id = req.user._id;
 //     await cartModel.findOneAndDelete({ user: id });
-//      return res.status(200).send({
+//      return res.status(200).json({
 //         status: "sucess",
 //         msg: "cartModel deleted.",
 //     });

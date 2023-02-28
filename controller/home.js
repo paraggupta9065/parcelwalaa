@@ -1,26 +1,24 @@
 // need to go through logic of removeCart and updateCart again
 
-
-
 exports.homeLayout = async (req, res) => {
-  return res.send([
-    { type: "banner" },
-    { type: "list" },
-    { type: "icon" },
-    { type: "categories" },
-    { type: "dishes" },
-  ]);
-};
+  return res.json([
+    { type: 'banner' },
+    { type: 'list' },
+    { type: 'icon' },
+    { type: 'categories' },
+    { type: 'dishes' }
+  ])
+}
 
 exports.banner = async (req, res) => {
-  return res.send([
-    { type: "banner" },
-    { type: "list" },
-    { type: "icon" },
-    { type: "categories" },
-    { type: "dishes" },
-  ]);
-};
+  return res.json([
+    { type: 'banner' },
+    { type: 'list' },
+    { type: 'icon' },
+    { type: 'categories' },
+    { type: 'dishes' }
+  ])
+}
 
 //type-List,Banner,Icon,Nortification,storesHorizantal,categories,Filters,storesVerticle,Dishes
 //list - list of products, title
@@ -33,23 +31,22 @@ exports.banner = async (req, res) => {
 //storesVerticle = title, List of stores
 //Dishes=title, list of product
 
-
 exports.homeLayout = async (req, res) => {
-  return res.send([
-    { type: "banner" },
-    { type: "list" },
-    { type: "icon" },
-    { type: "categories" },
-    { type: "dishes" },
-  ]);
-};
+  return res.json([
+    { type: 'banner' },
+    { type: 'list' },
+    { type: 'icon' },
+    { type: 'categories' },
+    { type: 'dishes' }
+  ])
+}
 
 exports.banner = async (req, res) => {
-  return res.send([
-    { type: "banner" },
-    { type: "list" },
-    { type: "icon" },
-    { type: "categories" },
-    { type: "dishes" },
-  ]);
-};
+  return res.json([
+    { type: 'banner' },
+    { type: 'list' },
+    { type: 'icon' },
+    { type: 'categories' },
+    { type: 'dishes' }
+  ])
+}

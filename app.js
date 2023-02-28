@@ -35,7 +35,7 @@ connectToDb()
 app.get('/', (req, res) => {
   const timerEventEmitter = req.app.get('emmiter')
   timerEventEmitter.emit('order_recived', 'ghgh')
-  return res.send({
+  return res.json({
     status: 'sucess',
     msg: 'Server Up And Running',
     version: 1.3
@@ -89,7 +89,7 @@ app.get('/file/:image', (req, res) => {
     fs.readFile(__dirname + '/uploads/' + image, function (err, content) {
       if (err) {
         res.writeHead(400, { 'Content-type': 'text/html' })
-        return res.send('No such image')
+        return res.json('No such image')
       } else {
         //specify the content type in the response will be an image
         res.writeHead(200, { 'Content-type': 'image/jpg' })
@@ -97,9 +97,9 @@ app.get('/file/:image', (req, res) => {
       }
     })
   } catch (error) {
-    return res.status(400).send({
+    return res.status(400).json({
       status: 'fail',
-      error,
+      error: error,
       msg: 'Something went wrong'
     })
   }
@@ -109,9 +109,9 @@ app.get('/file/:image', (req, res) => {
 // app.post("/file", multerMod.single("image"), async (req, res) => {
 //   try {
 //     const result = await cloudinary.uploader.upload(req.file.path);
-//     res.send(result)
+//     res.json(result)
 //   } catch (error) {
-//     return res.status(400).send({
+//     return res.status(400).json({
 //       status: "fail",
 //       error
 //     });

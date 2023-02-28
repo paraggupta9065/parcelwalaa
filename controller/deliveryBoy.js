@@ -13,15 +13,15 @@ exports.addDeliveryBoy = async (req, res) => {
 
     //Verify Otp
     if (!number) {
-      return res.status(404).send({ status: 'fail', msg: 'Number not found' })
+      return res.status(404).json({ status: 'fail', msg: 'Number not found' })
     }
     const otpFound = await otpModel.findOne({ number: number })
 
     if (!otpFound) {
-      return res.status(400).send({ status: 'fail', msg: 'Otp Not Sended Yet' })
+      return res.status(400).json({ status: 'fail', msg: 'Otp Not Sended Yet' })
     }
     if (otpFound.otpExpiry < Date.now) {
-      return res.status(400).send({ status: 'fail', msg: 'Otp expired' })
+      return res.status(400).json({ status: 'fail', msg: 'Otp expired' })
     }
     const isVerified = await otpFound.isValidatedOtp(otpCode)
 
@@ -30,7 +30,7 @@ exports.addDeliveryBoy = async (req, res) => {
     if (!isVerified) {
       const isVerifiedPlain = otpFound.otp == otpCode
       if (!isVerifiedPlain) {
-        return res.status(400).send({ status: 'fail', msg: 'Incorrect Otp' })
+        return res.status(400).json({ status: 'fail', msg: 'Incorrect Otp' })
       }
     }
     //Otp Verified
@@ -57,12 +57,12 @@ exports.addDeliveryBoy = async (req, res) => {
       !deliveryBoyData['upi'] ||
       !deliveryBoyData['bike_number']
     ) {
-      return res.status(400).send({ status: 'fail', msg: 'Incomplete Data.' })
+      return res.status(400).json({ status: 'fail', msg: 'Incomplete Data.' })
     }
 
     const deliveryBoy = await deliveryBoyModel.create(deliveryBoyData)
     const token = await userCreated.getJwtToken()
-    return res.status(201).send({
+    return res.status(201).json({
       status: 'sucess',
       token,
       msg: 'Delivery boy created sucessfully',
@@ -70,7 +70,7 @@ exports.addDeliveryBoy = async (req, res) => {
     })
   } catch (error) {
     console.log(error)
-    return res.status(400).send({
+    return res.status(400).json({
       status: 'fail',
       msg: 'Something Went Wrong',
       error
@@ -84,7 +84,7 @@ exports.getDeliveryBoy = async (req, res) => {
     isActive: { $ne: false },
     isOnline: { $ne: false }
   })
-  return res.status(200).send({
+  return res.status(200).json({
     status: 'sucess',
     msg: 'delivery boy fetched successfully',
 
@@ -101,7 +101,7 @@ exports.updateDeliveryBoy = async (req, res) => {
   if (!deliveryBoy) {
     return res
       .status(404)
-      .send({ status: 'fail', msg: 'Delivery boy not found.' })
+      .json({ status: 'fail', msg: 'Delivery boy not found.' })
   }
 
   deliveryBoy = await deliveryBoyModel.findByIdAndUpdate(
@@ -116,7 +116,7 @@ exports.updateDeliveryBoy = async (req, res) => {
 
   const updated = await deliveryBoyModel.findById(deliveryBoy._id)
 
-  return res.status(200).send({
+  return res.status(200).json({
     status: 'sucess',
     msg: 'Updated Sucessfully',
     deliveryBoy: updated
@@ -133,12 +133,12 @@ exports.deleteDeliveryBoy = async (req, res) => {
   if (!deliveryBoy) {
     return res
       .status(404)
-      .send({ status: 'fail', msg: 'Delivery Boy not found.' })
+      .json({ status: 'fail', msg: 'Delivery Boy not found.' })
   }
 
   res
     .status(200)
-    .send({ status: 'sucess', msg: 'Delivery Boy deleted successfully' })
+    .json({ status: 'sucess', msg: 'Delivery Boy deleted successfully' })
 }
 
 exports.deliveryBoyStatusUpdate = async (req, res) => {
@@ -149,7 +149,7 @@ exports.deliveryBoyStatusUpdate = async (req, res) => {
     { isOnline: isOnline }
   )
   const deliveryBoy = await deliveryBoyModel.findOne({ number: number })
-  return res.status(200).send({
+  return res.status(200).json({
     status: 'sucess',
     msg: 'delivery boy updated successfully',
     deliveryBoy: deliveryBoy
@@ -159,7 +159,7 @@ exports.deliveryBoyStatus = async (req, res) => {
   const number = req.user.number
 
   const deliveryBoy = await deliveryBoyModel.findOne({ number: number })
-  return res.status(200).send({
+  return res.status(200).json({
     status: 'sucess',
     msg: 'delivery boy found',
     isOnline: deliveryBoy.isOnline
@@ -174,7 +174,7 @@ exports.deliveryBoyAdminStatusUpdate = async (req, res) => {
     { isActive: isActive }
   )
   const deliveryBoy = await deliveryBoyModel.findOne({ number: number })
-  return res.status(200).send({
+  return res.status(200).json({
     status: 'sucess',
     msg: 'delivery boy updated successfully',
     deliveryBoy: deliveryBoy
@@ -186,15 +186,13 @@ exports.isVerified = async (req, res) => {
 
   const driver = await deliveryBoyModel.findOne({ user_id: id })
   if (!driver) {
-    res.status(404).send({ status: 'fail', msg: 'You are not a driver' })
+    res.status(404).json({ status: 'fail', msg: 'You are not a driver' })
   }
-  res
-    .status(200)
-    .send({
-      status: 'sucess',
-      msg: 'Verification status',
-      isVerified: driver.isVerified
-    })
+  res.status(200).json({
+    status: 'sucess',
+    msg: 'Verification status',
+    isVerified: driver.isVerified
+  })
 }
 exports.verifyDriver = async (req, res) => {
   const id = req.params.id
@@ -202,22 +200,22 @@ exports.verifyDriver = async (req, res) => {
     isVerified: true
   })
   if (!driver) {
-    res.status(404).send({ status: 'fail', msg: 'You are not a driver' })
+    res.status(404).json({ status: 'fail', msg: 'You are not a driver' })
   }
-  res.status(200).send({ status: 'sucess', msg: 'driver Verified' })
+  res.status(200).json({ status: 'sucess', msg: 'driver Verified' })
 }
 exports.getUnverifiedDriver = async (req, res) => {
   const drivers = await deliveryBoyModel.find({ isVerified: false })
   if (!drivers) {
-    res.status(404).send({ status: 'fail', msg: 'All driver Are Verified' })
+    res.status(404).json({ status: 'fail', msg: 'All driver Are Verified' })
   }
-  res.status(200).send({ status: 'sucess', msg: 'driver Fecthed', drivers })
+  res.status(200).json({ status: 'sucess', msg: 'driver Fecthed', drivers })
 }
 
 exports.getAsssignedOrder = async (req, res) => {
   const driver = await deliveryBoyModel.findOne({ user_id: req.user._id })
   if (!driver) {
-    return res.status(404).send({
+    return res.status(404).json({
       status: 'fail',
       msg: 'Driver not found'
     })
@@ -226,12 +224,12 @@ exports.getAsssignedOrder = async (req, res) => {
   const order = await orderModel.findOne({ driver_id: driver._id })
 
   if (!order) {
-    return res.status(200).send({
+    return res.status(200).json({
       status: 'sucess',
       msg: 'No order assigned'
     })
   }
-  return res.status(200).send({
+  return res.status(200).json({
     status: 'sucess',
     msg: 'Order and driver send',
     driver,
@@ -247,9 +245,9 @@ exports.setLocation = async (req, res) => {
     req.body
   )
   if (!driver) {
-    res.status(404).send({ status: 'fail', msg: 'All driver Are Verified' })
+    res.status(404).json({ status: 'fail', msg: 'All driver Are Verified' })
   }
-  res.status(200).send({ status: 'sucess', msg: 'driver Fecthed', driver })
+  res.status(200).json({ status: 'sucess', msg: 'driver Fecthed', driver })
 }
 
 exports.getDriverEarning = async (req, res) => {
@@ -267,14 +265,12 @@ exports.getDriverEarning = async (req, res) => {
   ])
 
   if (driverEarnings.length == 0) {
-    return res.status(404).send({ status: 'fail', msg: 'No Earning Found' })
+    return res.status(404).json({ status: 'fail', msg: 'No Earning Found' })
   }
-  return res
-    .status(200)
-    .send({
-      status: 'sucess',
-      msg: 'driver Fecthed',
-      driverEarnings,
-      driverEarning
-    })
+  return res.status(200).json({
+    status: 'sucess',
+    msg: 'driver Fecthed',
+    driverEarnings,
+    driverEarning
+  })
 }
