@@ -260,58 +260,63 @@ exports.updateQty = async (req, res) => {
   //
   //end
 
-  try {
-    const { productId, quantity } = req.body
-    const id = req.user._id
-    const cart = await cartModel.findOne({ user_id: id })
-    const product = await productModel.findOne(productId)
+  // try {
+  const { productId, quantity } = req.body
 
-    if (quantity < 1) {
-      let inventoryUpdate = new Array()
-      inventoryUpdate = cart.cart_inventory
-      inventoryUpdate.forEach(ele => {
-        if (ele.product == productId) {
-          removeItemAll(inventoryUpdate, ele)
-        }
-      })
-    }
+  const id = req.user._id
+  console.log(productId)
 
-    if (!cart) {
-      return res.status(404).json({
-        status: 'fail',
-        msg: 'Cart not found'
-      })
-    }
+  const cart = await cartModel.findOne({ user_id: id })
+  const product = await productModel.findById(productId)
 
-    let inventoryUpdate = []
+  if (quantity < 1) {
+    let inventoryUpdate = new Array()
     inventoryUpdate = cart.cart_inventory
-    inventory_index = inventoryUpdate.findIndex(
-      cart_inventory_item => cart_inventory_item.product == productId
-    )
-
-    inventoryUpdate[inventory_index] = {
-      quantity: quantity,
-      product: productId,
-      shop_id: product.shop_id
-    }
-
-    if (inventoryUpdate.length == 0) {
-      await cartModel.findByIdAndDelete(cart._id)
-    }
-    await cartModel.findByIdAndUpdate(cart._id, {
-      cart_inventory: inventoryUpdate
-    })
-
-    return res.status(201).json({
-      status: 'sucess',
-      msg: 'Product qty updated'
-    })
-  } catch (error) {
-    return res.status(400).json({
-      status: 'fail',
-      error: error,
-
-      msg: 'Something went wrong'
+    inventoryUpdate.forEach(ele => {
+      if (ele.product == productId) {
+        removeItemAll(inventoryUpdate, ele)
+      }
     })
   }
+
+  if (!cart) {
+    return res.status(404).json({
+      status: 'fail',
+      msg: 'Cart not found'
+    })
+  }
+
+  let inventoryUpdate = []
+  inventoryUpdate = cart.cart_inventory
+  inventory_index = inventoryUpdate.findIndex(
+    cart_inventory_item => cart_inventory_item.product == productId
+  )
+
+  inventoryUpdate[inventory_index] = {
+    quantity: quantity,
+    product: productId,
+    shop_id: product.shop_id
+  }
+
+  console.log(inventoryUpdate)
+  if (inventoryUpdate.length == 0) {
+    await cartModel.findByIdAndDelete(cart._id)
+  }
+
+  await cartModel.findByIdAndUpdate(cart._id, {
+    cart_inventory: inventoryUpdate
+  })
+
+  return res.status(201).json({
+    status: 'sucess',
+    msg: 'Product qty updated'
+  })
+  // } catch (error) {
+  //   return res.status(400).json({
+  //     status: 'fail',
+  //     error: error,
+
+  //     msg: 'Something went wrong'
+  //   })
+  // }
 }

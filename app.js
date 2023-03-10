@@ -27,6 +27,7 @@ const { EventEmitter } = require('events')
 const userModel = require('./model/user')
 const timerEventEmitter = new EventEmitter()
 const cloudinary = require('cloudinary')
+const mailSenderHelper = require('./utils/mailSender')
 
 //init start
 connectToDb()
@@ -83,27 +84,16 @@ app.use('/uploads', express.static('uploads'))
 //middleware use
 const fs = require('fs')
 const stream = require('stream')
-app.get('/file/:image', (req, res) => {
-  try {
-    const image = req.params.image
-    fs.readFile(__dirname + '/uploads/' + image, function (err, content) {
-      if (err) {
-        res.writeHead(400, { 'Content-type': 'text/html' })
-        return res.json('No such image')
-      } else {
-        //specify the content type in the response will be an image
-        res.writeHead(200, { 'Content-type': 'image/jpg' })
-        return res.end(content)
-      }
-    })
-  } catch (error) {
-    return res.status(400).json({
-      status: 'fail',
-      error: error,
-      msg: 'Something went wrong'
-    })
-  }
+
+const orderModel = require('./model/order')
+
+app.get('/test', async (req, res) => {
+  var order = await orderModel.findOne()
+
+  mailSenderHelper('parcelwalaa@gmail.com', order)
+  return res.send('upa and run')
 })
+
 // const multerMod = require("./middleware/multerMod");
 
 // app.post("/file", multerMod.single("image"), async (req, res) => {

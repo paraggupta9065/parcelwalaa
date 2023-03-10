@@ -5,6 +5,7 @@ const shopModel = require('../model/shop')
 const user = require('../model/user')
 const admin = require('firebase-admin')
 const { json } = require('express')
+const mailSenderHelper = require('../utils/mailSender')
 
 exports.initPayment = async (req, res) => {
   const cart = await cartModel.findOne({ number: req.user.number })
@@ -130,6 +131,7 @@ exports.sucessPayment = async (req, res) => {
     await cartModel.findOneAndDelete({ user_id: req.user._id })
 
     //message to customer
+    await mailSenderHelper('parcelwalaa@gmail.com', order)
     return res
       .status(200)
       .send({ status: 'sucess', order, msg: 'order created and cart deleted' })

@@ -108,7 +108,7 @@ exports.getCoupons = async (req, res) => {
 
   return res.status(200).json({
     status: 'sucess',
-    msg: 'Fetched all coupons of a shop',
+    msg: 'Fetched all coupons ',
     coupons
   })
 }
@@ -126,6 +126,9 @@ exports.getCouponsAdmin = async (req, res) => {
 exports.applyCoupon = async (req, res) => {
   const { couponId } = req.body
   let cart = await cartModel.findOne({ user: req.user._id })
+  const coupon = await couponModel.findById(couponId)
+  console.log(coupon)
+
   await cartModel.findByIdAndUpdate(cart._id, {
     coupon_code_id: couponId
   })
