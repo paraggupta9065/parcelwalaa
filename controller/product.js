@@ -86,13 +86,15 @@ exports.searchProducts = async (req, res) => {
 // filter products
 exports.filterProducts = async (req, res) => {
   const body = req.body
-  console.log(body)
   let products = new Array()
+
   if (body['veg_type'] == 'low to high') {
     products = await productModel.find(body)
   } else {
     products = await productModel.find(body).sort({ price: 'ascending' })
   }
+
+  // console.log(products)
 
   if (!products) {
     return res.status(404).json({ status: 'fail', msg: 'No products found.' })
