@@ -58,6 +58,7 @@ exports.addToCart = async (req, res) => {
       cart: cart
     })
   }
+  total_gst = cart.total_gst
   inventory_total_amt = cart['inventory_total_amt'] + product.price
 
   delivery_total_amt = delivery_total_amt + shop.delivery_charges
@@ -65,6 +66,7 @@ exports.addToCart = async (req, res) => {
     const coupon = await couponModel.findById(coupon_code_id)
     discount_amt = (product.price / 100) * coupon.percentage_discount
   }
+
   total_gst = total_gst + ((product.price - discount_amt) / 100) * 5
   net_amt =
     net_amt +
@@ -238,73 +240,87 @@ function removeItemAll (arr, value) {
 }
 
 exports.updateQty = async (req, res) => {
-  // const { productId, quantity } = req.body;
-  // const id = req.user._id;
-  // let cart = await cartModel.findOne({ user_id: id });
-  // console.log(productId)
-
-  // await cartModel.findByIdAndUpdate({
-  //   "user_id": id, "cart_inventory.product": mongoose.Types.ObjectId(productId)
-  // },
-  //   {
-  //     '$set': {
-  //       'cart_inventory.$.quantity': quantity,
-  //     }
-  //   }
-  // );
-  // cart = await cartModel.findOne({ user_id: id });
-  //
-  //
-  //
-  //
-  //
-  //end
-
   // try {
   const { productId, quantity } = req.body
 
   const id = req.user._id
-  console.log(productId)
 
-  const cart = await cartModel.findOne({ user_id: id })
-  const product = await productModel.findById(productId)
-
-  if (quantity < 1) {
-    let inventoryUpdate = new Array()
-    inventoryUpdate = cart.cart_inventory
-    inventoryUpdate.forEach(ele => {
-      if (ele.product == productId) {
-        removeItemAll(inventoryUpdate, ele)
-      }
-    })
-  }
-
+  let cart = await cartModel.findOne({ user_id: id })
   if (!cart) {
     return res.status(404).json({
       status: 'fail',
       msg: 'Cart not found'
     })
   }
+  const product = await productModel.findById(productId)
 
-  let inventoryUpdate = []
+  let inventoryUpdate = Array()
+
   inventoryUpdate = cart.cart_inventory
+
   inventory_index = inventoryUpdate.findIndex(
-    cart_inventory_item => cart_inventory_item.product == productId
+    cart_inventory_item => cart_inventory_item.product._id == productId
   )
 
+  let inventory_total_amt = cart.inventory_total_amt
+  let total_gst = cart.total_gst
+  let net_amt = 0
+  let discount_amt = 0
+  let delivery_total_amt = cart.delivery_total_amt
+  if (quantity == 0) {
+    inventoryUpdate.splice(inventory_index)
+    if (inventoryUpdate.length == 0) {
+      await cartModel.findByIdAndDelete(cart._id)
+    }
+    inventory_total_amt = inventory_total_amt - product.price
+    total_gst = total_gst - ((product.price - discount_amt) / 100) * 5
+
+    net_amt =
+      inventory_total_amt + delivery_total_amt - discount_amt + total_gst
+    await cartModel.findByIdAndUpdate(cart._id, {
+      cart_inventory: inventoryUpdate,
+      inventory_total_amt,
+      total_gst,
+      net_amt,
+      delivery_total_amt
+    })
+    return res.status(201).json({
+      status: 'sucess',
+      msg: 'Product qty updated'
+    })
+  }
+
+  let oldQty = inventoryUpdate[inventory_index]['quantity']
   inventoryUpdate[inventory_index] = {
     quantity: quantity,
     product: productId,
     shop_id: product.shop_id
   }
-
-  console.log(inventoryUpdate)
+  if (oldQty < quantity) {
+    inventory_total_amt = inventory_total_amt + product.price
+    total_gst = total_gst + ((product.price - discount_amt) / 100) * 5
+    net_amt =
+      inventory_total_amt + delivery_total_amt - discount_amt + total_gst
+  } else if (oldQty > quantity) {
+    inventory_total_amt = inventory_total_amt - product.price
+    total_gst = total_gst - ((product.price - discount_amt) / 100) * 5
+    net_amt =
+      inventory_total_amt + delivery_total_amt - discount_amt + total_gst
+  }
   if (inventoryUpdate.length == 0) {
     await cartModel.findByIdAndDelete(cart._id)
+    return res.status(201).json({
+      status: 'sucess',
+      msg: 'cart  deleted'
+    })
   }
 
-  await cartModel.findByIdAndUpdate(cart._id, {
-    cart_inventory: inventoryUpdate
+  cart = await cartModel.findByIdAndUpdate(cart._id, {
+    cart_inventory: inventoryUpdate,
+    inventory_total_amt,
+    total_gst,
+    net_amt,
+    delivery_total_amt
   })
 
   return res.status(201).json({

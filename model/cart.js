@@ -1,72 +1,72 @@
-const mongoose = require("mongoose");
+const mongoose = require('mongoose')
 
 const CartModel = mongoose.Schema({
   inventory_total_amt: {
     type: Number,
     default: 0,
-    required: [true, "Please provide inventory total amount"],
+    required: [true, 'Please provide inventory total amount']
   },
   delivery_total_amt: {
     type: Number,
     default: 0,
-    required: [true, "Please provide delivery total amount"],
+    required: [true, 'Please provide delivery total amount']
   },
   coupon_code_id: {
     type: String,
-    default: "na",
+    default: 'na'
   },
   discount_amt: {
     type: Number,
-    default: 0,
+    default: 0
   },
   net_amt: {
     type: Number,
     default: 0,
-    required: [true, "Please provide the total amount to be paid."],
+    required: [true, 'Please provide the total amount to be paid.']
   },
 
   pickup_address_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Address",
+    ref: 'Address'
     // required: [true, "Please provide delivery address."],
   },
   delivery_address_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Address",
-    required: [true, "Please provide delivery address."],
+    ref: 'Address',
+    required: [true, 'Please provide delivery address.']
   },
   cart_inventory: [
     {
       quantity: {
         type: Number,
-        default: 1,
+        default: 1
       },
       product: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: "Product",
+        ref: 'Product',
         required: true,
+        autopopulate: true
       },
       shop_id: {
-        ref: "Shop",
+        ref: 'Shop',
         type: mongoose.Schema.Types.ObjectId,
         autopopulate: true,
 
-        required: [true, "Please provide pickup address."],
-      },
-    },
+        required: [true, 'Please provide pickup address.']
+      }
+    }
   ],
   total_gst: {
     type: Number,
     default: 0,
-    required: [true, "Please provide total GST."],
+    required: [true, 'Please provide total GST.']
   },
   user_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
-    required: true,
-  },
-});
-CartModel.plugin(require('mongoose-autopopulate'));
+    ref: 'User',
+    required: true
+  }
+})
+CartModel.plugin(require('mongoose-autopopulate'))
 
-
-module.exports = mongoose.model("Cart", CartModel);
+module.exports = mongoose.model('Cart', CartModel)
