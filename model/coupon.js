@@ -37,6 +37,10 @@ const CouponSchema = mongoose.Schema({
     default: 1,
     required: [true, 'Please provide max number of times.']
   },
+  max_no_time_used: {
+    type: Number,
+    default: 0
+  },
   max_no_of_times_per_user: {
     type: Number,
     default: 1,

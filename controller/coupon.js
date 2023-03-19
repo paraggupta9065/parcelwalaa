@@ -104,7 +104,21 @@ exports.deleteCoupon = async (req, res) => {
 }
 
 exports.getCoupons = async (req, res) => {
-  const coupons = await couponModel.find()
+  let today = Date.now()
+
+  const user = req.user
+
+  const cart = await cartModel.findOne({ user_id: user._id })
+
+  const net_amt = cart.net_amt
+
+  const coupons = await couponModel.find({
+    valid_from: { $lt: today },
+    valid_to: { $gt: today },
+    min_cart_value: { $lt: net_amt },
+    is_active: true,
+    $expr: { $gt: ['$max_no_times', '$max_no_time_used'] }
+  })
 
   return res.status(200).json({
     status: 'sucess',
@@ -127,14 +141,37 @@ exports.applyCoupon = async (req, res) => {
   const { couponId } = req.body
   let cart = await cartModel.findOne({ user: req.user._id })
   const coupon = await couponModel.findById(couponId)
-  console.log(coupon)
+  if (cart.coupon_code_id != 'na') {
+    return res.status(200).json({
+      status: 'sucess',
+      msg: 'coupon already applyed'
+    })
+  }
 
-  await cartModel.findByIdAndUpdate(cart._id, {
-    coupon_code_id: couponId
-  })
+  let gross_total = cart.gross_total
+  let net_amt = 0
+  let percentage_discount = coupon.percentage_discount
+  let max_discount = coupon.percentage_discount
+  let discount_amt = percentage_discount * (gross_total / 100)
+
+  if (discount_amt => max_discount) {
+    discount_amt = max_discount
+  }
+  net_amt = gross_total - discount_amt
+  // total_gst = ((inventory_total_amt - discount_amt) / 100) * 5
+  cart = await cartModel.findByIdAndUpdate(
+    cart._id,
+    {
+      coupon_code_id: coupon.coupon_code,
+      discount_amt,
+      net_amt
+    },
+    { new: true }
+  )
 
   return res.status(200).json({
     status: 'sucess',
-    msg: 'coupon applyed'
+    msg: 'coupon applyed',
+    cart
   })
 }
