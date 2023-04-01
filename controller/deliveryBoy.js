@@ -159,6 +159,7 @@ exports.deliveryBoyStatus = async (req, res) => {
   const number = req.user.number
 
   const deliveryBoy = await deliveryBoyModel.findOne({ number: number })
+
   return res.status(200).json({
     status: 'sucess',
     msg: 'delivery boy found',

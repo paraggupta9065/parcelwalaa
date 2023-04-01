@@ -139,8 +139,11 @@ exports.getCouponsAdmin = async (req, res) => {
 
 exports.applyCoupon = async (req, res) => {
   const { couponId } = req.body
+  console.log(couponId)
   let cart = await cartModel.findOne({ user: req.user._id })
   const coupon = await couponModel.findById(couponId)
+
+  console.log(cart)
   if (cart.coupon_code_id != 'na') {
     return res.status(200).json({
       status: 'sucess',

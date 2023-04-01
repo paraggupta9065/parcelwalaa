@@ -290,9 +290,7 @@ exports.updateQty = async (req, res) => {
       console.log(discount_amt)
     }
 
-    // total_gst = total_gst + ((product.price - discount_amt) / 100) * 5
     net_amt = gross_total - discount_amt
-    console.log(net_amt)
   } else if (oldQty > quantity) {
     inventory_total_amt = inventory_total_amt - product.price
     gross_total = gross_total - product.price

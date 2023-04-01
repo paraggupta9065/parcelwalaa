@@ -11,6 +11,14 @@ exports.addShops = async (req, res) => {
   // const { otpCode,number, store_name, email, address_line1, admin_commission_rate,city,pincode, state, fssai ,deliveryCharges} = req.body;
   const shopData = req.body
   const { number, store_name, otpCode } = shopData
+
+  const userFindd = await userModel.findOne({ number })
+  if (userFindd) {
+    return res.status(201).json({
+      status: 'fail',
+      msg: `${userFindd.role} existed with this number`
+    })
+  }
   //Verify Otp
   if (!number) {
     return res.status(404).json({ status: 'fail', msg: 'Number not found' })
@@ -55,15 +63,13 @@ exports.addShops = async (req, res) => {
   shopData['banner'] = banner
   const shop = await shopModel.create(shopData)
   const token = await userCreated.getJwtToken()
-  res
-    .status(201)
-    .json({
-      status: 'sucess',
-      msg: 'shop added successfully',
-      shop: shop,
-      user: userCreated,
-      token
-    })
+  res.status(201).json({
+    status: 'sucess',
+    msg: 'shop added successfully',
+    shop: shop,
+    user: userCreated,
+    token
+  })
   // } catch (error) {
   //   return res.status(400).json({
   //     status: "fail",
@@ -170,13 +176,11 @@ exports.isVerified = async (req, res) => {
     if (!shop) {
       res.status(404).json({ status: 'fail', msg: 'You are not a vendor' })
     }
-    res
-      .status(200)
-      .json({
-        status: 'sucess',
-        msg: 'Verification status',
-        isVerified: shop.isVerified
-      })
+    res.status(200).json({
+      status: 'sucess',
+      msg: 'Verification status',
+      isVerified: shop.isVerified
+    })
   } catch (error) {
     res.status(400).json({
       status: 'fail',
@@ -238,21 +242,19 @@ exports.getCategories = async (req, res) => {
   if (!shop) {
     res.status(404).json({ status: 'fail', msg: 'Shop not found' })
   }
-  return res
-    .status(200)
-    .json({
-      status: 'sucess',
-      msg: 'Order Fetched',
-      shopCategories: shop.categories,
-      categories
-    })
+  return res.status(200).json({
+    status: 'sucess',
+    msg: 'Order Fetched',
+    shopCategories: shop.categories,
+    categories
+  })
 }
 exports.getShopByCategories = async (req, res) => {
   let body = req.body
   body['isActive'] = { $ne: false }
   body['isOnline'] = { $ne: false }
-  console.log(body)
 
   const shops = await shopModel.find(req.body)
+  console.log(shops)
   return res.status(200).json({ status: 'sucess', msg: 'Shop Fetched', shops })
 }

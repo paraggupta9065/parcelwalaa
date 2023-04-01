@@ -156,6 +156,7 @@ exports.updateStatus = async (req, res) => {
       status: status,
       delivery_address_id: orders.delivery_address_id
     })
+    console.log(orders)
     await ordersModel.findByIdAndDelete(orders._id)
     await deliveryBoyModel.findByIdAndUpdate(orders['driver_id'], {
       isAvailable: true

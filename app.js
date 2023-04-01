@@ -1,5 +1,6 @@
 const express = require('express')
 const connectToDb = require('./utils/connectToDb')
+const connectToSocket = require('./utils/socket')
 const app = express()
 
 // Routes
@@ -31,15 +32,26 @@ const mailSenderHelper = require('./utils/mailSender')
 
 //init start
 connectToDb()
+
 //init end
 
 app.get('/', (req, res) => {
-  const timerEventEmitter = req.app.get('emmiter')
-  timerEventEmitter.emit('order_recived', 'ghgh')
   return res.json({
     status: 'sucess',
     msg: 'Server Up And Running',
     version: 1.3
+  })
+})
+
+app.get('/n', async (req, res) => {
+  let orderf = await orderModel.findOne()
+
+  timerEventEmitter.emit('order_recived', {
+    order: orderf._id,
+    driver_id: '642537609942d6b2c4e9b441'
+  })
+  return res.json({
+    status: 'sucess'
   })
 })
 

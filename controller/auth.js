@@ -77,7 +77,15 @@ exports.sendOtp = async (req, res) => {
 
   const data = await response.json()
   console.log(data)
+
   if (data['error'] != null) {
+    if (data['error']['code'] == 100) {
+      return res.status(400).json({
+        status: 'fail',
+        error: data['error'],
+        msg: 'Unabe to found on whatsapp'
+      })
+    }
     return res.status(400).json({
       status: 'fail',
       error: data['error'],

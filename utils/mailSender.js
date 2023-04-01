@@ -51,6 +51,9 @@ async function mailSenderHelper (email, order) {
     User Details:
     Name:${order.user_id.name}
     Phone Number: ${order.user_id.number}
+    Item Total: ${order.inventory_total_amt}
+    Delivery Charges: ${order.delivery_total_amt}
+    Total: ${order.net_amt}
     
     Please ensure that the order is prepared and delivered to the user at the designated address in a timely manner. If you have any questions or concerns regarding this order, please do not hesitate to contact us.
     

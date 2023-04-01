@@ -71,6 +71,8 @@ exports.sucessPayment = async (req, res) => {
       })
     }
 
+    await cartModel.findOneAndDelete({ user_id: req.user._id })
+
     order = await orderModel
       .findOne({ user_id: cart.user_id })
       .populate('user_id')
@@ -127,8 +129,6 @@ exports.sucessPayment = async (req, res) => {
         msg: 'order created and Notification not send'
       })
     }
-
-    await cartModel.findOneAndDelete({ user_id: req.user._id })
 
     //message to customer
     await mailSenderHelper('parcelwalaa@gmail.com', order)
