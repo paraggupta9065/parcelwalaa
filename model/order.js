@@ -35,8 +35,7 @@ const OrderSchema = mongoose.Schema({
   delivery_address_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Address',
-    autopopulate: true,
-    required: [true, 'Please provide delivery address']
+    autopopulate: true
   },
   driver_id: {
     type: mongoose.Schema.Types.ObjectId,
@@ -115,6 +114,10 @@ const OrderSchema = mongoose.Schema({
   },
   distance: {
     type: Number
+  },
+  point: {
+    type: Number,
+    default: 1
   }
 })
 

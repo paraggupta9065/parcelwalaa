@@ -54,7 +54,7 @@ async function mailSenderHelper (email, order) {
     
     Order Number: ${order._id}
     Order Date: ${order.date_created}
-    Delivery Address: ${order.delivery_address_id.line1}
+    Delivery Address: Kanopy ${order.point}
     Order Type:  ${order.order_type}
     
     

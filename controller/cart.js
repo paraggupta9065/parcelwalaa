@@ -178,32 +178,16 @@ exports.updateCart = async (req, res) => {
     const cartData = req.body
     const id = req.user._id
 
-    if (
-      !cartData['inventory_total_amt'] ||
-      !cartData['delivery_total_amt'] ||
-      !cartData['discount_amt'] ||
-      !cartData['net_amt'] ||
-      !cartData['pickup_address_id'] ||
-      !cartData['delivery_address_id'] ||
-      !cartData['cart_inventory']
-    ) {
-      return res.status(400).json({
-        status: 'fail',
-        msg: 'Please provide all the fields'
-      })
-    }
-
-    await cartModel.findOneAndUpdate(id, cartData)
-    const cart = await cartModel.findById(id)
+    await cartModel.findOneAndUpdate({ user_id: id }, cartData)
 
     return res.status(200).json({
       status: 'sucess',
-      msg: 'cartModel Updated',
-      cart: cart
+      msg: 'cartModel Updated'
     })
   } catch (error) {
+    console.log(error)
     return res.status(200).json({
-      status: 'sucess',
+      status: 'fail',
       error: error,
 
       msg: 'Something went wrong'
@@ -244,6 +228,12 @@ exports.updateQty = async (req, res) => {
       inventoryUpdate.splice(inventory_index)
       if (inventoryUpdate.length == 0) {
         await cartModel.findByIdAndDelete(cart._id)
+        res.status(201).json({
+          status: 'sucess',
+
+          msg: 'Cart Deleted',
+          code: 0
+        })
       }
       inventory_total_amt = inventory_total_amt - product.price
       gross_total = gross_total - product.price

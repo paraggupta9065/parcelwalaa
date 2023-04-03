@@ -42,10 +42,9 @@ exports.getOrdersShops = async (req, res) => {
 exports.getOrder = async (req, res) => {
   try {
     const id = req.params.id
-    const orders = await ordersModel
-      .findById(id)
-      .populate('delivery_address_id')
-      .populate('user_id')
+    const orders = await ordersModel.findById(id).populate('user_id')
+
+    // .populate('delivery_address_id')
     if (!orders) {
       return res.status(404).json({
         status: 'fail',
@@ -206,8 +205,8 @@ exports.updateStatus = async (req, res) => {
       user_id: orders.user_id,
       transaction_id: orders.transaction_id,
       amount_paid: orders.amount_paid,
-      status: status,
-      delivery_address_id: orders.delivery_address_id
+      status: status
+      // delivery_address_id: orders.delivery_address_id
     })
     await ordersModel.findByIdAndDelete(orders._id)
     await deliveryBoyModel.findByIdAndUpdate(orders['driver_id'], {
@@ -246,86 +245,86 @@ exports.updateStatus = async (req, res) => {
     const shop = await shopModel.findById(orders.order_inventory[0].shop_id._id)
     const shopLat = shop.lat
     const shopLong = shop.long
-    const drivers = await deliveryBoyModel.find({
-      pincode: shop.pincode,
-      isActive: true,
-      isOnline: true,
-      isAvailable: true
-    })
+    // const drivers = await deliveryBoyModel.find({
+    //   pincode: shop.pincode,
+    //   isActive: true,
+    //   isOnline: true,
+    //   isAvailable: true
+    // })
 
-    if (drivers.length == 0) {
-      return res.status(404).json({
-        status: 'fail',
-        msg: 'No driver nearby found'
-      })
-    }
-    let driverLat = drivers[0].lat
-    let driverLong = drivers[0].long
-    let nearestDriver = drivers[0].user_id
-    let driver = drivers[0]
-    let shortestDistance = getDistance(
-      { latitude: String(shopLat), longitude: String(shopLong) },
-      { latitude: String(driverLat), longitude: String(driverLong) }
-    )
-    if (!drivers) {
-      return res.status(404).json({
-        status: 'fail',
-        msg: 'No driver nearby found'
-      })
-    }
-    drivers.forEach(async driverEle => {
-      driverLat = driverEle.lat
-      driverLong = driverEle.long
-      const distance = getDistance(
-        { latitude: String(shopLat), longitude: String(shopLong) },
-        { latitude: String(driverLat), longitude: String(driverLong) }
-      )
-      if (shortestDistance > distance) {
-        shortestDistance = distance
-        nearestDriver = driverEle.user_id
-        driver = driverEle
-      }
-    })
+    // if (drivers.length == 0) {
+    //   return res.status(404).json({
+    //     status: 'fail',
+    //     msg: 'No driver nearby found'
+    //   })
+    // }
+    // let driverLat = drivers[0].lat
+    // let driverLong = drivers[0].long
+    // let nearestDriver = drivers[0].user_id
+    // let driver = drivers[0]
+    // let shortestDistance = getDistance(
+    //   { latitude: String(shopLat), longitude: String(shopLong) },
+    //   { latitude: String(driverLat), longitude: String(driverLong) }
+    // )
+    // if (!drivers) {
+    //   return res.status(404).json({
+    //     status: 'fail',
+    //     msg: 'No driver nearby found'
+    //   })
+    // }
+    // drivers.forEach(async driverEle => {
+    //   driverLat = driverEle.lat
+    //   driverLong = driverEle.long
+    //   const distance = getDistance(
+    //     { latitude: String(shopLat), longitude: String(shopLong) },
+    //     { latitude: String(driverLat), longitude: String(driverLong) }
+    //   )
+    //   if (shortestDistance > distance) {
+    //     shortestDistance = distance
+    //     nearestDriver = driverEle.user_id
+    //     driver = driverEle
+    //   }
+    // })
 
-    //distance calculation
-    let distanceCal = 0
+    // //distance calculation
+    // let distanceCal = 0
 
-    var origins = [`${driver.lat},${driver.long}`]
-    var destinations = []
+    // var origins = [`${driver.lat},${driver.long}`]
+    // var destinations = []
 
-    orders.order_inventory.forEach(element => {
-      const latShop = element.shop_id.lat
-      const longShop = element.shop_id.long
-      destinations.push(`${latShop},${longShop}`)
-    })
+    // orders.order_inventory.forEach(element => {
+    //   const latShop = element.shop_id.lat
+    //   const longShop = element.shop_id.long
+    //   destinations.push(`${latShop},${longShop}`)
+    // })
 
-    destinations.push(
-      `${orders.delivery_address_id.lat},${orders.delivery_address_id.long}`
-    )
+    // destinations.push(
+    //   `${orders.delivery_address_id.lat},${orders.delivery_address_id.long}`
+    // )
 
-    distance.key('AIzaSyBlUJ62u91twMqphn4XG7PC__h6CkpvTZs')
+    // distance.key('AIzaSyBlUJ62u91twMqphn4XG7PC__h6CkpvTZs')
 
-    let distanceResponse
-    console.log(origins)
-    console.log(destinations)
+    // let distanceResponse
+    // console.log(origins)
+    // console.log(destinations)
 
-    distance.matrix(origins, destinations, function (err, distances) {
-      if (!err)
-        // console.log(distances['rows'][0]['elements']);
-        distanceResponse = distances['rows'][0]['elements']
-    })
-    await sleep(1000)
-    distanceResponse.forEach(element => {
-      console.log(element)
-      distanceCal += element['distance']['value']
-    })
-    await ordersModel
-      .findOneAndUpdate(
-        { _id: id },
-        { driver_id: driver._id, distance: distanceCal }
-      )
-      .catch(err => console.log(err))
-    const userDriver = await userModel.findOne({ _id: driver.user_id })
+    // distance.matrix(origins, destinations, function (err, distances) {
+    //   if (!err)
+    //     // console.log(distances['rows'][0]['elements']);
+    //     distanceResponse = distances['rows'][0]['elements']
+    // })
+    // await sleep(1000)
+    // distanceResponse.forEach(element => {
+    //   console.log(element)
+    //   distanceCal += element['distance']['value']
+    // })
+    // await ordersModel
+    //   .findOneAndUpdate(
+    //     { _id: id },
+    //     { driver_id: driver._id, distance: distanceCal }
+    //   )
+    //   .catch(err => console.log(err))
+    // const userDriver = await userModel.findOne({ _id: driver.user_id })
     // if (userDriver.tokens) {
     //   userDriver.tokens.forEach(async element => {
     //     try {

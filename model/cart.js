@@ -25,6 +25,11 @@ const CartModel = mongoose.Schema({
     required: [true, 'Please provide the total amount to be paid.']
   },
 
+  point: {
+    type: Number,
+    default: 1
+  },
+
   pickup_address_id: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Address'
@@ -32,8 +37,8 @@ const CartModel = mongoose.Schema({
   },
   delivery_address_id: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Address',
-    required: [true, 'Please provide delivery address.']
+    ref: 'Address'
+    // required: [true, 'Please provide delivery address.']
   },
   cart_inventory: [
     {
