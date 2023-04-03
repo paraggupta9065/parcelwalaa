@@ -47,6 +47,14 @@ app.get('/', async (req, res) => {
   })
 })
 
+app.get('/payment_key', async (req, res) => {
+  return res.json({
+    status: 'sucess',
+    msg: 'Server Up And Running',
+    key: 'rzp_test_lZfxBzlXvzKNjC'
+  })
+})
+
 cloudinary.config({
   cloud_name: 'parcelwalaa',
   api_key: '831894749651799',
