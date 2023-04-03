@@ -148,10 +148,10 @@ exports.getProduct = async (req, res) => {
 
 exports.getSearchProduct = async (req, res) => {
   const { key } = req.params
-  if (!key || key.length < 5) {
+  if (!key || key.length < 3) {
     return res
       .status(404)
-      .json({ status: 'fail', msg: 'Minimum 5 words required' })
+      .json({ status: 'fail', msg: 'Minimum 3 words required' })
   }
 
   const product = await productModel.find({

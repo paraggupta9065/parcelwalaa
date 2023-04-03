@@ -313,17 +313,22 @@ exports.updateQty = async (req, res) => {
       })
     }
 
-    cart = await cartModel.findByIdAndUpdate(cart._id, {
-      cart_inventory: inventoryUpdate,
-      inventory_total_amt,
-      net_amt,
-      gross_total,
-      discount_amt
-    })
+    cart = await cartModel.findByIdAndUpdate(
+      cart._id,
+      {
+        cart_inventory: inventoryUpdate,
+        inventory_total_amt,
+        net_amt,
+        gross_total,
+        discount_amt
+      },
+      { new: true }
+    )
 
     return res.status(201).json({
       status: 'sucess',
-      msg: 'Product qty updated'
+      msg: 'Product qty updated',
+      cart
     })
   } catch (error) {
     return res.status(400).json({
