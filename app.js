@@ -40,7 +40,7 @@ app.get('/', (req, res) => {
   return res.json({
     status: 'sucess',
     msg: 'Server Up And Running',
-    version: 1.3
+    version: 1.4
   })
 })
 
