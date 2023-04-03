@@ -20,14 +20,25 @@ async function mailSenderHelper (email, order) {
     orderitem.push(invStr)
   })
 
+  // var transporter = nodemailer.createTransport({
+  //   service: 'hostinger',
+  //   host: 'smtp.hostinger.com',
+  //   port: 465,
+  //   secure: true,
+  //   auth: {
+  //     user: 'order@vaininnovation.in',
+  //     pass: 'Qwertyuiop123@'
+  //   }
+  // })
+
   var transporter = nodemailer.createTransport({
-    service: 'hostinger',
-    host: 'smtp.hostinger.com',
-    port: 465,
+    service: 'aws',
+    host: 'email-smtp.ap-northeast-1.amazonaws.com',
+    port: 587,
     secure: true,
     auth: {
-      user: 'order@vaininnovation.in',
-      pass: 'Qwertyuiop123@'
+      user: 'AKIA6PQU4IQ5XHBPS5HQ',
+      pass: 'BEVc33+IrMYFaQb5VH2gg8R5CMeBnXXb/crEINKBRLCm'
     }
   })
 

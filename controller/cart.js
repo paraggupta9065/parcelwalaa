@@ -5,119 +5,119 @@ const couponModel = require('../model/coupon')
 const { default: mongoose } = require('mongoose')
 
 exports.addToCart = async (req, res) => {
-  try {
-    const { productId, delivery_address_id, coupon_code_id } = req.body
-    let inventory_total_amt = 0
-    let delivery_total_amt = 0
-    let discount_amt = 0
-    let net_amt = 0
-    let gross_total = 0
-    // let total_gst = 0
-    let cart = await cartModel.findOne({ user_id: req.user._id })
-    const product = await productModel.findById(productId)
-    const shop_id = product.shop_id
-    const shop = await shopModel.findById(shop_id)
-    if (!cart) {
-      delivery_total_amt = shop.delivery_charges
-      inventory_total_amt = product.price
-      gross_total = inventory_total_amt + delivery_total_amt
+  // try {
+  const { productId, delivery_address_id, coupon_code_id } = req.body
+  let inventory_total_amt = 0
+  let delivery_total_amt = 0
+  let discount_amt = 0
+  let net_amt = 0
+  let gross_total = 0
+  // let total_gst = 0
+  let cart = await cartModel.findOne({ user_id: req.user._id })
+  const product = await productModel.findById(productId)
+  const shop_id = product.shop_id
+  const shop = await shopModel.findById(shop_id)
+  if (!cart) {
+    delivery_total_amt = shop.delivery_charges
+    inventory_total_amt = product.price
+    gross_total = inventory_total_amt + delivery_total_amt
 
-      // total_gst = ((inventory_total_amt - discount_amt) / 100) * 5
-      net_amt = gross_total
-
-      let newCart = {
-        inventory_total_amt,
-        delivery_total_amt,
-        coupon_code_id,
-        discount_amt,
-        net_amt,
-        gross_total,
-        delivery_address_id,
-        cart_inventory: [
-          {
-            quantity: 1,
-            product: productId,
-            shop_id
-          }
-        ],
-        // total_gst,
-        user_id: req.user._id
-      }
-
-      cart = await cartModel.create(newCart)
-
-      return res.status(201).json({
-        status: 'sucess',
-        msg: 'Added To Cart',
-        cart: cart
-      })
-    }
-    // total_gst = cart.total_gst
-    inventory_total_amt = cart.inventory_total_amt + product.price
-    gross_total = gross_total + product.price
-
+    // total_gst = ((inventory_total_amt - discount_amt) / 100) * 5
     net_amt = gross_total
 
-    let updateCart = {
+    let newCart = {
       inventory_total_amt,
-      coupon_code_id: na,
-      discount_amt: 0,
+      delivery_total_amt,
+      coupon_code_id,
+      discount_amt,
       net_amt,
+      gross_total,
       delivery_address_id,
+      cart_inventory: [
+        {
+          quantity: 1,
+          product: productId,
+          shop_id
+        }
+      ],
       // total_gst,
-      user: req.user._id,
-      gross_total
+      user_id: req.user._id
     }
-    const findedProduct = await cartModel.find({
-      user_id: req.user._id,
-      cart_inventory: {
-        $elemMatch: {
+
+    cart = await cartModel.create(newCart)
+
+    return res.status(201).json({
+      status: 'sucess',
+      msg: 'Added To Cart',
+      cart: cart
+    })
+  }
+  // total_gst = cart.total_gst
+  inventory_total_amt = cart.inventory_total_amt + product.price
+  gross_total = gross_total + product.price
+
+  net_amt = gross_total
+
+  let updateCart = {
+    inventory_total_amt,
+    coupon_code_id: 'na',
+    discount_amt: 0,
+    net_amt,
+    delivery_address_id,
+    // total_gst,
+    user: req.user._id,
+    gross_total
+  }
+  const findedProduct = await cartModel.find({
+    user_id: req.user._id,
+    cart_inventory: {
+      $elemMatch: {
+        product: productId,
+        shop_id
+      }
+    }
+  })
+  if (!findedProduct) {
+    await cartModel.findOneAndUpdate(
+      {
+        _id: cart._id,
+        'cart_inventory.product': productId
+      },
+      {
+        $inc: {
+          'cart_inventory.0.quantity': 1
+        }
+      }
+    )
+    await cartModel.findByIdAndUpdate(cart._id, updateCart)
+  } else {
+    await cartModel.findByIdAndUpdate(cart._id, updateCart)
+    await cartModel.findByIdAndUpdate(cart._id, {
+      $push: {
+        cart_inventory: {
+          quantity: 1,
           product: productId,
           shop_id
         }
       }
     })
-    if (!findedProduct) {
-      await cartModel.findOneAndUpdate(
-        {
-          _id: cart._id,
-          'cart_inventory.product': productId
-        },
-        {
-          $inc: {
-            'cart_inventory.0.quantity': 1
-          }
-        }
-      )
-      await cartModel.findByIdAndUpdate(cart._id, updateCart)
-    } else {
-      await cartModel.findByIdAndUpdate(cart._id, updateCart)
-      await cartModel.findByIdAndUpdate(cart._id, {
-        $push: {
-          cart_inventory: {
-            quantity: 1,
-            product: productId,
-            shop_id
-          }
-        }
-      })
-    }
-
-    cart = await cartModel.findById(cart._id)
-
-    return res.status(200).json({
-      status: 'sucess',
-      msg: 'Added To Cart',
-      cart: cart
-    })
-  } catch (error) {
-    return res.status(400).json({
-      status: 'fail',
-      error,
-
-      msg: 'Something went wrong'
-    })
   }
+
+  cart = await cartModel.findById(cart._id)
+
+  return res.status(200).json({
+    status: 'sucess',
+    msg: 'Added To Cart',
+    cart: cart
+  })
+  // } catch (error) {
+  //   return res.status(400).json({
+  //     status: 'fail',
+  //     error,
+
+  //     msg: 'Something went wrong'
+  //   })
+  // }
 }
 
 exports.getCart = async (req, res) => {
