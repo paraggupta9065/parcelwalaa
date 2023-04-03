@@ -8,16 +8,24 @@ const { json } = require('express')
 const mailSenderHelper = require('../utils/mailSender')
 
 exports.initPayment = async (req, res) => {
-  const cart = await cartModel.findOne({ number: req.user.number })
-  if (!cart) {
-    return res.status(200).send({ status: 'fail', msg: 'Cart not found !' })
-  }
+  try {
+    const cart = await cartModel.findOne({ number: req.user.number })
+    if (!cart) {
+      return res.status(200).send({ status: 'fail', msg: 'Cart not found !' })
+    }
 
-  return res.status(200).send({
-    status: 'sucess',
-    cart,
-    payment_response: { merchentKey: '8319905007@apl' }
-  })
+    return res.status(200).send({
+      status: 'sucess',
+      cart,
+      payment_response: { merchentKey: '8319905007@apl' }
+    })
+  } catch (error) {
+    return res.status(400).json({
+      status: 'fail',
+      error: error,
+      msg: 'Something went wrong'
+    })
+  }
 }
 exports.sucessPayment = async (req, res) => {
   try {
@@ -72,6 +80,7 @@ exports.sucessPayment = async (req, res) => {
     }
 
     await cartModel.findOneAndDelete({ user_id: req.user._id })
+    await mailSenderHelper('parcelwalaa@gmail.com', order)
 
     order = await orderModel
       .findOne({ user_id: cart.user_id })
@@ -79,59 +88,59 @@ exports.sucessPayment = async (req, res) => {
       .populate({ path: 'order_inventory' })
     //send notification
 
-    try {
-      for (const index in order.order_inventory) {
-        const element = order.order_inventory[index]
+    // try {
+    //   for (const index in order.order_inventory) {
+    //     const element = order.order_inventory[index]
 
-        const vendor = await userModel.findOne({
-          number: element.shop_id.number
-        })
-        // message to vendor
+    //     const vendor = await userModel.findOne({
+    //       number: element.shop_id.number
+    //     })
+    //     // message to vendor
 
-        for (const token of vendor.tokens) {
-          const message = {
-            notification: {
-              title: 'New Order Received',
-              body: 'Order Received'
-            },
-            data: {
-              order: order._id.toString()
-            },
-            token: token.token
-          }
-          const vendorResp = await admin.messaging().send(message)
-        }
-      }
-    } catch (error) {
-      console.log(error)
-    }
+    //     for (const token of vendor.tokens) {
+    //       const message = {
+    //         notification: {
+    //           title: 'New Order Received',
+    //           body: 'Order Received'
+    //         },
+    //         data: {
+    //           order: order._id.toString()
+    //         },
+    //         token: token.token
+    //       }
+    //       const vendorResp = await admin.messaging().send(message)
+    //     }
+    //   }
+    // } catch (error) {
+    //   console.log(error)
+    // }
 
     //message to vendor
     // message to customer
 
-    const messageCustomer = {
-      notification: {
-        title: 'New Order Received',
-        body: 'Order Received'
-      },
-      data: {
-        order: JSON.stringify(order)
-      },
-      token: req.user.fmc_token
-    }
-    let customerPesp
-    try {
-      customerPesp = await admin.messaging().send(messageCustomer)
-    } catch (error) {
-      return res.status(200).send({
-        status: 'sucess',
-        order,
-        msg: 'order created and Notification not send'
-      })
-    }
+    // const messageCustomer = {
+    //   notification: {
+    //     title: 'New Order Received',
+    //     body: 'Order Received'
+    //   },
+    //   data: {
+    //     order: JSON.stringify(order)
+    //   },
+    //   token: req.user.fmc_token
+    // }
+    // let customerPesp
+    // try {
+    //   customerPesp = await admin.messaging().send(messageCustomer)
+    // } catch (error) {
+    //   return res.status(200).send({
+    //     status: 'sucess',
+    //     order,
+    //     msg: 'order created and Notification not send'
+    //   })
+    // }
 
     //message to customer
-    await mailSenderHelper('parcelwalaa@gmail.com', order)
+
     return res
       .status(200)
       .send({ status: 'sucess', order, msg: 'order created and cart deleted' })

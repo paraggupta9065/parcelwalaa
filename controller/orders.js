@@ -11,89 +11,139 @@ const distance = require('google-distance-matrix')
 const deliveryBoyEarning = require('../model/deliveryBoyEarning')
 
 exports.getOrdersShops = async (req, res) => {
-  const id = req.params.id
+  try {
+    const id = req.params.id
 
-  const orders = await ordersModel.find({ 'order_inventory.shop_id': id })
-  if (orders.length == 0) {
-    return res.status(404).json({
+    const order_type = req.body.order_type
+    console.log(order_type)
+
+    const orders = await ordersModel.find({
+      'order_inventory.shop_id': id,
+      order_type
+    })
+    if (orders.length == 0) {
+      return res.status(404).json({
+        status: 'fail',
+        msg: 'Order Not Found'
+      })
+    }
+    return res.status(200).json({
+      status: 'sucess',
+      orders
+    })
+  } catch (error) {
+    return res.status(400).json({
       status: 'fail',
-      msg: 'Order Not Found'
+      error: error,
+      msg: 'Something went wrong'
     })
   }
-  return res.status(200).json({
-    status: 'sucess',
-    orders
-  })
 }
 exports.getOrder = async (req, res) => {
-  const id = req.params.id
-  const orders = await ordersModel
-    .findById(id)
-    .populate('delivery_address_id')
-    .populate('user_id')
-  if (!orders) {
-    return res.status(404).json({
+  try {
+    const id = req.params.id
+    const orders = await ordersModel
+      .findById(id)
+      .populate('delivery_address_id')
+      .populate('user_id')
+    if (!orders) {
+      return res.status(404).json({
+        status: 'fail',
+        msg: 'Order Not Found'
+      })
+    }
+    return res.status(200).json({
+      status: 'sucess',
+      orders
+    })
+  } catch (error) {
+    return res.status(400).json({
       status: 'fail',
-      msg: 'Order Not Found'
+      error: error,
+      msg: 'Something went wrong'
     })
   }
-  return res.status(200).json({
-    status: 'sucess',
-    orders
-  })
 }
 
 exports.getOrders = async (req, res) => {
-  const orders = await ordersModel.find()
-  if (orders.length == 0) {
-    return res.status(404).json({
+  try {
+    const order_type = req.body.order_type
+    console.log(order_type)
+    const orders = await ordersModel.find({ order_type })
+    if (orders.length == 0) {
+      return res.status(404).json({
+        status: 'fail',
+        msg: 'Order Not Found'
+      })
+    }
+
+    return res.status(200).json({
+      status: 'sucess',
+      orders
+    })
+  } catch (error) {
+    return res.status(400).json({
       status: 'fail',
-      msg: 'Order Not Found'
+      error: error,
+      msg: 'Something went wrong'
     })
   }
-
-  return res.status(200).json({
-    status: 'sucess',
-    orders
-  })
 }
 
 exports.getOrdersAdmin = async (req, res) => {
-  const orders = await ordersModel.find()
-  if (orders.length == 0) {
-    return res.status(404).json({
+  try {
+    const order_type = req.body.order_type
+    console.log(order_type)
+    const orders = await ordersModel.find({ order_type })
+    if (orders.length == 0) {
+      return res.status(404).json({
+        status: 'fail',
+        msg: 'Order Not Found'
+      })
+    }
+
+    return res.status(200).json({
+      status: 'sucess',
+      orders
+    })
+  } catch (error) {
+    return res.status(400).json({
       status: 'fail',
-      msg: 'Order Not Found'
+      error: error,
+      msg: 'Something went wrong'
     })
   }
-
-  return res.status(200).json({
-    status: 'sucess',
-    orders
-  })
 }
 exports.getOrderByCustomer = async (req, res) => {
-  const id = req.user._id
-  const order = await ordersModel.findOne({ user_id: id })
+  try {
+    const id = req.user._id
+    const order = await ordersModel.findOne({ user_id: id })
 
-  if (!order) {
-    return res.status(404).json({
-      status: 'notFound',
-      msg: 'Order Not Found'
+    if (!order) {
+      return res.status(404).json({
+        status: 'notFound',
+        msg: 'Order Not Found'
+      })
+    }
+
+    // if (order.status == 'prepared' || order.status == 'assigned' || order.status == 'delivered') {
+    //     const driver = await deliveryBoyModel
+    //     return res.status(404).json({
+    //         status: "notFound",
+    //         msg: "Order Not Found",
+    //     });
+    // }
+    return res.status(200).json({
+      status: 'sucess',
+      order
+    })
+  } catch (error) {
+    return res.status(400).json({
+      status: 'fail',
+      error: error,
+      msg: 'Something went wrong'
     })
   }
-
-  // if (order.status == 'prepared' || order.status == 'assigned' || order.status == 'delivered') {
-  //     const driver = await deliveryBoyModel
-  //     return res.status(404).json({
-  //         status: "notFound",
-  //         msg: "Order Not Found",
-  //     });
-  // }
-  return res.status(200).json({
-    status: 'sucess',
-    order
-  })
 }
 
 exports.updateStatus = async (req, res) => {
@@ -111,40 +161,43 @@ exports.updateStatus = async (req, res) => {
     })
   }
   // message to customer
-  if (user.tokens) {
-    user.tokens.forEach(async element => {
-      try {
-        const messageCustomer = {
-          notification: {
-            title: `Your Order Is ${status}`,
-            body: `Order ${status}`
-          },
-          data: {
-            status: status,
-            id: String(orders._id)
-          },
-          token: element.token
-        }
-        await admin.messaging().json(messageCustomer)
-      } catch (error) {
-        console.log(error)
-      }
-    })
-  }
+  // if (user.tokens) {
+  //   user.tokens.forEach(async element => {
+  //     try {
+  //       const messageCustomer = {
+  //         notification: {
+  //           title: `Your Order Is ${status}`,
+  //           body: `Order ${status}`
+  //         },
+  //         data: {
+  //           status: status,
+  //           id: String(orders._id)
+  //         },
+  //         token: element.token
+  //       }
+  //       await admin.messaging().json(messageCustomer)
+  //     } catch (error) {
+  //       console.log(error)
+  //     }
+  //   })
+  // }
   if (status == 'cancelled' || status == 'delivered') {
     orders['status'] = status
-    if (status != 'cancelled' && orders.driver_id != null) {
-      await deliveryBoyModel.findByIdAndUpdate(orders['driver_id'], {
-        isAvailable: true
-      })
-    }
+    console.log(status)
+    // if (status != 'cancelled' && orders.driver_id != null) {
+    //   await deliveryBoyModel.findByIdAndUpdate(orders['driver_id'], {
+    //     isAvailable: true
+    //   })
+    // }
 
-    const earning = (orders['distance'] / 1000) * orders.driver_id.perKm
-    await deliveryBoyEarning.create({
-      distanceCover: orders.distance,
-      user_id: orders.driver_id.user_id,
-      earning: earning
-    })
+    // const earning = (orders['distance'] / 1000) * orders.driver_id.perKm
+
+    // console.log(earning)
+    // await deliveryBoyEarning.create({
+    //   distanceCover: orders.distance,
+    //   user_id: orders.driver_id.user_id,
+    //   earning: earning
+    // })
 
     await previousOrderModel.create({
       order_note: orders.order_note,
@@ -156,7 +209,6 @@ exports.updateStatus = async (req, res) => {
       status: status,
       delivery_address_id: orders.delivery_address_id
     })
-    console.log(orders)
     await ordersModel.findByIdAndDelete(orders._id)
     await deliveryBoyModel.findByIdAndUpdate(orders['driver_id'], {
       isAvailable: true
@@ -168,23 +220,23 @@ exports.updateStatus = async (req, res) => {
     })
   } else if (status == 'prepared') {
     if (orders.order_type == 'takeaway') {
-      if (user.tokens) {
-        user.tokens.forEach(async element => {
-          try {
-            const messageCustomer = {
-              notification: {
-                title: `Your Order ${status}`,
-                body: `Your Order ${status} Is Ready For Pickup`
-              },
-              data: {},
-              token: element.token
-            }
-            const customerResp = await admin.messaging().json(messageCustomer)
-          } catch (error) {
-            console.log(error)
-          }
-        })
-      }
+      // if (user.tokens) {
+      //   user.tokens.forEach(async element => {
+      //     try {
+      //       const messageCustomer = {
+      //         notification: {
+      //           title: `Your Order ${status}`,
+      //           body: `Your Order ${status} Is Ready For Pickup`
+      //         },
+      //         data: {},
+      //         token: element.token
+      //       }
+      //       const customerResp = await admin.messaging().json(messageCustomer)
+      //     } catch (error) {
+      //       console.log(error)
+      //     }
+      //   })
+      // }
       return res.status(200).json({
         status: 'sucess',
         msg: 'Status Updated',
@@ -274,102 +326,104 @@ exports.updateStatus = async (req, res) => {
       )
       .catch(err => console.log(err))
     const userDriver = await userModel.findOne({ _id: driver.user_id })
-    if (userDriver.tokens) {
-      userDriver.tokens.forEach(async element => {
-        try {
-          console.log(element.token)
-          const messageDriver = {
-            notification: {
-              title: `Your Order Is ${status}`,
-              body: `Order ${status}`
-            },
-            data: {
-              status: status,
-              order: String(orders._id),
-              type: 'order'
-            },
-            token: element.token
-          }
-          await admin.messaging().json(messageDriver)
-        } catch (error) {
-          console.log(error)
-        }
-      })
-    }
+    // if (userDriver.tokens) {
+    //   userDriver.tokens.forEach(async element => {
+    //     try {
+    //       console.log(element.token)
+    //       const messageDriver = {
+    //         notification: {
+    //           title: `Your Order Is ${status}`,
+    //           body: `Order ${status}`
+    //         },
+    //         data: {
+    //           status: status,
+    //           order: String(orders._id),
+    //           type: 'order'
+    //         },
+    //         token: element.token
+    //       }
+    //       await admin.messaging().json(messageDriver)
+    //     } catch (error) {
+    //       console.log(error)
+    //     }
+    //   })
+    // }
 
     return res.status(200).json({
       status: 'sucess'
     })
   } else if (status == 'assignedAccepted') {
-    const userDriver = await deliveryBoyModel.findOne({ user_id: req.user._id })
+    const userDriver = await deliveryBoyModel.findOne({
+      user_id: req.user._id
+    })
     await deliveryBoyModel
       .findOneAndUpdate({ _id: userDriver._id }, { isAvailable: false })
       .catch(err => console.log(err))
-    if (user.tokens) {
-      user.tokens.forEach(async element => {
-        try {
-          const messageCustomer = {
-            notification: {
-              title: `Your Order Is ${status}`,
-              body: `Order ${status}`
-            },
-            data: {
-              status: status,
-              driver: String(userDriver)
-            },
-            token: element.token
-          }
-          await admin.messaging().json(messageCustomer)
-        } catch (error) {
-          console.log(error)
-        }
-      })
-    }
+    // if (user.tokens) {
+    //   user.tokens.forEach(async element => {
+    //     try {
+    //       const messageCustomer = {
+    //         notification: {
+    //           title: `Your Order Is ${status}`,
+    //           body: `Order ${status}`
+    //         },
+    //         data: {
+    //           status: status,
+    //           driver: String(userDriver)
+    //         },
+    //         token: element.token
+    //       }
+    //       await admin.messaging().json(messageCustomer)
+    //     } catch (error) {
+    //       console.log(error)
+    //     }
+    //   })
+    // }
     return res.status(200).json({
       status: 'sucess',
       msg: 'Status Updated'
     })
   } else if (status == 'pickedUp' || status == 'arrivedCustumer') {
     if (status == 'pickedUp') {
-      if (user.tokens) {
-        user.tokens.forEach(async element => {
-          try {
-            const messageCustomer = {
-              notification: {
-                title: `Your Order Is At Your Door Step`,
-                body: `Delivery Boy At Your Door Step`
-              },
-              data: {
-                status: status
-              },
-              token: element.token
-            }
-            const customerResp = await admin.messaging().json(messageCustomer)
-          } catch (error) {
-            console.log(error)
-          }
-        })
-      }
+      // if (user.tokens) {
+      //   user.tokens.forEach(async element => {
+      //     try {
+      //       const messageCustomer = {
+      //         notification: {
+      //           title: `Your Order Is At Your Door Step`,
+      //           body: `Delivery Boy At Your Door Step`
+      //         },
+      //         data: {
+      //           status: status
+      //         },
+      //         token: element.token
+      //       }
+      //       const customerResp = await admin.messaging().json(messageCustomer)
+      //     } catch (error) {
+      //       console.log(error)
+      //     }
+      //   })
+      // }
     } else if (status == 'arrivedCustumer') {
-      if (user.tokens) {
-        user.tokens.forEach(async element => {
-          try {
-            const messageCustomer = {
-              notification: {
-                title: `Your Order Is At Your Door Step`,
-                body: `Delivery Boy At Your Door Step`
-              },
-              data: {
-                status: status
-              },
-              token: element.token
-            }
-            const customerResp = await admin.messaging().json(messageCustomer)
-          } catch (error) {
-            console.log(error)
-          }
-        })
-      }
+      // if (user.tokens) {
+      //   user.tokens.forEach(async element => {
+      //     try {
+      //       const messageCustomer = {
+      //         notification: {
+      //           title: `Your Order Is At Your Door Step`,
+      //           body: `Delivery Boy At Your Door Step`
+      //         },
+      //         data: {
+      //           status: status
+      //         },
+      //         token: element.token
+      //       }
+      //       const customerResp = await admin.messaging().json(messageCustomer)
+      //     } catch (error) {
+      //       console.log(error)
+      //     }
+      //   })
+      // }
     }
 
     return res.status(200).json({
@@ -381,6 +435,11 @@ exports.updateStatus = async (req, res) => {
       status: 'sucess',
       msg: 'Status Updated'
     })
+  } else if (status == 'recived') {
+    return res.status(200).json({
+      status: 'sucess',
+      msg: 'Status Updated'
+    })
   }
   return res.status(200).json({
     status: 'fail',
@@ -388,14 +447,12 @@ exports.updateStatus = async (req, res) => {
   })
 
   // message to customer
-
   // } catch (error) {
-  //     return res.status(200).json({
-  //         status: "fail",
-  //         error,
-  //         msg: "Something went wrong"
-
-  //     });
+  //   return res.status(200).json({
+  //     status: 'fail',
+  //     error,
+  //     msg: 'Something went wrong'
+  //   })
   // }
 }
 

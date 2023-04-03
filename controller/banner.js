@@ -2,35 +2,35 @@ const bannerModel = require('../model/banner')
 const cloudinary = require('cloudinary').v2
 
 exports.addBanner = async (req, res) => {
-  // try {
-  const bannerData = ({ openType, isActive } = req.body)
+  try {
+    const bannerData = ({ openType, isActive } = req.body)
 
-  if (!openType || !isActive) {
+    if (!openType || !isActive) {
+      return res.status(400).json({
+        status: 'fail',
+        msg: 'Please provide all the fields'
+      })
+    }
+
+    const result = await cloudinary.uploader
+      .upload(req.file.path)
+      .catch(err => console.log(err))
+
+    bannerData['image'] = result['url']
+    bannerData['image_id'] = result['public_id']
+    const banner = await bannerModel.create(bannerData)
+
+    return res.status(201).json({
+      status: 'sucess',
+      banner: banner
+    })
+  } catch (error) {
     return res.status(400).json({
       status: 'fail',
-      msg: 'Please provide all the fields'
+      error,
+      msg: 'something went wrong'
     })
   }
-
-  const result = await cloudinary.uploader
-    .upload(req.file.path)
-    .catch(err => console.log(err))
-
-  bannerData['image'] = result['url']
-  bannerData['image_id'] = result['public_id']
-  const banner = await bannerModel.create(bannerData)
-
-  return res.status(201).json({
-    status: 'sucess',
-    banner: banner
-  })
-  // } catch (error) {
-  //   return res.status(400).json({
-  //     status: "fail",
-  //     error,
-  //     "msg": "something went wrong"
-  //   });
-  // }
 }
 
 exports.deleteBanner = async (req, res) => {

@@ -29,6 +29,7 @@ const userModel = require('./model/user')
 const timerEventEmitter = new EventEmitter()
 const cloudinary = require('cloudinary')
 const mailSenderHelper = require('./utils/mailSender')
+const errorHandler = require('./middleware/errorHandler')
 
 //init start
 connectToDb()
@@ -40,18 +41,6 @@ app.get('/', (req, res) => {
     status: 'sucess',
     msg: 'Server Up And Running',
     version: 1.3
-  })
-})
-
-app.get('/n', async (req, res) => {
-  let orderf = await orderModel.findOne()
-
-  timerEventEmitter.emit('order_recived', {
-    order: orderf._id,
-    driver_id: '642537609942d6b2c4e9b441'
-  })
-  return res.json({
-    status: 'sucess'
   })
 })
 
@@ -94,17 +83,8 @@ app.use('/brands', brandRoute)
 // app.use("/api_docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc));
 app.use('/uploads', express.static('uploads'))
 //middleware use
-const fs = require('fs')
-const stream = require('stream')
-
 const orderModel = require('./model/order')
-
-app.get('/test', async (req, res) => {
-  var order = await orderModel.findOne()
-
-  mailSenderHelper('parcelwalaa@gmail.com', order)
-  return res.send('upa and run')
-})
+const { errhandler } = require('./middleware/errorHandler')
 
 // const multerMod = require("./middleware/multerMod");
 

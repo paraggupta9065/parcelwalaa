@@ -44,6 +44,8 @@ async function mailSenderHelper (email, order) {
     Order Number: ${order._id}
     Order Date: ${order.date_created}
     Delivery Address: ${order.delivery_address_id.line1}
+    Order Type:  ${order.order_type}
+    
     
     Order Items:
     ${orderitem}
@@ -52,6 +54,7 @@ async function mailSenderHelper (email, order) {
     Name:${order.user_id.name}
     Phone Number: ${order.user_id.number}
     Item Total: ${order.inventory_total_amt}
+    Delivery Charges: ${order.delivery_total_amt}
     Delivery Charges: ${order.delivery_total_amt}
     Total: ${order.net_amt}
     

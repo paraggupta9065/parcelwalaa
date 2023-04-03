@@ -6,78 +6,76 @@ const cloudinary = require('cloudinary').v2
 const categoriesModel = require('../model/categories')
 
 exports.addShops = async (req, res) => {
-  // try {
+  try {
+    // const { otpCode,number, store_name, email, address_line1, admin_commission_rate,city,pincode, state, fssai ,deliveryCharges} = req.body;
+    const shopData = req.body
+    const { number, store_name, otpCode } = shopData
 
-  // const { otpCode,number, store_name, email, address_line1, admin_commission_rate,city,pincode, state, fssai ,deliveryCharges} = req.body;
-  const shopData = req.body
-  const { number, store_name, otpCode } = shopData
+    const userFindd = await userModel.findOne({ number })
+    if (userFindd) {
+      return res.status(201).json({
+        status: 'fail',
+        msg: `${userFindd.role} existed with this number`
+      })
+    }
+    //Verify Otp
+    if (!number) {
+      return res.status(404).json({ status: 'fail', msg: 'Number not found' })
+    }
+    const otpFound = await otpModel.findOne({ number: number })
 
-  const userFindd = await userModel.findOne({ number })
-  if (userFindd) {
-    return res.status(201).json({
+    if (!otpFound) {
+      return res.status(400).json({ status: 'fail', msg: 'Otp Not Sended Yet' })
+    }
+    if (otpFound.otpExpiry < Date.now) {
+      return res.status(400).json({ status: 'fail', msg: 'Otp expired' })
+    }
+    const isVerified = await otpFound.isValidatedOtp(otpCode)
+
+    // const isVerified = otpFound['otp'] == otpCode;
+
+    if (!isVerified) {
+      const isVerifiedPlain = otpFound.otp == otpCode
+      if (!isVerifiedPlain) {
+        return res.status(400).json({ status: 'fail', msg: 'Incorrect Otp' })
+      }
+    }
+    //Creating User
+
+    if (!store_name) {
+      return res
+        .status(404)
+        .json({ status: 'fail', msg: 'Please send shop info to create shop' })
+    }
+    const result = await cloudinary.uploader.upload(req.file.path)
+    const image = result['url']
+    const banner = 'dfsdf'
+    const userCreated = await userModel.create({
+      name: store_name,
+      number: number,
+      role: 'shop'
+    })
+    //User Created
+    //Creating Shop
+    shopData['user_id'] = userCreated._id
+    shopData['image'] = image
+    shopData['banner'] = banner
+    const shop = await shopModel.create(shopData)
+    const token = await userCreated.getJwtToken()
+    res.status(201).json({
+      status: 'sucess',
+      msg: 'shop added successfully',
+      shop: shop,
+      user: userCreated,
+      token
+    })
+  } catch (error) {
+    return res.status(400).json({
       status: 'fail',
-      msg: `${userFindd.role} existed with this number`
+      error,
+      msg: 'Something went wrong'
     })
   }
-  //Verify Otp
-  if (!number) {
-    return res.status(404).json({ status: 'fail', msg: 'Number not found' })
-  }
-  const otpFound = await otpModel.findOne({ number: number })
-
-  if (!otpFound) {
-    return res.status(400).json({ status: 'fail', msg: 'Otp Not Sended Yet' })
-  }
-  if (otpFound.otpExpiry < Date.now) {
-    return res.status(400).json({ status: 'fail', msg: 'Otp expired' })
-  }
-  const isVerified = await otpFound.isValidatedOtp(otpCode)
-
-  // const isVerified = otpFound['otp'] == otpCode;
-
-  if (!isVerified) {
-    const isVerifiedPlain = otpFound.otp == otpCode
-    if (!isVerifiedPlain) {
-      return res.status(400).json({ status: 'fail', msg: 'Incorrect Otp' })
-    }
-  }
-  //Creating User
-
-  if (!store_name) {
-    return res
-      .status(404)
-      .json({ status: 'fail', msg: 'Please send shop info to create shop' })
-  }
-  const result = await cloudinary.uploader.upload(req.file.path)
-  const image = result['url']
-  const banner = 'dfsdf'
-  const userCreated = await userModel.create({
-    name: store_name,
-    number: number,
-    role: 'shop'
-  })
-  //User Created
-  //Creating Shop
-  shopData['user_id'] = userCreated._id
-  shopData['image'] = image
-  shopData['banner'] = banner
-  const shop = await shopModel.create(shopData)
-  const token = await userCreated.getJwtToken()
-  res.status(201).json({
-    status: 'sucess',
-    msg: 'shop added successfully',
-    shop: shop,
-    user: userCreated,
-    token
-  })
-  // } catch (error) {
-  //   return res.status(400).json({
-  //     status: "fail",
-  //     error,
-  //     msg: "Something went wrong"
-
-  //   });
-  // }
 }
 
 exports.updateShops = async (req, res) => {

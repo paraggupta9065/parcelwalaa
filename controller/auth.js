@@ -9,103 +9,104 @@ const request = require('request')
 const { default: fetch } = require('node-fetch')
 
 exports.sendOtp = async (req, res) => {
-  // try {
-  let { number } = req.body
-  if (!number) {
-    return res.status(404).json({
-      msg: 'Number not found',
-      status: 'fail'
-    })
-  }
-  const otpCode = otpGenerator.generate(6, {
-    digits: true,
-    lowerCaseAlphabets: false,
-    upperCaseAlphabets: false,
-    specialChars: false
-  })
-
-  const otp = await otpModel.findOne({ number: number })
-
-  if (!otp) {
-    const model = await otpModel.create({ otp: otpCode, number: number })
-    console.log(model)
-  } else {
-    await otpModel.findOneAndUpdate(
-      { number: number },
-      { otp: otpCode, number: number }
-    )
-  }
-  console.log(otpCode)
-  console.log(typeof number)
-  number = '91' + number
-
-  const response = await fetch(
-    'https://graph.facebook.com/v16.0/101959862818415/messages',
-    {
-      method: 'POST',
-      body: JSON.stringify({
-        messaging_product: 'whatsapp',
-        recipient_type: 'individual',
-        to: number,
-        type: 'template',
-        template: {
-          name: 'otp_parcelwalaa',
-          language: {
-            code: 'en'
-          },
-          components: [
-            {
-              type: 'body',
-              parameters: [
-                {
-                  type: 'text',
-                  text: otpCode
-                }
-              ]
-            }
-          ]
-        }
-      }),
-
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.whatsapp_token}`
-      }
+  try {
+    let { number } = req.body
+    if (!number) {
+      return res.status(404).json({
+        msg: 'Number not found',
+        status: 'fail'
+      })
     }
-  )
-  console.log('otp started')
+    const otpCode = otpGenerator.generate(6, {
+      digits: true,
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false
+    })
 
-  const data = await response.json()
-  console.log(data)
+    const otp = await otpModel.findOne({ number: number })
 
-  if (data['error'] != null) {
-    if (data['error']['code'] == 100) {
+    if (!otp) {
+      const model = await otpModel.create({ otp: otpCode, number: number })
+      console.log(model)
+    } else {
+      await otpModel.findOneAndUpdate(
+        { number: number },
+        { otp: otpCode, number: number }
+      )
+    }
+    console.log(otpCode)
+    console.log(typeof number)
+    number = '91' + number
+
+    const response = await fetch(
+      'https://graph.facebook.com/v16.0/101959862818415/messages',
+      {
+        method: 'POST',
+        body: JSON.stringify({
+          messaging_product: 'whatsapp',
+          recipient_type: 'individual',
+          to: number,
+          type: 'template',
+          template: {
+            name: 'otp_parcelwalaa',
+            language: {
+              code: 'en'
+            },
+            components: [
+              {
+                type: 'body',
+                parameters: [
+                  {
+                    type: 'text',
+                    text: otpCode
+                  }
+                ]
+              }
+            ]
+          }
+        }),
+
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${process.env.whatsapp_token}`
+        }
+      }
+    )
+    console.log('otp started')
+
+    const data = await response.json()
+    console.log(data)
+
+    if (data['error'] != null) {
+      if (data['error']['code'] == 100) {
+        return res.status(400).json({
+          status: 'fail',
+          error: data['error'],
+          msg: 'Unabe to found on whatsapp'
+        })
+      }
       return res.status(400).json({
         status: 'fail',
         error: data['error'],
-        msg: 'Unabe to found on whatsapp'
+        msg: 'Something went wrong'
       })
     }
+
+    return res.status(200).json({
+      msg: 'otp sended successfully',
+      status: 'sucess',
+      number: number,
+      code: otpCode
+    })
+  } catch (error) {
+    console.log(error)
     return res.status(400).json({
       status: 'fail',
-      error: data['error'],
+      error: error,
       msg: 'Something went wrong'
     })
   }
-
-  return res.status(200).json({
-    msg: 'otp sended successfully',
-    status: 'sucess',
-    number: number,
-    code: otpCode
-  })
-  // } catch (error) {
-  //   return res.status(400).json({
-  //     status: 'fail',
-  //     error: error,
-  //     msg: 'Something went wrong'
-  //   })
-  // }
 }
 
 exports.verifyOtp = async (req, res) => {

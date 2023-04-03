@@ -3,43 +3,59 @@ const categoriesStudentsModel = require('../model/categoriesStudents')
 const cloudinary = require('cloudinary').v2
 
 exports.addCategories = async (req, res) => {
-  const categoriesData = req.body
+  try {
+    const categoriesData = req.body
 
-  if (!categoriesData['name']) {
+    if (!categoriesData['name']) {
+      return res.status(400).json({
+        status: 'fail',
+        msg: 'Please provide all the fields'
+      })
+    }
+    const result = await cloudinary.uploader.upload(req.file.path)
+    categoriesData['image'] = result['url']
+    categoriesData['image_id'] = result['public_id']
+
+    const categories = await categoriesModel.create(categoriesData)
+    return res.status(201).json({
+      status: 'sucess',
+      categories: categories
+    })
+  } catch (error) {
     return res.status(400).json({
       status: 'fail',
-      msg: 'Please provide all the fields'
+      error: error,
+      msg: 'Something went wrong'
     })
   }
-  const result = await cloudinary.uploader.upload(req.file.path)
-  categoriesData['image'] = result['url']
-  categoriesData['image_id'] = result['public_id']
-
-  const categories = await categoriesModel.create(categoriesData)
-  return res.status(201).json({
-    status: 'sucess',
-    categories: categories
-  })
 }
 
 exports.addCategoriesStudents = async (req, res) => {
-  const categoriesData = req.body
+  try {
+    const categoriesData = req.body
 
-  if (!categoriesData['name']) {
+    if (!categoriesData['name']) {
+      return res.status(400).json({
+        status: 'fail',
+        msg: 'Please provide all the fields'
+      })
+    }
+    const result = await cloudinary.uploader.upload(req.file.path)
+    categoriesData['image'] = result['url']
+    categoriesData['image_id'] = result['public_id']
+
+    const categories = await categoriesStudentsModel.create(categoriesData)
+    return res.status(201).json({
+      status: 'sucess',
+      categories: categories
+    })
+  } catch (error) {
     return res.status(400).json({
       status: 'fail',
-      msg: 'Please provide all the fields'
+      error: error,
+      msg: 'Something went wrong'
     })
   }
-  const result = await cloudinary.uploader.upload(req.file.path)
-  categoriesData['image'] = result['url']
-  categoriesData['image_id'] = result['public_id']
-
-  const categories = await categoriesStudentsModel.create(categoriesData)
-  return res.status(201).json({
-    status: 'sucess',
-    categories: categories
-  })
 }
 
 exports.updateCategories = async (req, res) => {
@@ -105,88 +121,144 @@ exports.updateCategorieStudents = async (req, res) => {
 }
 
 exports.deleteCategoriesStudents = async (req, res) => {
-  const id = req.params.id
+  try {
+    const id = req.params.id
 
-  if (!id) {
+    if (!id) {
+      return res.status(400).json({
+        status: 'fail',
+        msg: 'Please provide Id'
+      })
+    }
+
+    await categoriesStudentsModel.findByIdAndDelete(id)
+
+    return res.status(200).json({
+      status: 'sucess',
+      msg: 'Deleted sucessfully'
+    })
+  } catch (error) {
     return res.status(400).json({
       status: 'fail',
-      msg: 'Please provide Id'
+      error: error,
+      msg: 'Something went wrong'
     })
   }
-
-  await categoriesStudentsModel.findByIdAndDelete(id)
-
-  return res.status(200).json({
-    status: 'sucess',
-    msg: 'Deleted sucessfully'
-  })
 }
 
 exports.deleteCategories = async (req, res) => {
-  const id = req.params.id
+  try {
+    const id = req.params.id
 
-  if (!id) {
+    if (!id) {
+      return res.status(400).json({
+        status: 'fail',
+        msg: 'Please provide Id'
+      })
+    }
+
+    await categoriesModel.findByIdAndDelete(id)
+
+    return res.status(200).json({
+      status: 'sucess',
+      msg: 'Deleted sucessfully'
+    })
+  } catch (error) {
     return res.status(400).json({
       status: 'fail',
-      msg: 'Please provide Id'
+      error: error,
+      msg: 'Something went wrong'
     })
   }
-
-  await categoriesModel.findByIdAndDelete(id)
-
-  return res.status(200).json({
-    status: 'sucess',
-    msg: 'Deleted sucessfully'
-  })
 }
 
 exports.getCategories = async (req, res) => {
-  const categories = await categoriesModel.find().populate()
+  try {
+    const categories = await categoriesModel.find().populate()
 
-  return res.status(200).json({
-    status: 'sucess',
-    categories: categories
-  })
+    return res.status(200).json({
+      status: 'sucess',
+      categories: categories
+    })
+  } catch (error) {
+    return res.status(400).json({
+      status: 'fail',
+      error: error,
+      msg: 'Something went wrong'
+    })
+  }
 }
 
 exports.getCategorieStudent = async (req, res) => {
-  const id = req.params.id
-  const categorie = await categoriesStudentsModel.findById(id)
-  if (!categorie) {
+  try {
+    const id = req.params.id
+    const categorie = await categoriesStudentsModel.findById(id)
+    if (!categorie) {
+      return res.status(200).json({
+        status: 'fail',
+        msg: 'not found'
+      })
+    }
+
     return res.status(200).json({
+      status: 'sucess',
+      categorie: categorie
+    })
+  } catch (error) {
+    return res.status(400).json({
       status: 'fail',
-      msg: 'not found'
+      error: error,
+      msg: 'Something went wrong'
     })
   }
-
-  return res.status(200).json({
-    status: 'sucess',
-    categorie: categorie
-  })
 }
 
 exports.getCategoriesStudents = async (req, res) => {
-  const categories = await categoriesStudentsModel.find().populate()
+  try {
+    const categories = await categoriesStudentsModel.find().populate()
 
-  return res.status(200).json({
-    status: 'sucess',
-    categories: categories
-  })
+    return res.status(200).json({
+      status: 'sucess',
+      categories: categories
+    })
+  } catch (error) {
+    return res.status(400).json({
+      status: 'fail',
+      error: error,
+      msg: 'Something went wrong'
+    })
+  }
 }
 exports.getCategoriesAdmin = async (req, res) => {
-  const categories = await categoriesModel.find().populate()
+  try {
+    const categories = await categoriesModel.find().populate()
 
-  return res.status(200).json({
-    status: 'sucess',
-    categories: categories
-  })
+    return res.status(200).json({
+      status: 'sucess',
+      categories: categories
+    })
+  } catch (error) {
+    return res.status(400).json({
+      status: 'fail',
+      error: error,
+      msg: 'Something went wrong'
+    })
+  }
 }
 
 exports.getCategoriesStudentsAdmin = async (req, res) => {
-  const categories = await categoriesStudentsModel.find().populate()
+  try {
+    const categories = await categoriesStudentsModel.find().populate()
 
-  return res.status(200).json({
-    status: 'sucess',
-    categories: categories
-  })
+    return res.status(200).json({
+      status: 'sucess',
+      categories: categories
+    })
+  } catch (error) {
+    return res.status(400).json({
+      status: 'fail',
+      error: error,
+      msg: 'Something went wrong'
+    })
+  }
 }
