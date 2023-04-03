@@ -16,6 +16,12 @@ const connectToSocket = app => {
       console.log(`Driver with id ${driver_join} joined`)
     })
 
+    socket.on('customer_join', customer_join => {
+      socket.join(customer_join)
+
+      console.log(`Customer with id ${customer_join} joined`)
+    })
+
     socket.on('location', data => {
       deliveryBoy.findByIdAndUpdate(data['id'], {
         lat: data['lat'],
@@ -28,6 +34,9 @@ const connectToSocket = app => {
 
   timerEventEmitter.on('order_recived', data => {
     io.to(data['driver_id']).emit('order_recived', data)
+  })
+  timerEventEmitter.on('customer_update', data => {
+    io.to(data['id']).emit('customer_update', data['status'])
   })
 
   return server

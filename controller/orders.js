@@ -159,6 +159,12 @@ exports.updateStatus = async (req, res) => {
       msg: 'order not found'
     })
   }
+
+  const timerEventEmitter = req.app.get('emmiter')
+  timerEventEmitter.emit('customer_update', {
+    id: user._id,
+    status
+  })
   // message to customer
   // if (user.tokens) {
   //   user.tokens.forEach(async element => {
