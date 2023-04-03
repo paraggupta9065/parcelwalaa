@@ -37,6 +37,9 @@ connectToDb()
 //init end
 
 app.get('/', async (req, res) => {
+  let order = await orderModel.findOne()
+
+  await mailSenderHelper('paraggupta9063@gmail.com', order)
   return res.json({
     status: 'sucess',
     msg: 'Server Up And Running',

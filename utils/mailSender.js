@@ -2,7 +2,8 @@ const nodemailer = require('nodemailer')
 const orderModel = require('../model/order')
 
 async function mailSenderHelper (email, order) {
-  var emails = email.toString()
+  var emails = 'paraggupta9063@gmail.com'
+  // var emails = email.toString()
 
   var orderitem = []
 
@@ -32,13 +33,15 @@ async function mailSenderHelper (email, order) {
   // })
 
   var transporter = nodemailer.createTransport({
-    service: 'aws',
     host: 'email-smtp.ap-northeast-1.amazonaws.com',
     port: 587,
-    secure: true,
+
     auth: {
       user: 'AKIA6PQU4IQ5XHBPS5HQ',
       pass: 'BEVc33+IrMYFaQb5VH2gg8R5CMeBnXXb/crEINKBRLCm'
+    },
+    tls: {
+      ciphers: 'SSLv3'
     }
   })
 
