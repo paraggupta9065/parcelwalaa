@@ -51,7 +51,7 @@ app.get('/payment_key', async (req, res) => {
   return res.json({
     status: 'sucess',
     msg: 'Server Up And Running',
-    key: 'rzp_test_lZfxBzlXvzKNjC'
+    key: 'rzp_live_pH3yLTdFIM1PTi'
   })
 })
 
