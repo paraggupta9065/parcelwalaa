@@ -2,7 +2,7 @@ const nodemailer = require('nodemailer')
 const orderModel = require('../model/order')
 
 async function mailSenderHelper (email, order) {
-  var emails = 'paraggupta9063@gmail.com'
+  var emails = email
   // var emails = email.toString()
 
   var orderitem = []
