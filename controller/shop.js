@@ -174,13 +174,13 @@ exports.isVerified = async (req, res) => {
     if (!shop) {
       res.status(404).json({ status: 'fail', msg: 'You are not a vendor' })
     }
-    res.status(200).json({
+    return res.status(200).json({
       status: 'sucess',
       msg: 'Verification status',
       isVerified: shop.isVerified
     })
   } catch (error) {
-    res.status(400).json({
+    return res.status(400).json({
       status: 'fail',
       error,
       msg: 'Something went wrong'
