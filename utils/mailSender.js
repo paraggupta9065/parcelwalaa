@@ -33,12 +33,12 @@ async function mailSenderHelper (email, order) {
   // })
 
   var transporter = nodemailer.createTransport({
-    host: 'email-smtp.ap-northeast-1.amazonaws.com',
+    host: 'email-smtp.ap-south-1.amazonaws.com',
     port: 587,
 
     auth: {
-      user: 'AKIA6PQU4IQ5XHBPS5HQ',
-      pass: 'BEVc33+IrMYFaQb5VH2gg8R5CMeBnXXb/crEINKBRLCm'
+      user: 'AKIAWOJB5VH7FX7HSS7C',
+      pass: 'BJ4krw66SzWHc6w9fZ73dMUvmxlUWBXv0GvivOSDyLey'
     },
     tls: {
       ciphers: 'SSLv3'
@@ -46,7 +46,7 @@ async function mailSenderHelper (email, order) {
   })
 
   var mailOptions = {
-    from: 'order@vaininnovation.in',
+    from: 'care.brainvibe.in',
     to: emails,
     subject: 'New order',
     text: `Dear Vendor,
@@ -82,13 +82,17 @@ async function mailSenderHelper (email, order) {
     `
   }
 
-  await transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      console.log(error)
-    } else {
-      console.log('Email sent: ' + info.response)
-    }
-  })
+  try {
+    transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        console.log(error)
+      } else {
+        console.log('Email sent: ' + info.response)
+      }
+    })
+  } catch (error) {
+    console.log(error)
+  }
 }
 
 module.exports = mailSenderHelper
