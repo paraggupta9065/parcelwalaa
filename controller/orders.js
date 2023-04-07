@@ -476,6 +476,19 @@ exports.getPreviousOrders = async (req, res) => {
     orders
   })
 }
+exports.getPreviousOrdersAdmin = async (req, res) => {
+  const orders = await previousOrderModel.find()
+  if (orders.length == 0) {
+    return res.status(404).json({
+      status: 'fail',
+      msg: 'Order Not Found'
+    })
+  }
+  return res.status(200).json({
+    status: 'sucess',
+    orders
+  })
+}
 
 // exports.removeCart = async (req, res) => {
 //     const id = req.user._id;

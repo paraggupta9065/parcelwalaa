@@ -6,7 +6,10 @@ const {
   getCategoriesStudentsAdmin
 } = require('../controller/categories')
 const { getCouponsAdmin } = require('../controller/coupon')
-const { getOrdersAdmin } = require('../controller/orders')
+const {
+  getOrdersAdmin,
+  getPreviousOrdersAdmin
+} = require('../controller/orders')
 const { getProductsAdmin } = require('../controller/product')
 const { getShop, getShopsAdmin } = require('../controller/shop')
 const { isLoggedIn } = require('../middleware/user')
@@ -19,6 +22,9 @@ router.route('/get_products').get(isLoggedIn, isAdmin, getProductsAdmin)
 router.route('/get_banners').get(isLoggedIn, isAdmin, getBannersAdmin)
 router.route('/get_coupons').get(isLoggedIn, isAdmin, getCouponsAdmin)
 router.route('/get_orders').post(isLoggedIn, isAdmin, getOrdersAdmin)
+router
+  .route('/get_previous_orders')
+  .get(isLoggedIn, isAdmin, getPreviousOrdersAdmin)
 router
   .route('/get_categories_students')
   .get(isLoggedIn, isAdmin, getCategoriesStudentsAdmin)
