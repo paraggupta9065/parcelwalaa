@@ -88,56 +88,54 @@ exports.sucessPayment = async (req, res) => {
       .populate({ path: 'order_inventory' })
     //send notification
 
-    // try {
-    //   for (const index in order.order_inventory) {
-    //     const element = order.order_inventory[index]
+    try {
+      for (const index in order.order_inventory) {
+        const element = order.order_inventory[index]
 
-    //     const vendor = await userModel.findOne({
-    //       number: element.shop_id.number
-    //     })
-    //     // message to vendor
+        const vendor = await userModel.findOne({
+          number: element.shop_id.number
+        })
+        // message to vendor
 
-    //     for (const token of vendor.tokens) {
-    //       const message = {
-    //         notification: {
-    //           title: 'New Order Received',
-    //           body: 'Order Received'
-    //         },
-    //         data: {
-    //           order: order._id.toString()
-    //         },
-    //         token: token.token
-    //       }
-    //       const vendorResp = await admin.messaging().send(message)
-    //     }
-    //   }
-    // } catch (error) {
-    //   console.log(error)
-    // }
+        const message = {
+          notification: {
+            title: 'New Order Received',
+            body: 'Order Received'
+          },
+          data: {
+            order: order._id.toString()
+          },
+          to: vendor.tokens
+        }
+        const vendorResp = await admin.messaging().send(message)
+      }
+    } catch (error) {
+      console.log(error)
+    }
 
-    //message to vendor
+    // message to vendor
     // message to customer
 
-    // const messageCustomer = {
-    //   notification: {
-    //     title: 'New Order Received',
-    //     body: 'Order Received'
-    //   },
-    //   data: {
-    //     order: JSON.stringify(order)
-    //   },
-    //   token: req.user.fmc_token
-    // }
-    // let customerPesp
-    // try {
-    //   customerPesp = await admin.messaging().send(messageCustomer)
-    // } catch (error) {
-    //   return res.status(200).send({
-    //     status: 'sucess',
-    //     order,
-    //     msg: 'order created and Notification not send'
-    //   })
-    // }
+    const messageCustomer = {
+      notification: {
+        title: 'New Order Received',
+        body: 'Order Received'
+      },
+      data: {
+        order: JSON.stringify(order)
+      },
+      token: req.user.fmc_token
+    }
+    let customerPesp
+    try {
+      customerPesp = await admin.messaging().send(messageCustomer)
+    } catch (error) {
+      return res.status(200).send({
+        status: 'sucess',
+        order,
+        msg: 'order created and Notification not send'
+      })
+    }
 
     //message to customer
 
