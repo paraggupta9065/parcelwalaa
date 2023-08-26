@@ -22,7 +22,7 @@ const brandRoute = require('./routes/brand')
 const admin = require('firebase-admin')
 const swaggerUi = require('swagger-ui-express')
 const YAML = require('yamljs')
-// const swaggerJsDoc = YAML.load("./swagger.yaml");
+const swaggerJsDoc = YAML.load('./swagger.yaml')
 require('dotenv').config()
 const { EventEmitter } = require('events')
 const userModel = require('./model/user')
@@ -37,21 +37,14 @@ connectToDb()
 //init end
 
 app.get('/', async (req, res) => {
-  let order = await orderModel.findOne()
-
-  await mailSenderHelper('paraggupta9063@gmail.com', order)
-  return res.json({
-    status: 'sucess',
-    msg: 'Server Up And Running',
-    version: 1.4
-  })
+  return res.send({ msg: 'server up and running', ver: 6.1 })
 })
 
 app.get('/payment_key', async (req, res) => {
   return res.json({
     status: 'sucess',
     msg: 'Server Up And Running',
-    key: 'rzp_live_pH3yLTdFIM1PTi'
+    key: 'rzp_test_lZfxBzlXvzKNjC'
   })
 })
 
@@ -91,7 +84,7 @@ app.use('/trip', tripRoute)
 app.use('/orders', ordersRoute)
 app.use('/categories', categoriesRoute)
 app.use('/brands', brandRoute)
-// app.use("/api_docs", swaggerUi.serve, swaggerUi.setup(swaggerJsDoc));
+app.use('/api_docs', swaggerUi.serve, swaggerUi.setup(swaggerJsDoc))
 app.use('/uploads', express.static('uploads'))
 //middleware use
 const orderModel = require('./model/order')

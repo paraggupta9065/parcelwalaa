@@ -2,11 +2,14 @@ const bcrypt = require('bcryptjs')
 const otpGenerator = require('otp-generator')
 const otpModel = require('../model/otp')
 const userModel = require('../model/user')
+const tokenModel = require('../model/token')
 const jwt = require('jsonwebtoken')
 const shopModel = require('../model/shop')
 const deliveryBoyModel = require('../model/deliveryBoy')
 const request = require('request')
 const { default: fetch } = require('node-fetch')
+const { default: mongoose } = require('mongoose')
+const token = require('../model/token')
 
 exports.sendOtp = async (req, res) => {
   try {
@@ -118,9 +121,12 @@ exports.verifyOtp = async (req, res) => {
     const otpFound = await otpModel.findOne({ number: number })
 
     if (!otpFound) {
+      console.log('otpFound')
       return res.status(400).json({ status: 'fail', msg: 'Otp Not Sended Yet' })
     }
     if (otpFound.otpExpiry < Date.now) {
+      console.log('otpExpiry')
+
       return res.status(400).json({ status: 'fail', msg: 'otp expired' })
     }
     const isVerified = await otpFound.isValidatedOtp(otpCode)
@@ -130,6 +136,8 @@ exports.verifyOtp = async (req, res) => {
     if (!isVerified) {
       const isVerifiedPlain = otpFound.otp == otpCode
       if (!isVerifiedPlain) {
+        console.log('isVerifiedPlain')
+
         return res.status(400).json({ status: 'fail', msg: 'Incorrect Otp' })
       }
     }
@@ -189,6 +197,7 @@ exports.verifyOtp = async (req, res) => {
       user: userFound
     })
   } catch (error) {
+    console.log(error)
     return res.status(400).json({
       status: 'fail',
       error: error,
@@ -199,23 +208,35 @@ exports.verifyOtp = async (req, res) => {
 
 exports.setToken = async (req, res) => {
   try {
-    const fmc_token = req.body.fmc_token
-    const device_id = req.body.device_id
+    const token = req.body.fmc_token
+    const deviceId = req.body.device_id
     const user_id = req.user._id
-    const deviceExist = await userModel.findOne({
-      _id: user_id,
-      'tokens.deviceId': device_id
-    })
-    if (!deviceExist) {
-      await userModel.findOneAndUpdate(
-        { _id: user_id },
-        { $push: { tokens: { deviceId: device_id, token: fmc_token } } }
-      )
+    const number = req.user.number
+
+    const tokenExist = await tokenModel.findOne({ number, deviceId })
+
+    if (!tokenExist) {
+      tokenExist = await tokenModel.create({ number, token, deviceId })
+    } else {
+      await tokenModel.findOneAndUpdate({ _id: tokenExist._id }, { token })
     }
-    await userModel.findOneAndUpdate(
-      { _id: user_id, 'tokens.deviceId': device_id },
-      { $set: { 'tokens.$': { deviceId: device_id, token: fmc_token } } }
-    )
+    return res.status(200).json({
+      status: 'sucess',
+      msg: 'Token set succesfuly'
+    })
+  } catch (error) {
+    return res.status(400).json({
+      status: 'fail',
+      error: error,
+      msg: 'Something went wrong'
+    })
+  }
+}
+
+exports.removeToken = async (req, res) => {
+  try {
+    const deviceId = req.body.device_id
+    await tokenModel.findOneAndDelete({ deviceId }, { token })
 
     return res.status(200).json({
       status: 'sucess',
