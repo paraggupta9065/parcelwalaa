@@ -14,6 +14,7 @@ const token = require('../model/token')
 exports.sendOtp = async (req, res) => {
   try {
     let { number } = req.body
+
     if (!number) {
       return res.status(404).json({
         msg: 'Number not found',
@@ -31,7 +32,6 @@ exports.sendOtp = async (req, res) => {
 
     if (!otp) {
       const model = await otpModel.create({ otp: otpCode, number: number })
-      console.log(model)
     } else {
       await otpModel.findOneAndUpdate(
         { number: number },
