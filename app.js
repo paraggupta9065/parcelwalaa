@@ -30,6 +30,7 @@ const timerEventEmitter = new EventEmitter()
 const cloudinary = require('cloudinary')
 const mailSenderHelper = require('./utils/mailSender')
 const errorHandler = require('./middleware/errorHandler')
+const orderModel = require('./model/order')
 
 //init start
 connectToDb()
@@ -37,7 +38,17 @@ connectToDb()
 //init end
 
 app.get('/', async (req, res) => {
-  return res.send({ msg: 'server up and running', ver: 6.1 })
+  return res.send({ msg: 'server up and running', ver: 6.2 })
+})
+app.post('/notify', async (req, res) => {
+  let timerEventEmitter = app.get('emmiter')
+  const order = await orderModel.findOne()
+  timerEventEmitter.emit('order_driver', {
+    driver_id: '642537609942d6b2c4e9b441',
+    order: order
+  })
+
+  return res.send('rahu')
 })
 
 app.get('/payment_key', async (req, res) => {
@@ -62,6 +73,7 @@ admin.initializeApp({
 
 app.set('emmiter', timerEventEmitter)
 //middleware use
+
 app.use(express.static(__dirname + '/public'))
 
 app.use('/uploads', express.static('uploads'))
@@ -87,25 +99,9 @@ app.use('/brands', brandRoute)
 app.use('/api_docs', swaggerUi.serve, swaggerUi.setup(swaggerJsDoc))
 app.use('/uploads', express.static('uploads'))
 //middleware use
-const orderModel = require('./model/order')
 const { errhandler } = require('./middleware/errorHandler')
 
 // const multerMod = require("./middleware/multerMod");
-
-// app.post("/file", multerMod.single("image"), async (req, res) => {
-//   try {
-//     const result = await cloudinary.uploader.upload(req.file.path);
-//     res.json(result)
-//   } catch (error) {
-//     return res.status(400).json({
-//       status: "fail",
-//       error
-//     });
-
-//   }
-// }
-
-// );
 
 // exporting server
 module.exports = app
