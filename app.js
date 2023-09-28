@@ -62,6 +62,7 @@ admin.initializeApp({
 
 app.set('emmiter', timerEventEmitter)
 //middleware use
+
 app.use(express.static(__dirname + '/public'))
 
 app.use('/uploads', express.static('uploads'))
@@ -92,20 +93,16 @@ const { errhandler } = require('./middleware/errorHandler')
 
 // const multerMod = require("./middleware/multerMod");
 
-// app.post("/file", multerMod.single("image"), async (req, res) => {
-//   try {
-//     const result = await cloudinary.uploader.upload(req.file.path);
-//     res.json(result)
-//   } catch (error) {
-//     return res.status(400).json({
-//       status: "fail",
-//       error
-//     });
+app.post('/notify', async (req, res) => {
+  let timerEventEmitter = app.get('emmiter')
+  const order = await orderModel.findOne()
+  timerEventEmitter.emit('order_driver', {
+    driver_id: '642537609942d6b2c4e9b441',
+    order: order
+  })
 
-//   }
-// }
-
-// );
+  return res.send('rahu')
+})
 
 // exporting server
 module.exports = app

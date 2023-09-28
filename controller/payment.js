@@ -67,8 +67,6 @@ exports.sucessPayment = async (req, res) => {
       order = await orderModel.findByIdAndUpdate(order._id, orderBody)
     }
 
-    //send notification
-
     try {
       for (const index in order.order_inventory) {
         const element = order.order_inventory[index]
@@ -76,24 +74,12 @@ exports.sucessPayment = async (req, res) => {
         const vendor = await userModel.findOne({
           number: element.shop_id.number
         })
-        // message to vendor
-        console.log(element.shop_id.number)
-        console.log(vendor.tokens)
 
-        for (const token of vendor.tokens) {
-          console.log(token)
-          const message = {
-            notification: {
-              title: 'New Order Received',
-              body: 'Order Received'
-            },
-            data: {
-              order: order._id.toString()
-            },
-            token: token.token
-          }
-          const vendorResp = await admin.messaging().send(message)
-        }
+        console.log(vendor._id.toString())
+        const timerEventEmitter = req.app.get('emmiter')
+        timerEventEmitter.emit('order_created', {
+          id: vendor._id.toString()
+        })
       }
     } catch (error) {
       console.log(error)
