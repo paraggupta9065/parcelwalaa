@@ -1,12 +1,12 @@
 const mongoose = require('mongoose')
-const jwt = require('jsonwebtoken')
 const tokenSchema = mongoose.Schema(
   {
     deviceId: {
       type: String
     },
     token: {
-      type: String
+      type: String,
+      required:true
     },
     number: {
       type: Number
@@ -14,7 +14,6 @@ const tokenSchema = mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now
-      // expires: '1d'
     }
   },
   { timestamps: true }

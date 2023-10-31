@@ -208,18 +208,12 @@ exports.verifyOtp = async (req, res) => {
 
 exports.setToken = async (req, res) => {
   try {
-    const token = req.body.fmc_token
-    const deviceId = req.body.device_id
-    const user_id = req.user._id
+    const fcm_token = req.body.fcm_token
     const number = req.user.number
-
-    const tokenExist = await tokenModel.findOne({ number, deviceId })
-
-    if (!tokenExist) {
-      tokenExist = await tokenModel.create({ number, token, deviceId })
-    } else {
-      await tokenModel.findOneAndUpdate({ _id: tokenExist._id }, { token })
-    }
+ let token=   await tokenModel.findOneAndUpdate({ number}, { token:fcm_token })
+ if (!token) {
+  token= await tokenModel.create({  number,token:fcm_token })
+ }
     return res.status(200).json({
       status: 'sucess',
       msg: 'Token set succesfuly'
@@ -233,20 +227,3 @@ exports.setToken = async (req, res) => {
   }
 }
 
-exports.removeToken = async (req, res) => {
-  try {
-    const deviceId = req.body.device_id
-    await tokenModel.findOneAndDelete({ deviceId }, { token })
-
-    return res.status(200).json({
-      status: 'sucess',
-      msg: 'Token set succesfuly'
-    })
-  } catch (error) {
-    return res.status(400).json({
-      status: 'fail',
-      error: error,
-      msg: 'Something went wrong'
-    })
-  }
-}

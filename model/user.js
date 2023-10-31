@@ -17,7 +17,6 @@ const UserSchema = mongoose.Schema({
     enum: ['deliveryBoy', 'user', 'admin', 'shop'],
     default: 'user'
   },
-  tokens: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Token' }],
   createdAt: {
     type: Date,
     default: Date.now
