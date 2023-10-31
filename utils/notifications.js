@@ -8,7 +8,7 @@ exports.orderNotificationVendor = async (number) => {
 const findToken=await tokenModel.findOne({number});
 
 if (!findToken) {
-  throw new Error('Invalid number or FCM tokens');
+  throw new Error(`Invalid number or FCM tokens ${number}`);
 }
 
     const message = {
