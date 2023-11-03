@@ -75,14 +75,12 @@ exports.successPayment = async (req, res) => {
       const vendor = await userModel.findOne({ number: element.shop_id.number })
 
       if (vendor) {
-        console.log("vendor")
-      // await  orderNotificationVendor(vendor.number);
+      await  orderNotificationVendor(vendor.number);
 
       
       }
     }
-    console.log("user")
-    await  orderNotificationVendor(req.user.number);
+    // await  orderNotificationVendor(req.user.number);
 
 
  
